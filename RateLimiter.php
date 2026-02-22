@@ -1,27 +1,32 @@
 <?php
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 function check_rate_limit($ip, $limit = 5, $window = 60)
 {
     try {
-        $redis = new Redis();
-        $redis->connect('127.0.0.1', 6379);
+        $redis = new Predis\Client([
+            'scheme' => 'tcp',
+            'host' => '127.0.0.1',
+            'port' => 6379,
+        ]);
 
         $key = "login_attempt:$ip";
         $current = $redis->get($key);
 
-        if ($current !== false && $current >= $limit) {
+        if ($current !== null && $current >= $limit) {
             return false;
         }
 
-        if ($current === false) {
-            $redis->set($key, 1, $window);
+        if ($current === null) {
+            $redis->setex($key, $window, 1);
         } else {
             $redis->incr($key);
         }
 
         return true;
     } catch (Exception $e) {
-        // Fallback to allow login if Redis is down (or handle differently based on policy)
+        // Fallback to allow login if Redis is down
         return true;
     }
 }

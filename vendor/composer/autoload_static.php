@@ -14,6 +14,8 @@ class ComposerStaticInita5e9bf871cb4b3471db9dceeffcb35d4
         ),
         'P' =>
         array (
+            'Psr\\Http\\Message\\' => 17,
+            'Predis\\' => 7,
             'PragmaRX\\Google2FA\\' => 19,
             'ParagonIE\\ConstantTime\\' => 23,
             'PHPMailer\\PHPMailer\\' => 20,
@@ -28,6 +30,14 @@ class ComposerStaticInita5e9bf871cb4b3471db9dceeffcb35d4
         'chillerlan\\QRCode\\' =>
         array (
             0 => __DIR__ . '/..' . '/chillerlan/php-qrcode/src',
+        ),
+        'Psr\\Http\\Message\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Predis\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
         'PragmaRX\\Google2FA\\' =>
         array (
