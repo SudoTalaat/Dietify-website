@@ -1,8 +1,10 @@
 <?php
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use PragmaRX\Google2FA\Google2FA;
 
 session_start();
+require_once 'vendor/autoload.php';
 require 'db_connect.php';
 
 // Auth guard
@@ -14,6 +16,7 @@ if (empty($_SESSION['user_id'])) {
 $userId = (int) $_SESSION['user_id'];
 $message = '';
 $msgType = 'success';
+$google2fa = new Google2FA();
 
 // ── Load user details ────────────────────────────────────────────────────────
 $stmt = $conn->prepare(
@@ -87,8 +90,6 @@ elseif ($action === 'enable_email') {
 }
 // 3. START TOTP SETUP
 elseif ($action === 'start_totp') {
-    require_once 'vendor/autoload.php';
-    $google2fa = new \PragmaRX\Google2FA\Google2FA();
     $secret = $google2fa->generateSecretKey();
 
     $conn->begin_transaction();
@@ -124,8 +125,6 @@ elseif ($action === 'start_totp') {
 }
 // 4. CONFIRM TOTP
 elseif ($action === 'confirm_totp') {
-    require_once 'vendor/autoload.php';
-    $google2fa = new \PragmaRX\Google2FA\Google2FA();
     $code = trim($_POST['totp_code'] ?? '');
 
     $s2 = $conn->prepare("SELECT totp_secret FROM user_totp WHERE user_id=?");
@@ -186,8 +185,6 @@ elseif ($action === 'confirm_totp') {
 // ── Build TOTP QR code if required ───────────────────────────────────────────
 $qrBase64 = '';
 if (!empty($showQr) && !empty($user['totp_secret'])) {
-    require_once 'vendor/autoload.php';
-    $google2fa = new \PragmaRX\Google2FA\Google2FA();
     $otpUrl = $google2fa->getQRCodeUrl('Healthy Food', $user['email'], $user['totp_secret']);
     $options = new QROptions([
         'outputType' => QRCode::OUTPUT_MARKUP_SVG,
@@ -325,8 +322,15 @@ $currentMethod = $user['twofa_method'];
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {

@@ -1,6 +1,9 @@
 <?php
 session_start();
+require_once 'vendor/autoload.php';
 require 'db_connect.php';
+
+use PragmaRX\Google2FA\Google2FA;
 
 if (empty($_SESSION['2fa_user_id'])) {
     header("Location: login.php");
@@ -10,6 +13,7 @@ if (empty($_SESSION['2fa_user_id'])) {
 $userId = (int) $_SESSION['2fa_user_id'];
 $method = $_GET['method'] ?? 'email';
 $error = '';
+$google2fa = new Google2FA();
 
 $userStmt = $conn->prepare(
     "SELECT u.id, u.username, u.email, u.twofa_method, t.totp_secret 
@@ -62,8 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
     } elseif ($method === 'totp') {
-        require_once 'vendor/autoload.php';
-        $google2fa = new \PragmaRX\Google2FA\Google2FA();
 
         if ($google2fa->verifyKey($user['totp_secret'], $code)) {
             $_SESSION['user_id'] = $user['id'];

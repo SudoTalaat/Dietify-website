@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 22, 2026 at 08:00 PM
+-- Generation Time: Feb 23, 2026 at 12:54 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,6 +51,14 @@ CREATE TABLE `email_otps` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `email_otps`
+--
+
+INSERT INTO `email_otps` (`id`, `user_id`, `otp_hash`, `purpose`, `expires_at`, `used_at`, `created_at`) VALUES
+(1, 1, '$2y$10$kUzhmCdI3lUHmjimTCMj4.REUClFtBfqPbWB8YAXE06yODp.ZcvPW', 'password_reset', '2026-02-22 19:13:59', '2026-02-22 19:04:44', '2026-02-22 19:03:59'),
+(2, 1, '$2y$10$TkkexUV.cU00SoOQyC8kQOwTKCVvM/N11YRzQdpP58iDHIQQAR5Be', 'password_reset', '2026-02-22 19:17:34', NULL, '2026-02-22 19:07:34');
+
 -- --------------------------------------------------------
 
 --
@@ -61,11 +69,18 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `twofa_method` enum('none','totp','email') NOT NULL DEFAULT 'none',
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `twofa_method`, `created_at`, `updated_at`) VALUES
+(1, '224021', '224021@eru.edu.eg', '$2y$10$GjA1bPS55Ha4XOF4SLGhgev1BCxda9XiDaZvNT9zPeQcUTOANjpYi', 'none', '2026-02-22 19:03:44', '2026-02-22 19:04:44');
 
 -- --------------------------------------------------------
 
@@ -130,13 +145,13 @@ ALTER TABLE `backup_codes`
 -- AUTO_INCREMENT for table `email_otps`
 --
 ALTER TABLE `email_otps`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user_totp`
