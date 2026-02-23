@@ -148,13 +148,31 @@ elseif ($action === 'confirm_totp') {
             $upd2->execute();
             $upd2->close();
 
+            // ── GENERATE BACKUP CODES ────────────────────────────────────────
+            $plainCodes = [];
+            for ($i = 0; $i < 10; $i++) {
+                $code = strtoupper(bin2hex(random_bytes(4)));
+                $plainCodes[] = $code;
+                $hash = password_hash($code, PASSWORD_BCRYPT);
+                $ins = $conn->prepare("INSERT INTO backup_codes (user_id, code_hash) VALUES (?, ?)");
+                $ins->bind_param('is', $userId, $hash);
+                $ins->execute();
+                $ins->close();
+            }
+
+            require_once 'send_otp_email.php';
+            sendBackupCodesEmail($user['email'], $user['username'], $plainCodes);
+
+            $_SESSION['new_backup_codes'] = $plainCodes;
+            // ───────────────────────────────────────────────────────────────
+
             $conn->commit();
-            $message = "Authenticator app enabled successfully! 🎉";
+            $message = "Authenticator app enabled! Backup codes sent to email. 🎉";
             $user['twofa_method'] = 'totp';
             $user['totp_confirmed_at'] = $now;
         } catch (Exception $e) {
             $conn->rollback();
-            $message = "Error confirming TOTP.";
+            $message = "Error confirming TOTP: " . $e->getMessage();
             $msgType = 'error';
         }
     } else {
@@ -277,6 +295,40 @@ $currentMethod = $user['twofa_method'];
             border-color: #fecaca;
         }
 
+        /* Backup Codes UI */
+        .backup-codes-box {
+            background: #f8f9fa;
+            border: 2px dashed #d1d5da;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            animation: slideIn 0.5s ease;
+        }
+
+        .codes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .code-item {
+            font-family: monospace;
+            background: #fff;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #e1e4e8;
+            text-align: center;
+            font-weight: 700;
+            color: #24292e;
+            font-size: 1.1rem;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width: 768px) {
             .profile-container {
                 grid-template-columns: 1fr;
@@ -334,6 +386,22 @@ $currentMethod = $user['twofa_method'];
                 <div class="alert alert-<?php echo $msgType; ?>">
                     <?php echo htmlspecialchars($message); ?>
                 </div>
+            <?php endif; ?>
+
+            <!-- Backup Codes Display (One-time) -->
+            <?php if (!empty($_SESSION['new_backup_codes'])): ?>
+                <div class="backup-codes-box">
+                    <h4 style="margin: 0; color: #d4a017;">⚠️ Save your Backup Codes</h4>
+                    <p style="font-size: 0.85rem; color: #666; margin: 5px 0 15px;">
+                        Each code can be used once to log in if you lose your phone.
+                    </p>
+                    <div class="codes-grid">
+                        <?php foreach ($_SESSION['new_backup_codes'] as $code): ?>
+                            <div class="code-item"><?php echo htmlspecialchars($code); ?></div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php unset($_SESSION['new_backup_codes']); ?>
             <?php endif; ?>
 
             <div class="twofa-status">

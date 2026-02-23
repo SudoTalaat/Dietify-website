@@ -7,7 +7,7 @@ $error = '';
 $success = '';
 $username = '';
 
-if (!check_rate_limit($_SERVER['REMOTE_ADDR'], 5, 60)) {
+if (!check_rate_limit($_SERVER['REMOTE_ADDR'])) {
     http_response_code(429);
     exit("Too many login attempts. Please try again later.");
 }
@@ -75,9 +75,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             } else {
                 $error = "Invalid password.";
+
+                // Track failure for this username
+                $failCount = record_login_failure($username);
+                if ($failCount === 25) {
+                    require_once 'send_otp_email.php';
+                    sendSecurityAlertEmail($row['email'], $row['username']);
+                }
             }
         } else {
             $error = "User not found.";
+            // Note: We don't have an email to send to if user doesn't exist,
+            // but we could still record the failure if we want to track attempts against non-existent users.
+            record_login_failure($username);
         }
         $stmt->close();
     }

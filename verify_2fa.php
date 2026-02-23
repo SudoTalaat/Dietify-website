@@ -72,7 +72,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: profile.php");
             exit();
         } else {
-            $error = "Invalid authenticator code. Please try again.";
+            // Try backup codes
+            $bcStmt = $conn->prepare("SELECT id, code_hash FROM backup_codes WHERE user_id = ? AND used_at IS NULL");
+            $bcStmt->bind_param('i', $userId);
+            $bcStmt->execute();
+            $bcResult = $bcStmt->get_result();
+
+            $foundBc = false;
+            while ($bcRow = $bcResult->fetch_assoc()) {
+                if (password_verify($code, $bcRow['code_hash'])) {
+                    // Mark as used
+                    $updBc = $conn->prepare("UPDATE backup_codes SET used_at = NOW() WHERE id = ?");
+                    $updBc->bind_param('i', $bcRow['id']);
+                    $updBc->execute();
+                    $updBc->close();
+
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    unset($_SESSION['2fa_user_id']);
+                    header("Location: profile.php");
+                    exit();
+                }
+            }
+            $bcStmt->close();
+
+            $error = "Invalid code. Please try again.";
         }
     }
 }
@@ -131,8 +155,13 @@ if ($method === 'email' && isset($_GET['resend'])) {
 
                     <div class="form-group">
                         <label for="code">Verification Code</label>
-                        <input type="text" id="code" name="code" class="otp-input" inputmode="numeric" pattern="\d{6}"
-                            maxlength="6" autocomplete="one-time-code" required autofocus>
+                        <input type="text" id="code" name="code" class="otp-input" maxlength="8"
+                            autocomplete="one-time-code" required autofocus>
+                        <?php if ($method === 'totp'): ?>
+                            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">
+                                💡 Tip: You can also use a recovery backup code.
+                            </p>
+                        <?php endif; ?>
                     </div>
 
                     <?php if ($error): ?>

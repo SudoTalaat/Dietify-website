@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-function check_rate_limit($ip, $limit = 5, $window = 60)
+function check_rate_limit($ip, $limit = 1111, $window = 60)
 {
     try {
         $redis = new Predis\Client([
@@ -26,7 +26,28 @@ function check_rate_limit($ip, $limit = 5, $window = 60)
 
         return true;
     } catch (Exception $e) {
-        // Fallback to allow login if Redis is down
-        return true;
+        die("<h3>Redis Rate Limiter Error</h3><p>" . $e->getMessage() . "</p>");
+    }
+}
+
+function record_login_failure($username, $window = 3600)
+{
+    try {
+        $redis = new Predis\Client([
+            'scheme' => 'tcp',
+            'host' => '127.0.0.1',
+            'port' => 6379,
+        ]);
+
+        $key = "brute_force:$username";
+        $count = $redis->incr($key);
+
+        if ($count === 1) {
+            $redis->expire($key, $window);
+        }
+
+        return $count;
+    } catch (Exception $e) {
+        die("<h3>Redis Brute Force Tracker Error</h3><p>" . $e->getMessage() . "</p>");
     }
 }
