@@ -7,7 +7,7 @@ session_start();
 require_once 'vendor/autoload.php';
 require 'db_connect.php';
 
-// Auth guard
+// Auth guard it redirect users without id to login page
 if (empty($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
