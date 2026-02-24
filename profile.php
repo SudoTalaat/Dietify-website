@@ -1,4 +1,5 @@
 <?php
+// use etc is like using namespace std; in c++ 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use PragmaRX\Google2FA\Google2FA;
@@ -12,8 +13,8 @@ if (empty($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
-
-$userId = (int) $_SESSION['user_id'];
+//(int ) make user_id as integer ,, it turn the data type into integer  
+$userId = (int) $_SESSION['user_id'];   
 $message = '';
 $msgType = 'success';
 $google2fa = new Google2FA();
@@ -41,6 +42,7 @@ $action = $_POST['action'] ?? '';
 
 // 1. DISABLE 2FA
 if ($action === 'disable') {
+    // begin_transaction is used to start a transaction ,, it is used to make sure that all the queries are executed successfully ,, if any query fails then all the queries are rolled back 
     $conn->begin_transaction();
     try {
         $upd = $conn->prepare("UPDATE users SET twofa_method='none' WHERE id=?");
@@ -52,7 +54,7 @@ if ($action === 'disable') {
         $del->bind_param('i', $userId);
         $del->execute();
         $del->close();
-
+//COMMI
         $conn->commit();
         $message = "Two-factor authentication has been disabled.";
         $msgType = 'error';

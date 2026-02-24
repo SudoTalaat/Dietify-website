@@ -4,13 +4,15 @@ require_once 'send_otp_email.php';
 
 $error = '';
 $success = '';
-
+//trim remove white spaces 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email'] ?? '');
 
     if (empty($email)) {
         $error = "Please enter your email address.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    }
+    //filter_var funcation used to validate email address easliy you have to just set the filter here i use FILTER_VALIDATE_EMAIL 
+    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } else {
         $stmt = $conn->prepare("SELECT id, username FROM users WHERE email = ?");
@@ -31,10 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error = "Failed to send reset email. Please try again.";
             }
         } else {
-            // For security, don't reveal if the email exists or not
+            // For security, don't reveal if the email exists or not that would be good why to enumarete users
             $error = "If that email matches an account, you'll receive a code shortly.";
-            // But actually we want to be helpful here if it's a private app or the user prefers it.
-            // Let's stick to the secure way or a slightly more helpful one.
             $success = "If that email is in our system, we've sent a 6-digit code.";
             $error = '';
         }
