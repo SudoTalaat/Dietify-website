@@ -15,7 +15,7 @@ function check_rate_limit($ip, $limit = 1111, $window = 60)
         $current = $redis->get($key);
 
         if ($current !== null && $current >= $limit) {
-            return false;
+            return true;
         }
 
         if ($current === null) {
@@ -24,7 +24,7 @@ function check_rate_limit($ip, $limit = 1111, $window = 60)
             $redis->incr($key);
         }
 
-        return true;
+        return false;
     } catch (Exception $e) {
         die("<h3>Redis Rate Limiter Error</h3><p>" . $e->getMessage() . "</p>");
     }

@@ -7,7 +7,8 @@ $error = '';
 $success = '';
 $username = '';
 
-if (!check_rate_limit($_SERVER['REMOTE_ADDR'])) {
+if (check_rate_limit($_SERVER['REMOTE_ADDR'])) {
+    //when i did the rate limit it did't return code 429 so that why i add it http_response_code
     http_response_code(429);
     exit("Too many login attempts. Please try again later.");
 }
@@ -17,27 +18,33 @@ if (isset($_GET['logout'])) {
     header("Location: login.php");
     exit();
 }
-
+// when this code get get request with registered=1 it will show success message
 if (isset($_GET['registered']) && $_GET['registered'] == 1) {
     $success = "Registration successful! Please sign in.";
 }
 
+// when this code get get request with reset=1 it will show success message
 if (isset($_GET['reset']) && $_GET['reset'] == 1) {
     $success = "Password successfully reset! Please sign in.";
 }
-
+//if server get post from login form it will be sent to server to process it
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    //TRIM remove white space
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
     if (empty($username) || empty($password)) {
         $error = "Please fill in all fields.";
     } else {
+        //prepare statment to prevent sql injection (: i will test with sqlmap later on 
+        //TO DO prepared sql stmt you have The query must consist of a single SQL statement
         $stmt = $conn->prepare(
             "SELECT id, username, email, password, twofa_method
              FROM users WHERE username = ?"
         );
+        //bind_param "s" means string aka it select that type that will go in ? that you leave when you make prepare sql stmt
         $stmt->bind_param("s", $username);
+        //execute the prepared statement (: nothing new
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -86,7 +93,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $error = "User not found.";
             // Note: We don't have an email to send to if user doesn't exist,
-            // but we could still record the failure if we want to track attempts against non-existent users.
+            // but we could still record the failure if we want to track attempts against non-existent users but that feel stupid 
+
             record_login_failure($username);
         }
         $stmt->close();
