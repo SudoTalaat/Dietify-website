@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'vendor/autoload.php';
-require 'db_connect.php';
+require_once __DIR__ . '/includes/db_connect.php';
 
 use PragmaRX\Google2FA\Google2FA;
 
@@ -16,7 +16,7 @@ $error = '';
 $google2fa = new Google2FA();
 
 $userStmt = $conn->prepare(
-    "SELECT u.id, u.username, u.email, u.twofa_method, t.totp_secret 
+    "SELECT u.id, u.username, u.email, u.twofa_method, u.role, t.totp_secret 
      FROM users u
      LEFT JOIN user_totp t ON u.id = t.user_id
      WHERE u.id = ?"
@@ -91,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
+                    $_SESSION['role'] = $user['role'];
                     unset($_SESSION['2fa_user_id']);
                     header("Location: profile.php");
                     exit();
@@ -104,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($method === 'email' && isset($_GET['resend'])) {
-    require_once 'send_otp_email.php';
+    require_once __DIR__ . '/includes/send_otp_email.php';
     try {
         sendOtpEmail($conn, $userId, $user['email'], $user['username']);
         $resent = true;
@@ -120,7 +121,7 @@ if ($method === 'email' && isset($_GET['resend'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify Identity – Healthy Food</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/app/assets/css/styles.css">
 </head>
 
 <body>

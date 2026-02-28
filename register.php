@@ -1,5 +1,5 @@
 <?php
-require 'db_connect.php';
+require_once __DIR__ . '/includes/db_connect.php';
 
 $error = '';
 $success = '';
@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Healthy Food</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/app/assets/css/styles.css">
     <style>
         .server-error {
             color: #ff4d4d;

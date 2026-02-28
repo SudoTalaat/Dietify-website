@@ -1,7 +1,7 @@
 <?php
 session_start();
-require 'db_connect.php';
-require 'RateLimiter.php';
+require_once __DIR__ . '/includes/db_connect.php';
+require_once __DIR__ . '/includes/RateLimiter.php';
 
 $error = '';
 $success = '';
@@ -13,11 +13,7 @@ if (check_rate_limit($_SERVER['REMOTE_ADDR'])) {
     exit("Too many login attempts. Please try again later.");
 }
 
-if (isset($_GET['logout'])) {
-    session_destroy();
-    header("Location: login.php");
-    exit();
-}
+// Note: Logout check moved to logout.php
 // when this code get get request with registered=1 it will show success message
 if (isset($_GET['registered']) && $_GET['registered'] == 1) {
     $success = "Registration successful! Please sign in.";
@@ -39,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //prepare statment to prevent sql injection (: i will test with sqlmap later on 
         //TO DO prepared sql stmt you have The query must consist of a single SQL statement
         $stmt = $conn->prepare(
-            "SELECT id, username, email, password, twofa_method
+            "SELECT id, username, email, password, twofa_method, role
              FROM users WHERE username = ?"
         );
         //bind_param "s" means string aka it select that type that will go in ? that you leave when you make prepare sql stmt
@@ -56,11 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // ── 2FA check ──────────────────────────────────────────────
                 if ($row['twofa_method'] === 'email') {
                     // Generate & email OTP
-                    require_once 'send_otp_email.php';
+                    require_once __DIR__ . '/includes/send_otp_email.php';
                     try {
                         sendOtpEmail($conn, (int) $row['id'], $row['email'], $row['username']);
                         $_SESSION['2fa_user_id'] = $row['id'];
-                        header("Location: verify_2fa.php?method=email");
+                        header("Location: /app/" . ($_SESSION['role'] === 'admin' ? 'admin/verify_2fa.php' : 'verify_2fa.php') . "?method=email");
                         exit();
                     } catch (Exception $e) {
                         $error = "Failed to send OTP email. Please try again.";
@@ -75,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // No 2FA – log in directly
                     $_SESSION['user_id'] = $row['id'];
                     $_SESSION['username'] = $row['username'];
+                    $_SESSION['role'] = $row['role'];
                     header("Location: profile.php");
                     exit();
                 }
@@ -86,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Track failure for this username
                 $failCount = record_login_failure($username);
                 if ($failCount === 25) {
-                    require_once 'send_otp_email.php';
+                    require_once __DIR__ . '/includes/send_otp_email.php';
                     sendSecurityAlertEmail($row['email'], $row['username']);
                 }
             }
@@ -109,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Healthy Food</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/app/assets/css/styles.css">
     <style>
         .server-error {
             color: #ff4d4d;
