@@ -18,6 +18,8 @@ if (session_status() === PHP_SESSION_NONE) {
 define('SITE_NAME', $_ENV['SMTP_NAME'] ?? 'Healthy Food App');
 define('STRIPE_PUBLISHABLE_KEY', $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? '');
 define('STRIPE_SECRET_KEY', $_ENV['STRIPE_SECRET_KEY'] ?? '');
+// CURRENCY_CODE: Standard 3-letter ISO code required by payment gateways like Stripe (e.g., 'EGP')
+// CURRENCY_SYMBOL: The visual symbol displayed to users on the frontend (e.g., 'EGP ', 'LE ', or 'ج.م ')
 define('CURRENCY_CODE', 'EGP');
 define('CURRENCY_SYMBOL', 'EGP ');
 
