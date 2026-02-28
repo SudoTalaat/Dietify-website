@@ -33,8 +33,8 @@ $featured = $conn->query("SELECT * FROM products WHERE status = 'active' AND sto
                         <p>
                             <?php echo substr(htmlspecialchars($product['description']), 0, 80) . '...'; ?>
                         </p>
-                        <div style="margin-top: 15px; font-weight: 700; color: #ff6b35; font-size: 1.25rem;">$
-                            <?php echo number_format($product['price'], 2); ?>
+                        <div style="margin-top: 15px; font-weight: 700; color: #ff6b35; font-size: 1.25rem;">
+                            <?php echo CURRENCY_SYMBOL; ?>        <?php echo number_format($product['price'], 2); ?>
                         </div>
                         <a href="product.php?id=<?php echo $product['id']; ?>" class="btn-secondary"
                             style="display: block; margin-top: 15px; border-color: #ff6b35; color: #ff6b35;">View Details</a>

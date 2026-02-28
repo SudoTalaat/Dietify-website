@@ -66,8 +66,7 @@ include __DIR__ . '/header.php';
             </div>
 
             <div style="font-size: 2rem; font-weight: 700; color: #333; margin-bottom: 25px;">
-                $
-                <?php echo number_format($product['price'], 2); ?>
+                <?php echo CURRENCY_SYMBOL; ?><?php echo number_format($product['price'], 2); ?>
             </div>
 
             <p style="color: #666; line-height: 1.8; margin-bottom: 30px; font-size: 1.1rem;">
