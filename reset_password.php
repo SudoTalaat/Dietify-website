@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db_connect.php';
+require_once __DIR__ . '/includes/db_connect.php';
 
 if (empty($_SESSION['reset_email']) || empty($_SESSION['reset_user_id'])) {
     header("Location: forgot_password.php");
@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password - Healthy Food</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/app/assets/css/styles.css">
 </head>
 
 <body>

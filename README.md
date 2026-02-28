@@ -2,6 +2,5 @@
 also app need internet for hcpacha to work 
 ## Install Packages
 ```
-composer require pragmarx/google2fa
-composer require chillerlan/php-qrcode
+go the project dir and type composer install it will make vendor folder with all the Packages
 ```

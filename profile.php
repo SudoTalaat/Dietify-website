@@ -1,27 +1,25 @@
 <?php
+require_once __DIR__ . '/init.php';
+
 // use etc is like using namespace std; in c++ 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use PragmaRX\Google2FA\Google2FA;
 
-session_start();
-require_once 'vendor/autoload.php';
-require 'db_connect.php';
-
 // Auth guard it redirect users without id to login page
-if (empty($_SESSION['user_id'])) {
+if (!isLoggedIn()) {
     header("Location: login.php");
     exit();
 }
 //(int ) make user_id as integer ,, it turn the data type into integer  
-$userId = (int) $_SESSION['user_id'];   
+$userId = (int) $_SESSION['user_id'];
 $message = '';
 $msgType = 'success';
 $google2fa = new Google2FA();
 
 // ── Load user details ────────────────────────────────────────────────────────
 $stmt = $conn->prepare(
-    "SELECT u.id, u.username, u.email, u.twofa_method, u.created_at, t.totp_secret, t.confirmed_at as totp_confirmed_at
+    "SELECT u.id, u.username, u.email, u.twofa_method, u.role, u.created_at, t.totp_secret, t.confirmed_at as totp_confirmed_at
      FROM users u
      LEFT JOIN user_totp t ON u.id = t.user_id
      WHERE u.id = ?"
@@ -54,7 +52,7 @@ if ($action === 'disable') {
         $del->bind_param('i', $userId);
         $del->execute();
         $del->close();
-//COMMI
+        //COMMI
         $conn->commit();
         $message = "Two-factor authentication has been disabled.";
         $msgType = 'error';
@@ -103,12 +101,6 @@ elseif ($action === 'start_totp') {
         $del->close();
 
         // Insert new secret (not confirmed yet)
-        // Note: The schema says confirmed_at is NOT NULL, so we might need to handle that.
-        // Actually, looking at the schema: `confirmed_at` datetime NOT NULL.
-        // This is a bit tricky if we want to store it before confirmation.
-        // Let's use a dummy date or change our approach to only store on confirmation,
-        // but the app flow generates the secret first.
-        // I'll use '1970-01-01 00:00:00' as a dummy for "not confirmed".
         $dummyDate = '1970-01-01 00:00:00';
         $ins = $conn->prepare("INSERT INTO user_totp (user_id, totp_secret, confirmed_at) VALUES (?, ?, ?)");
         $ins->bind_param('iss', $userId, $secret, $dummyDate);
@@ -161,7 +153,7 @@ elseif ($action === 'confirm_totp') {
                 $ins->close();
             }
 
-            require_once 'send_otp_email.php';
+            require_once __DIR__ . '/includes/send_otp_email.php';
             sendBackupCodesEmail($user['email'], $user['username'], $plainCodes);
 
             $_SESSION['new_backup_codes'] = $plainCodes;
@@ -197,154 +189,147 @@ if (!empty($showQr) && !empty($user['totp_secret'])) {
 }
 
 $currentMethod = $user['twofa_method'];
+
+include __DIR__ . '/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile – Healthy Food</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
+<style>
+    .profile-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 30px;
+    }
+
+    .user-card,
+    .security-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #ff6b35, #ff9f1c);
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        font-weight: 700;
+    }
+
+    .user-info {
+        text-align: center;
+    }
+
+    .user-info h2 {
+        margin: 10px 0 5px;
+        color: #333;
+    }
+
+    .user-info p {
+        color: #888;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .info-grid {
+        text-align: left;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+
+    .info-item {
+        margin-bottom: 15px;
+    }
+
+    .info-label {
+        font-size: 0.8rem;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: #444;
+    }
+
+    .logout-btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: #f8f9fa;
+        color: #dc3545;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 20px;
+        transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+        background: #fee2e2;
+        border-color: #fecaca;
+    }
+
+    /* Backup Codes UI */
+    .backup-codes-box {
+        background: #f8f9fa;
+        border: 2px dashed #d1d5da;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        animation: slideIn 0.5s ease;
+    }
+
+    .codes-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .code-item {
+        font-family: monospace;
+        background: #fff;
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #e1e4e8;
+        text-align: center;
+        font-weight: 700;
+        color: #24292e;
+        font-size: 1.1rem;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
         .profile-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 30px;
+            grid-template-columns: 1fr;
         }
+    }
+</style>
 
-        .user-card,
-        .security-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        }
-
-        .avatar-circle {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #ff6b35, #ff9f1c);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: white;
-            font-weight: 700;
-        }
-
-        .user-info {
-            text-align: center;
-        }
-
-        .user-info h2 {
-            margin: 10px 0 5px;
-            color: #333;
-        }
-
-        .user-info p {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
-
-        .info-grid {
-            text-align: left;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-
-        .info-item {
-            margin-bottom: 15px;
-        }
-
-        .info-label {
-            font-size: 0.8rem;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .info-value {
-            font-weight: 600;
-            color: #444;
-        }
-
-        .logout-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: #f8f9fa;
-            color: #dc3545;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: all 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: #fee2e2;
-            border-color: #fecaca;
-        }
-
-        /* Backup Codes UI */
-        .backup-codes-box {
-            background: #f8f9fa;
-            border: 2px dashed #d1d5da;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            animation: slideIn 0.5s ease;
-        }
-
-        .codes-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .code-item {
-            font-family: monospace;
-            background: #fff;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #e1e4e8;
-            text-align: center;
-            font-weight: 700;
-            color: #24292e;
-            font-size: 1.1rem;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .profile-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body style="background: #f0f2f5;">
-
+<div style="background: #f0f2f5; min-height: calc(100vh - 70px); padding: 40px 0;">
     <div class="profile-container">
         <!-- ── LEFT: USER INFO ── -->
         <div class="user-card">
@@ -366,6 +351,14 @@ $currentMethod = $user['twofa_method'];
                             <?php echo htmlspecialchars($user['email']); ?>
                         </div>
                     </div>
+                    <!-- Role check restored -->
+                    <div class="info-item">
+                        <div class="info-label">Account Role</div>
+                        <div class="info-value"
+                            style="color: <?php echo $user['role'] === 'admin' ? '#ff6b35' : '#444'; ?>;">
+                            <?php echo ucfirst(htmlspecialchars($user['role'])); ?>
+                        </div>
+                    </div>
                     <div class="info-item">
                         <div class="info-label">Account Security</div>
                         <div class="info-value">
@@ -378,7 +371,7 @@ $currentMethod = $user['twofa_method'];
                     </div>
                 </div>
 
-                <a href="login.php?logout=1" class="logout-btn">Sign Out</a>
+                <a href="actions/logout.php" class="logout-btn">Sign Out</a>
             </div>
         </div>
 
@@ -474,7 +467,8 @@ $currentMethod = $user['twofa_method'];
             </div>
         </div>
     </div>
-
+</div>
+</main>
 </body>
 
 </html>
