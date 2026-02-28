@@ -3,7 +3,7 @@ require_once __DIR__ . '/init.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Enable strict error reporting for debugging
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+//mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 if (!isLoggedIn() || !isset($_GET['session_id'])) {
     header('Location: index1.php');
@@ -16,6 +16,8 @@ $isExplicitCancel = isset($_GET['cancelled']);
 
 try {
     $session = \Stripe\Checkout\Session::retrieve($sessionId);
+    // strip hold info about order id so I WILL BE USED TO UPDATE the order table from from "Pending" to "Paid."
+
     $orderId = $session->metadata->order_id ?? null;
     $userId = $_SESSION['user_id'];
 
