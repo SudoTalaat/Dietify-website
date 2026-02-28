@@ -45,8 +45,8 @@ include __DIR__ . '/header.php';
                     <h3 style="margin: 10px 0;">
                         <?php echo htmlspecialchars($product['name']); ?>
                     </h3>
-                    <div style="font-weight: 700; color: #333; font-size: 1.25rem;">$
-                        <?php echo number_format($product['price'], 2); ?>
+                    <div style="font-weight: 700; color: #333; font-size: 1.25rem;">
+                        <?php echo CURRENCY_SYMBOL; ?>        <?php echo number_format($product['price'], 2); ?>
                     </div>
                     <a href="product.php?id=<?php echo $product['id']; ?>" class="login-btn"
                         style="display: block; text-align: center; margin-top: 15px; text-decoration: none;">View Details</a>

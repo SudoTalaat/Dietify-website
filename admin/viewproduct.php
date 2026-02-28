@@ -66,7 +66,7 @@ $run_select = $conn->query($select);
                     <tr>
                         <td><?php echo $value['id']; ?></td>
                         <td><?php echo htmlspecialchars($value['name']); ?></td>
-                        <td>$<?php echo number_format($value['price'], 2); ?></td>
+                        <td><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($value['price'], 2); ?></td>
                         <td><?php echo $value['stock']; ?></td>
                         <td><img style="width:40px; height:40px; object-fit: cover;"
                                 src="../<?php echo $value['image_path'] ?: 'assets/images/placeholder-300x300.png'; ?>"

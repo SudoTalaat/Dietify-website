@@ -18,6 +18,8 @@ if (session_status() === PHP_SESSION_NONE) {
 define('SITE_NAME', $_ENV['SMTP_NAME'] ?? 'Healthy Food App');
 define('STRIPE_PUBLISHABLE_KEY', $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? '');
 define('STRIPE_SECRET_KEY', $_ENV['STRIPE_SECRET_KEY'] ?? '');
+define('CURRENCY_CODE', 'EGP');
+define('CURRENCY_SYMBOL', 'EGP ');
 
 // Base URL for Stripe and absolute redirects (from .env)
 //

@@ -44,8 +44,8 @@ include __DIR__ . '/header.php';
                             <h3 style="margin-bottom: 5px;">
                                 <?php echo htmlspecialchars($item['name']); ?>
                             </h3>
-                            <div style="color: #ff6b35; font-weight: 700;">$
-                                <?php echo number_format($item['price'], 2); ?>
+                            <div style="color: #ff6b35; font-weight: 700;">
+                                <?php echo CURRENCY_SYMBOL; ?>        <?php echo number_format($item['price'], 2); ?>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
