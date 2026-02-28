@@ -77,37 +77,37 @@ include __DIR__ . '/header.php';
                 <h2 style="margin-bottom: 25px;">Order Summary</h2>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: #666;">
                     <span>
-                        <?php echo CURRENCY_SYMBOL; ?>    <?php echo number_format($total, 2); ?>
-                        </span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: #666;">
-                        <span>Delivery</span>
-                        <span style="color: #27ae60;">FREE</span>
-                    </div>
-                    <div
-                        style="border-top: 2px solid #eee; margin: 20px 0; padding-top: 20px; display: flex; justify-content: space-between; font-weight: 700; font-size: 1.25rem;">
-                        <span>Total</span>
-                        <span>
-                            <?php echo CURRENCY_SYMBOL; ?>    <?php echo number_format($total, 2); ?>
-                        </span>
-                        </div>
-                        <a href="checkout.php" class="login-btn"
-                            style="display: block; text-align: center; text-decoration: none; margin-top: 30px;">Proceed to
-                            Checkout</a>
-                        <a href="shop.php"
-                            style="display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 0.9rem;">Continue
-                            Shopping</a>
-                    </div>
+                        <?php echo CURRENCY_SYMBOL; ?>     <?php echo number_format($total, 2); ?>
+                    </span>
                 </div>
-    <?php else: ?>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: #666;">
+                    <span>Delivery</span>
+                    <span style="color: #27ae60;">FREE</span>
+                </div>
                 <div
-                    style="text-align: center; padding: 80px 20px; background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <div style="font-size: 4rem; margin-bottom: 20px;">🛒</div>
-                    <h2>Your cart is empty</h2>
-                    <p style="color: #666; margin-bottom: 30px;">It looks like you haven't added anything to your cart yet.</p>
-                    <a href="shop.php" class="login-btn"
-                        style="display: inline-block; padding: 14px 40px; text-decoration: none;">Start Shopping</a>
+                    style="border-top: 2px solid #eee; margin: 20px 0; padding-top: 20px; display: flex; justify-content: space-between; font-weight: 700; font-size: 1.25rem;">
+                    <span>Total</span>
+                    <span>
+                        <?php echo CURRENCY_SYMBOL; ?>     <?php echo number_format($total, 2); ?>
+                    </span>
                 </div>
+                <a href="checkout.php" class="login-btn"
+                    style="display: block; text-align: center; text-decoration: none; margin-top: 30px;">Proceed to
+                    Checkout</a>
+                <a href="shop.php"
+                    style="display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 0.9rem;">Continue
+                    Shopping</a>
+            </div>
+        </div>
+    <?php else: ?>
+        <div
+            style="text-align: center; padding: 80px 20px; background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🛒</div>
+            <h2>Your cart is empty</h2>
+            <p style="color: #666; margin-bottom: 30px;">It looks like you haven't added anything to your cart yet.</p>
+            <a href="shop.php" class="login-btn"
+                style="display: inline-block; padding: 14px 40px; text-decoration: none;">Start Shopping</a>
+        </div>
     <?php endif; ?>
 </div>
 
