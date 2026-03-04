@@ -53,9 +53,10 @@ include __DIR__ . '/header.php';
                                 style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 8px;">
                                 <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
                                 <input type="hidden" name="action" value="update">
-                                <button type="submit" onclick="this.form.quantity.value--;"
+                                <button type="submit" onclick="if(this.form.quantity.value > 1) this.form.quantity.value--; else return false;"
                                     style="padding: 5px 10px; border: none; background: transparent; cursor: pointer;">-</button>
-                                <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>"
+                                <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="1"
+
                                     style="width: 40px; text-align: center; border: none; padding: 5px 0;" readonly>
                                 <button type="submit" onclick="this.form.quantity.value++;"
                                     style="padding: 5px 10px; border: none; background: transparent; cursor: pointer;">+</button>

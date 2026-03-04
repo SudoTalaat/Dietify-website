@@ -12,6 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quantity = (int) $_POST['quantity'];
     $action = $_POST['action'] ?? 'add';
 
+    // Validation: Ensure quantity is at least 1
+    if ($quantity < 1) {
+        $quantity = 1;
+    }
+
     // Ensure user has a cart
     $cartStmt = $conn->prepare("SELECT id FROM carts WHERE user_id = ?");
     $cartStmt->bind_param("i", $userId);
