@@ -2,9 +2,23 @@
 require_once __DIR__ . '/init.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
-//to check if user is login and did i put the api key or not
-if (!isLoggedIn() || STRIPE_SECRET_KEY === '') {
+// 1. Check if user is logged in
+if (!isLoggedIn()) {
     header('Location: /app/login.php');
+    exit();
+}
+
+// 2. Check if Stripe Secret Key is configured
+if (empty(STRIPE_SECRET_KEY)) {
+    include __DIR__ . '/header.php';
+    echo '<div class="dashboard-container" style="text-align: center; padding: 50px;">';
+    echo '<div style="background: #fff3cd; color: #856404; padding: 20px; border-radius: 10px; border: 1px solid #ffeeba;">';
+    echo '<h3>Configuration Error</h3>';
+    echo '<p>Stripe is not configured. Please add <strong>STRIPE_SECRET_KEY</strong> to your <code>.env</code> file.</p>';
+    echo '<a href="cart.php" class="login-btn" style="display: inline-block; margin-top: 20px; text-decoration: none;">Return to Cart</a>';
+    echo '</div>';
+    echo '</div>';
+    echo '</main></body></html>';
     exit();
 }
 
