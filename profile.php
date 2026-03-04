@@ -52,6 +52,12 @@ if ($action === 'disable') {
         $del->bind_param('i', $userId);
         $del->execute();
         $del->close();
+
+        // Delete backup codes
+        $delBc = $conn->prepare("DELETE FROM backup_codes WHERE user_id=?");
+        $delBc->bind_param('i', $userId);
+        $delBc->execute();
+        $delBc->close();
         //COMMI
         $conn->commit();
         $message = "Two-factor authentication has been disabled.";
@@ -79,6 +85,12 @@ elseif ($action === 'enable_email') {
         $del->execute();
         $del->close();
 
+        // Delete backup codes (TOTP specific)
+        $delBc = $conn->prepare("DELETE FROM backup_codes WHERE user_id=?");
+        $delBc->bind_param('i', $userId);
+        $delBc->execute();
+        $delBc->close();
+
         $conn->commit();
         $message = "Email 2FA enabled successfully!";
         $user['twofa_method'] = 'email';
@@ -94,11 +106,16 @@ elseif ($action === 'start_totp') {
 
     $conn->begin_transaction();
     try {
-        // Clear any existing (unconfirmed/confirmed) TOTP
+        // Clear any existing (unconfirmed/confirmed) TOTP and backup codes
         $del = $conn->prepare("DELETE FROM user_totp WHERE user_id=?");
         $del->bind_param('i', $userId);
         $del->execute();
         $del->close();
+
+        $delBc = $conn->prepare("DELETE FROM backup_codes WHERE user_id=?");
+        $delBc->bind_param('i', $userId);
+        $delBc->execute();
+        $delBc->close();
 
         // Insert new secret (not confirmed yet)
         $dummyDate = '1970-01-01 00:00:00';
@@ -141,7 +158,12 @@ elseif ($action === 'confirm_totp') {
             $upd2->execute();
             $upd2->close();
 
-            // ── GENERATE BACKUP CODES ────────────────────────────────────────
+            // ── DELETE OLD BACKUP CODES & GENERATE NEW ONES ───────────────────
+            $delBc = $conn->prepare("DELETE FROM backup_codes WHERE user_id=?");
+            $delBc->bind_param('i', $userId);
+            $delBc->execute();
+            $delBc->close();
+
             $plainCodes = [];
             for ($i = 0; $i < 10; $i++) {
                 $code = strtoupper(bin2hex(random_bytes(4)));
