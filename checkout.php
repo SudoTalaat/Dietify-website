@@ -57,7 +57,10 @@ if (empty($line_items)) {
     exit();
 }
 
-// 1. Create Pending Order before redirecting to Stripe
+// 1. Cleanup: Delete any existing "pending" orders for this user to avoid "ghost" orders
+$conn->query("DELETE FROM orders WHERE user_id = $userId AND status = 'pending'");
+
+// 2. Create Pending Order before redirecting to Stripe
 $addrResult = $conn->query("SELECT * FROM user_addresses WHERE user_id = $userId AND is_default = 1");
 $address = $addrResult->fetch_assoc();
 //FOR ADDRESS NOW IF USER DON'T HAVE SOMETHING IN DATABASE IT WILL RETURN DEFULATE VALUE 
@@ -82,7 +85,8 @@ $checkout_session = \Stripe\Checkout\Session::create([
     'line_items' => $line_items,
     'mode' => 'payment',
     'metadata' => [
-        'order_id' => $orderId
+        'order_id' => $orderId,
+        'user_id' => $userId
     ],
     // for now the checkout can be success or canceld depending on  
     'success_url' => APP_URL . 'payment_success.php?session_id={CHECKOUT_SESSION_ID}',

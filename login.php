@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     try {
                         sendOtpEmail($conn, (int) $row['id'], $row['email'], $row['username']);
                         $_SESSION['2fa_user_id'] = $row['id'];
-                        header("Location: /app/" . ($_SESSION['role'] === 'admin' ? 'admin/verify_2fa.php' : 'verify_2fa.php') . "?method=email");
+                        header("Location: /app/verify_2fa.php?method=email");
                         exit();
                     } catch (Exception $e) {
                         $error = "Failed to send OTP email. Please try again.";
@@ -82,9 +82,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Track failure for this username
                 $failCount = record_login_failure($username);
-                if ($failCount === 25) {
+                if ($failCount >= 25) {
                     require_once __DIR__ . '/includes/send_otp_email.php';
-                    sendSecurityAlertEmail($row['email'], $row['username']);
+                    sendSecurityAlertEmail((string) $row['email'], (string) $row['username']);
                 }
             }
         } else {

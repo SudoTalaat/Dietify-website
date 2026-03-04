@@ -44,10 +44,44 @@ if (isset($_POST['add'])) {
 
     $imagePath = '';
     if (!empty($_FILES['image']['name'])) {
-        $imageName = time() . '_' . $_FILES['image']['name'];
-        $target = "../assets/images/" . $imageName;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-            $imagePath = "assets/images/" . $imageName;
+        $allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+        $magicNumbers = [
+            "\xFF\xD8\xFF" => 'jpg',
+            "\x89\x50\x4E\x47" => 'png',
+            "RIFF" => 'webp'
+        ];
+
+        $fileTitle = $_FILES['image']['name'];
+        $fileExt = strtolower(pathinfo($fileTitle, PATHINFO_EXTENSION));
+
+        // 1. Check extension
+        if (!in_array($fileExt, $allowedExts)) {
+            echo "<script>alert('Error: Invalid file extension. Only JPG, PNG, and WebP are allowed.'); window.history.back();</script>";
+            exit;
+        }
+
+        // 2. Verify magic numbers (file headers)
+        $handle = fopen($_FILES['image']['tmp_name'], 'rb');
+        $fileHeader = fread($handle, 4);
+        fclose($handle);
+
+        $isValidMagic = false;
+        foreach ($magicNumbers as $magic => $type) {
+            if (str_starts_with($fileHeader, $magic)) {
+                $isValidMagic = true;
+                break;
+            }
+        }
+
+        if ($isValidMagic) {
+            $imageName = time() . '_' . bin2hex(random_bytes(8)) . '.' . $fileExt;
+            $target = "../assets/images/" . $imageName;
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+                $imagePath = "assets/images/" . $imageName;
+            }
+        } else {
+            echo "<script>alert('Error: File header does not match a valid image type. Upload rejected.'); window.history.back();</script>";
+            exit;
         }
     }
 
@@ -70,14 +104,47 @@ if (isset($_POST['update']) && isset($_GET['edit'])) {
     $type = $_POST['type'];
     $stock = intval($_POST['stock'] ?? 0);
 
+    $imagePath = $image; // Default to old image
     if (!empty($_FILES['image']['name'])) {
-        $imageName = time() . '_' . $_FILES['image']['name'];
-        $target = "../assets/images/" . $imageName;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-            $imagePath = "assets/images/" . $imageName;
+        $allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+        $magicNumbers = [
+            "\xFF\xD8\xFF" => 'jpg',
+            "\x89\x50\x4E\x47" => 'png',
+            "RIFF" => 'webp'
+        ];
+
+        $fileTitle = $_FILES['image']['name'];
+        $fileExt = strtolower(pathinfo($fileTitle, PATHINFO_EXTENSION));
+
+        // 1. Check extension
+        if (!in_array($fileExt, $allowedExts)) {
+            echo "<script>alert('Error: Invalid file extension. Only JPG, PNG, and WebP are allowed.'); window.history.back();</script>";
+            exit;
         }
-    } else {
-        $imagePath = $image; // keep old
+
+        // 2. Verify magic numbers
+        $handle = fopen($_FILES['image']['tmp_name'], 'rb');
+        $fileHeader = fread($handle, 4);
+        fclose($handle);
+
+        $isValidMagic = false;
+        foreach ($magicNumbers as $magic => $type) {
+            if (str_starts_with($fileHeader, $magic)) {
+                $isValidMagic = true;
+                break;
+            }
+        }
+
+        if ($isValidMagic) {
+            $imageName = time() . '_' . bin2hex(random_bytes(8)) . '.' . $fileExt;
+            $target = "../assets/images/" . $imageName;
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+                $imagePath = "assets/images/" . $imageName;
+            }
+        } else {
+            echo "<script>alert('Error: File header does not match a valid image type. Upload rejected.'); window.history.back();</script>";
+            exit;
+        }
     }
 
     $stmt = $conn->prepare("UPDATE `products` SET `name` = ?, `price` = ?, `description` = ?, `image_path` = ?, `stock` = ?, `type` = ? WHERE `id` = ?");

@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $otpStmt = $conn->prepare(
             "SELECT id, otp_hash FROM email_otps
              WHERE user_id = ?
-               AND purpose  = '2fa'
+                AND purpose  = 'twofa'
                AND used_at  IS NULL
                AND expires_at > NOW()
              ORDER BY created_at DESC
@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'];
             unset($_SESSION['2fa_user_id']);
             header("Location: profile.php");
             exit();
@@ -70,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($google2fa->verifyKey($user['totp_secret'], $code)) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'];
             unset($_SESSION['2fa_user_id']);
             header("Location: profile.php");
             exit();

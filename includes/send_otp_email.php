@@ -6,8 +6,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Load environment variables
-$dotenv = Dotenv::createImmutable(__DIR__);
+// Load environment variables from ROOT directory
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
 // Email Configuration from Environment becuse i fear i might get ban or something pls setup your gmail for it to work
@@ -43,7 +43,7 @@ function initMailer(string $toEmail, string $toName, string $subject): PHPMailer
   return $mail;
 }
 
-function sendOtpEmail(mysqli $conn, int $userId, string $toEmail, string $toName, string $purpose = '2fa'): bool
+function sendOtpEmail(mysqli $conn, int $userId, string $toEmail, string $toName, string $purpose = 'twofa'): bool
 {
   $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
   $otpHash = password_hash($otp, PASSWORD_BCRYPT);
@@ -64,7 +64,6 @@ INTERVAL 10 MINUTE))");
   $ins->close();
 
   // Customize content based on purpose
-  $subject = 'Your Login Verification Code';
   $title = '🔐 Verification Code';
   $leadText = 'Your one-time login code is:';
 
@@ -72,6 +71,9 @@ INTERVAL 10 MINUTE))");
     $subject = 'Password Reset Verification Code';
     $title = '🔄 Password Reset';
     $leadText = 'Your password reset code is:';
+  } else {
+    // Default to twofa subject
+    $subject = 'Your Login Verification Code';
   }
 
   $mail = initMailer($toEmail, $toName, $subject);
@@ -122,7 +124,12 @@ function sendSecurityAlertEmail(string $toEmail, string $toName): bool
 </div>";
   $mail->AltBody = "Security Alert: We noticed over 25 failed login attempts for your account in the last hour.";
 
-  return $mail->send();
+  try {
+    return $mail->send();
+  } catch (Exception $e) {
+    error_log("Security Alert Email Error: " . $e->getMessage());
+    return false;
+  }
 }
 
 function sendBackupCodesEmail(string $toEmail, string $toName, array $codes): bool
