@@ -28,7 +28,7 @@ if (!isLoggedIn() || !isAdmin()) {
             <li><a href="Inventory.php">Inventory Management</a></li>
             <li><a href="#" class="active">Order Management</a></li>
             <li><a href="reviews_management.php">Reviews</a></li>
-            <li><a href="../actions/logout.php">Logout</a></li>
+            <li><a href="/app/logout.php">Logout</a></li>
         </ul>
     </nav>
     <h1>🛒 Order Management</h1>

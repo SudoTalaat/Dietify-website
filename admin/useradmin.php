@@ -50,7 +50,7 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
             <li><a href="Inventory.php">Inventory Management</a></li>
             <li><a href="order_management.php">Order Management</a></li>
             <li><a href="reviews_management.php">Reviews</a></li>
-            <li><a href="../actions/logout.php">Logout</a></li>
+            <li><a href="/app/logout.php">Logout</a></li>
         </ul>
     </nav>
 
