@@ -371,7 +371,7 @@ include __DIR__ . '/header.php';
                     </div>
                 </div>
 
-                <a href="actions/logout.php" class="logout-btn">Sign Out</a>
+                <a href="/app/logout.php" class="logout-btn">Sign Out</a>
             </div>
         </div>
 
