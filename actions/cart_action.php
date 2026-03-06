@@ -2,7 +2,8 @@
 require_once __DIR__ . '/../init.php';
 
 if (!isLoggedIn()) {
-    header('Location: login.php');
+    // Redirect to root login.php (must go up one level from 'actions/' folder)
+    header('Location: ../login.php');
     exit();
 }
 
@@ -57,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updateStmt->execute();
     }
 
-    header('Location: /app/cart.php');
+    // Redirect to cart in root folder
+    header('Location: ../cart.php');
 }
 ?>
