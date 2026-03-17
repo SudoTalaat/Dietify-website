@@ -26,6 +26,37 @@ $ratingData = $avgRatingStmt->get_result()->fetch_assoc();
 $avgRating = round($ratingData['avg_rating'], 1) ?: 0;
 $reviewCount = $ratingData['count'] ?: 0;
 
+// Determine if User can run a review
+$is_eligible_to_review = false;
+$remaining_reviews = 0;
+if (isLoggedIn()) {
+    $user_id = $_SESSION['user_id'];
+
+    // 1. How many of this product did the user buy in completed/paid orders?
+    $purchase_stmt = $conn->prepare("
+        SELECT SUM(oi.quantity) as total_bought
+        FROM order_items oi
+        JOIN orders o ON oi.order_id = o.id
+        WHERE o.user_id = ? AND oi.product_id = ? AND o.status = 'paid'
+    ");
+    $purchase_stmt->bind_param("ii", $user_id, $id);
+    $purchase_stmt->execute();
+    $purchase_data = $purchase_stmt->get_result()->fetch_assoc();
+    $total_bought = $purchase_data['total_bought'] ?? 0;
+
+    // 2. How many reviews has the user already written for this product?
+    $written_stmt = $conn->prepare("SELECT COUNT(*) as written_count FROM reviews WHERE user_id = ? AND product_id = ?");
+    $written_stmt->bind_param("ii", $user_id, $id);
+    $written_stmt->execute();
+    $written_data = $written_stmt->get_result()->fetch_assoc();
+    $written_count = $written_data['written_count'] ?? 0;
+
+    if ($total_bought > $written_count) {
+        $is_eligible_to_review = true;
+        $remaining_reviews = $total_bought - $written_count;
+    }
+}
+
 include __DIR__ . '/header.php';
 ?>
 
@@ -110,8 +141,16 @@ include __DIR__ . '/header.php';
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
             <h2>Customer Reviews</h2>
             <?php if (isLoggedIn()): ?>
-                <button onclick="document.getElementById('reviewModel').style.display='block'" class="btn-secondary"
-                    style="border-color: #ff6b35; color: #ff6b35;">Write a Review</button>
+                <?php if ($is_eligible_to_review): ?>
+                    <button onclick="document.getElementById('reviewModel').style.display='block'" class="btn-secondary"
+                        style="border-color: #ff6b35; color: #ff6b35;">Write a Review (<?php echo $remaining_reviews; ?>
+                        left)</button>
+                <?php else: ?>
+                    <!-- Disabled button with tooltip explaining why -->
+                    <button class="btn-secondary" style="border-color: #ccc; color: #999; cursor: not-allowed;" disabled
+                        title="You must purchase this product to leave a review, or you have already reached your review limit.">Write
+                        a Review</button>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
 

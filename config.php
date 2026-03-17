@@ -1,0 +1,78 @@
+<?php
+// ─────────────────────────────────────────────────────────────────────────────
+// config.php  –  Single entry point for the entire application.
+// Merges the old init.php + includes/db_connect.php into one place.
+// ─────────────────────────────────────────────────────────────────────────────
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+// ── Environment variables (.env) ─────────────────────────────────────────────
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
+
+// ── Database connection ───────────────────────────────────────────────────────
+$conn = new mysqli('localhost', 'root', '', 'healthyfood');
+
+
+//i need to check this for logs 
+if ($conn->connect_error) {
+    error_log("Database connection failed: " . $conn->connect_error);
+    die("A database error occurred. Please try again later.");
+}
+
+// Enforce UTC for both PHP and MySQL to prevent timezone sync issues
+// note TOTP use unixtimestamp so it doesn't matter but it does affect 2FA email
+date_default_timezone_set('UTC');
+$conn->query("SET time_zone = '+00:00'");
+
+// ── Session ───────────────────────────────────────────────────────────────────
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// ── Global constants ──────────────────────────────────────────────────────────
+define('SITE_NAME', $_ENV['SMTP_NAME'] ?? 'Healthy Food App');
+define('STRIPE_PUBLISHABLE_KEY', $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? '');
+define('STRIPE_SECRET_KEY', $_ENV['STRIPE_SECRET_KEY'] ?? '');
+
+// CURRENCY_CODE: Standard 3-letter ISO code required by payment gateways like Stripe (e.g. 'EGP')
+// CURRENCY_SYMBOL: The visual symbol displayed to users on the frontend
+define('CURRENCY_CODE', 'EGP');
+define('CURRENCY_SYMBOL', 'EGP ');
+
+// Base URL for Stripe and absolute redirects (from .env)
+define('APP_URL', $_ENV['APP_URL'] ?? 'http://localhost/app/');
+
+// ── Helper functions ──────────────────────────────────────────────────────────
+
+/** Returns true if the current user has the admin role. */
+function isAdmin(): bool
+{
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+}
+
+/** Returns true if a user is logged in. */
+function isLoggedIn(): bool
+{
+    return isset($_SESSION['user_id']);
+}
+
+/** Returns the total number of items in the current user's cart. */
+function getCartCount(mysqli $conn): int
+{
+    if (!isLoggedIn())
+        return 0;
+
+    $userId = $_SESSION['user_id'];
+    $stmt = $conn->prepare(
+        "SELECT SUM(ci.quantity) AS total
+         FROM cart_items ci
+         JOIN carts c ON ci.cart_id = c.id
+         WHERE c.user_id = ?"
+    );
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    return (int) ($result['total'] ?? 0);
+}
+?>

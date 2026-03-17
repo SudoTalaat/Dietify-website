@@ -7,11 +7,19 @@ if (!isLoggedIn()) {
     exit();
 }
 
+//i will check this later 
+//
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = $_SESSION['user_id'];
-    $productId = $_POST['product_id'];
-    $quantity = (int) $_POST['quantity'];
+    // Avoid undefined array key warnings for remove action where quantity might not be passed
+    $productId = $_POST['product_id'] ?? null;
+    $quantity = isset($_POST['quantity']) ? (int) $_POST['quantity'] : 1;
     $action = $_POST['action'] ?? 'add';
+
+    if (!$productId) {
+        header('Location: ../cart.php');
+        exit();
+    }
 
     // Validation: Ensure quantity is at least 1
     if ($quantity < 1) {
