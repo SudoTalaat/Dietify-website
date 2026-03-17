@@ -155,4 +155,34 @@ function sendBackupCodesEmail(string $toEmail, string $toName, array $codes): bo
 
   return $mail->send();
 }
+
+function sendVerificationEmail(string $toEmail, string $toName, string $token): bool
+{
+  $subject = 'Verify Your Email Address';
+  $mail = initMailer($toEmail, $toName, $subject);
+
+  $verificationLink = APP_URL . "verify_email.php?email=" . urlencode($toEmail) . "&token=" . urlencode($token);
+
+  $mail->Body = "
+<div style='font-family:Inter,sans-serif;max-width:420px;margin:auto;
+                     background:#0f172a;color:#e2e8f0;border-radius:12px;overflow:hidden'>
+  <div style='background:linear-gradient(135deg,#10b981,#34d399);padding:28px 32px'>
+    <h2 style='margin:0;font-size:1.4rem'>📧 Verify Email</h2>
+  </div>
+  <div style='padding:28px 32px'>
+    <p>Hi <strong>" . htmlspecialchars($toName) . "</strong>,</p>
+    <p>Welcome to Healthy Food! Please verify your email address to activate your account.</p>
+    <div style='text-align:center;margin:30px 0;'>
+      <a href='$verificationLink' style='background:#10b981;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;font-weight:bold;display:inline-block;'>Verify Email Address</a>
+    </div>
+    <p style='font-size:.85rem;color:#94a3b8'>
+      This link expires in <strong>1 hour</strong>.<br>
+      Or copy this link: <br><a href='$verificationLink' style='color:#34d399;word-break:break-all;'>$verificationLink</a>
+    </p>
+  </div>
+</div>";
+  $mail->AltBody = "Please verify your email address by visiting this link: $verificationLink (Expires in 1 hour)";
+
+  return $mail->send();
+}
 ?>

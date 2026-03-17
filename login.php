@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once __DIR__ . '/includes/db_connect.php';
+require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/RateLimiter.php';
 
 $error = '';
@@ -17,6 +16,9 @@ if (check_rate_limit($_SERVER['REMOTE_ADDR'])) {
 // when this code get get request with registered=1 it will show success message
 if (isset($_GET['registered']) && $_GET['registered'] == 1) {
     $success = "Registration successful! Please sign in.";
+}
+if (isset($_GET['verify_sent']) && $_GET['verify_sent'] == 1) {
+    $success = "Account created successfully! Please check your email to verify your account before signing in.";
 }
 
 // when this code get get request with reset=1 it will show success message
@@ -35,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //prepare statment to prevent sql injection (: i will test with sqlmap later on 
         //TO DO prepared sql stmt you have The query must consist of a single SQL statement
         $stmt = $conn->prepare(
-            "SELECT id, username, email, password, twofa_method, role
+            "SELECT id, username, email, password, twofa_method, role, is_verified
              FROM users WHERE username = ?"
         );
         //bind_param "s" means string aka it select that type that will go in ? that you leave when you make prepare sql stmt
@@ -49,33 +51,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if (password_verify($password, $row['password'])) {
 
-                // ── 2FA check ──────────────────────────────────────────────
-                if ($row['twofa_method'] === 'email') {
-                    // Generate & email OTP
-                    require_once __DIR__ . '/includes/send_otp_email.php';
-                    try {
-                        sendOtpEmail($conn, (int) $row['id'], $row['email'], $row['username']);
-                        $_SESSION['2fa_user_id'] = $row['id'];
-                        header("Location: /app/verify_2fa.php?method=email");
-                        exit();
-                    } catch (Exception $e) {
-                        $error = "Failed to send OTP email. Please try again.";
-                    }
-
-                } elseif ($row['twofa_method'] === 'totp') {
-                    $_SESSION['2fa_user_id'] = $row['id'];
-                    header("Location: verify_2fa.php?method=totp");
-                    exit();
-
+                if ($row['is_verified'] == 0) {
+                    $error = "Please verify your email address before logging in.";
                 } else {
-                    // No 2FA – log in directly
-                    $_SESSION['user_id'] = $row['id'];
-                    $_SESSION['username'] = $row['username'];
-                    $_SESSION['role'] = $row['role'];
-                    header("Location: profile.php");
-                    exit();
+                    // ── 2FA check ──────────────────────────────────────────────
+                    if ($row['twofa_method'] === 'email') {
+                        // Generate & email OTP
+                        require_once __DIR__ . '/includes/send_otp_email.php';
+                        try {
+                            sendOtpEmail($conn, (int) $row['id'], $row['email'], $row['username']);
+                            $_SESSION['2fa_user_id'] = $row['id'];
+                            header("Location: /app/verify_2fa.php?method=email");
+                            exit();
+                        } catch (Exception $e) {
+                            $error = "Failed to send OTP email. Please try again.";
+                        }
+
+                    } elseif ($row['twofa_method'] === 'totp') {
+                        $_SESSION['2fa_user_id'] = $row['id'];
+                        header("Location: verify_2fa.php?method=totp");
+                        exit();
+
+                    } else {
+                        // No 2FA – log in directly
+                        $_SESSION['user_id'] = $row['id'];
+                        $_SESSION['username'] = $row['username'];
+                        $_SESSION['role'] = $row['role'];
+                        header("Location: profile.php");
+                        exit();
+                    }
+                    // ──────────────────────────────────────────────────────────
                 }
-                // ──────────────────────────────────────────────────────────
 
             } else {
                 $error = "Invalid password.";
@@ -181,6 +187,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-</body>
-
-</html>
+</body></html>

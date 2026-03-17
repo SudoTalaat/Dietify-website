@@ -16,6 +16,7 @@ $userId = (int) $_SESSION['user_id'];
 $message = '';
 $msgType = 'success';
 $google2fa = new Google2FA();
+$currentTab = $_GET['tab'] ?? 'security';
 
 // ── Load user details ────────────────────────────────────────────────────────
 $stmt = $conn->prepare(
@@ -35,8 +36,24 @@ if (!$user) {
     exit();
 }
 
-// ── Handle POST actions (2FA Management) ─────────────────────────────────────
+// ── Handle POST actions (2FA Management & Orders) ────────────────────────────
 $action = $_POST['action'] ?? '';
+
+// 0. CANCEL ORDER
+if ($action === 'cancel_order') {
+    $orderIdToCancel = (int) ($_POST['order_id'] ?? 0);
+    $cancelStmt = $conn->prepare("UPDATE orders SET status = 'cancelled' WHERE id = ? AND user_id = ? AND status = 'pending'");
+    $cancelStmt->bind_param('ii', $orderIdToCancel, $userId);
+
+    if ($cancelStmt->execute() && $cancelStmt->affected_rows > 0) {
+        $message = "Order #$orderIdToCancel has been successfully cancelled.";
+        $msgType = 'success';
+    } else {
+        $message = "Could not cancel order. It may have already been processed.";
+        $msgType = 'error';
+    }
+    $cancelStmt->close();
+}
 
 // 1. DISABLE 2FA
 if ($action === 'disable') {
@@ -344,6 +361,85 @@ include __DIR__ . '/header.php';
         }
     }
 
+    /* Tab Navigation Styles */
+    .profile-tabs {
+        margin-top: 30px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+
+    .tab-link {
+        display: block;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #555;
+        font-weight: 600;
+        transition: all 0.3s;
+        background: #f8f9fa;
+        border: 1px solid transparent;
+    }
+
+    .tab-link:hover {
+        background: #e9ecef;
+    }
+
+    .tab-link.active {
+        background: white;
+        color: #ff6b35;
+        border-color: #ff6b35;
+        box-shadow: 0 4px 6px rgba(255, 107, 53, 0.1);
+    }
+
+    /* Order Styles */
+    .order-card {
+        background: #f8f9fa;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px dashed #eee;
+    }
+
+    .order-status {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-paid {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
     @media (max-width: 768px) {
         .profile-container {
             grid-template-columns: 1fr;
@@ -393,100 +489,202 @@ include __DIR__ . '/header.php';
                     </div>
                 </div>
 
+                <div class="profile-tabs">
+                    <a href="?tab=security" class="tab-link <?php echo $currentTab === 'security' ? 'active' : ''; ?>">
+                        🛡️ Security Settings
+                    </a>
+                    <a href="?tab=orders" class="tab-link <?php echo $currentTab === 'orders' ? 'active' : ''; ?>">
+                        📦 My Orders
+                    </a>
+                </div>
+
                 <a href="/app/logout.php" class="logout-btn">Sign Out</a>
             </div>
         </div>
 
-        <!-- ── RIGHT: SECURITY & 2FA ── -->
+        <!-- ── RIGHT: TAB CONTENT ── -->
         <div class="security-card">
-            <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                🛡️ Security Settings
-            </h3>
-
             <?php if ($message): ?>
-                <div class="alert alert-<?php echo $msgType; ?>">
+                <div class="alert alert-<?php echo $msgType; ?> mb-4" style="margin-bottom: 20px;">
                     <?php echo htmlspecialchars($message); ?>
                 </div>
             <?php endif; ?>
 
-            <!-- Backup Codes Display (One-time) -->
-            <?php if (!empty($_SESSION['new_backup_codes'])): ?>
-                <div class="backup-codes-box">
-                    <h4 style="margin: 0; color: #d4a017;">⚠️ Save your Backup Codes</h4>
-                    <p style="font-size: 0.85rem; color: #666; margin: 5px 0 15px;">
-                        Each code can be used once to log in if you lose your phone.
-                    </p>
-                    <div class="codes-grid">
-                        <?php foreach ($_SESSION['new_backup_codes'] as $code): ?>
-                            <div class="code-item"><?php echo htmlspecialchars($code); ?></div>
-                        <?php endforeach; ?>
+            <?php if ($currentTab === 'security'): ?>
+                <!-- Security Tab Content -->
+                <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    🛡️ Security Settings
+                </h3>
+
+                <!-- Backup Codes Display (One-time) -->
+                <?php if (!empty($_SESSION['new_backup_codes'])): ?>
+                    <div class="backup-codes-box">
+                        <h4 style="margin: 0; color: #d4a017;">⚠️ Save your Backup Codes</h4>
+                        <p style="font-size: 0.85rem; color: #666; margin: 5px 0 15px;">
+                            Each code can be used once to log in if you lose your phone.
+                        </p>
+                        <div class="codes-grid">
+                            <?php foreach ($_SESSION['new_backup_codes'] as $code): ?>
+                                <div class="code-item"><?php echo htmlspecialchars($code); ?></div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
-                <?php unset($_SESSION['new_backup_codes']); ?>
-            <?php endif; ?>
-
-            <div class="twofa-status">
-                <?php if ($currentMethod === 'none'): ?>
-                    <span class="badge badge-off">🔓 2FA is currently Disabled</span>
-                <?php elseif ($currentMethod === 'email'): ?>
-                    <span class="badge badge-on">✅ Email OTP Protected</span>
-                <?php elseif ($currentMethod === 'totp'): ?>
-                    <span class="badge badge-on">✅ Authenticator App Protected</span>
+                    <?php unset($_SESSION['new_backup_codes']); ?>
                 <?php endif; ?>
-            </div>
 
-            <!-- QR Setup Step -->
-            <?php if (!empty($showQr)): ?>
-                <div class="qr-panel">
-                    <p class="qr-instruction">Scan this with Google Authenticator:</p>
-                    <div class="qr-container">
-                        <img src="<?php echo $qrBase64; ?>" alt="QR Code">
+                <div class="twofa-status">
+                    <?php if ($currentMethod === 'none'): ?>
+                        <span class="badge badge-off">🔓 2FA is currently Disabled</span>
+                    <?php elseif ($currentMethod === 'email'): ?>
+                        <span class="badge badge-on">✅ Email OTP Protected</span>
+                    <?php elseif ($currentMethod === 'totp'): ?>
+                        <span class="badge badge-on">✅ Authenticator App Protected</span>
+                    <?php endif; ?>
+                </div>
+
+                <!-- QR Setup Step -->
+                <?php if (!empty($showQr)): ?>
+                    <div class="qr-panel">
+                        <p class="qr-instruction">Scan this with Google Authenticator:</p>
+                        <div class="qr-container">
+                            <img src="<?php echo $qrBase64; ?>" alt="QR Code">
+                        </div>
+                        <p class="qr-manual">Manual key: <code class="secret-code"><?php echo $user['totp_secret']; ?></code>
+                        </p>
+                        <form method="POST" class="confirm-form">
+                            <input type="hidden" name="action" value="confirm_totp">
+                            <label
+                                style="display:block; margin-bottom: 8px; font-size: 0.9rem; color: #475569; font-weight: 600;">
+                                Enter the 6-digit code:
+                            </label>
+                            <input type="text" name="totp_code" class="otp-input" maxlength="6" required autofocus
+                                inputmode="numeric" pattern="[0-9]*">
+                            <button type="submit" class="settings-btn btn-totp" style="margin-top:15px">Verify & Enable</button>
+                        </form>
                     </div>
-                    <p class="qr-manual">Manual key: <code class="secret-code"><?php echo $user['totp_secret']; ?></code>
-                    </p>
-                    <form method="POST" class="confirm-form">
-                        <input type="hidden" name="action" value="confirm_totp">
-                        <label
-                            style="display:block; margin-bottom: 8px; font-size: 0.9rem; color: #475569; font-weight: 600;">
-                            Enter the 6-digit code:
-                        </label>
-                        <input type="text" name="totp_code" class="otp-input" maxlength="6" required autofocus
-                            inputmode="numeric" pattern="[0-9]*">
-                        <button type="submit" class="settings-btn btn-totp" style="margin-top:15px">Verify & Enable</button>
-                    </form>
+                <?php endif; ?>
+
+                <div class="settings-actions">
+                    <?php if ($currentMethod !== 'email'): ?>
+                        <form method="POST">
+                            <input type="hidden" name="action" value="enable_email">
+                            <button type="submit" class="settings-btn btn-email">
+                                📧
+                                <?php echo ($currentMethod === 'none') ? 'Enable' : 'Switch to'; ?> Email OTP
+                            </button>
+                        </form>
+                    <?php endif; ?>
+
+                    <?php if ($currentMethod !== 'totp' && empty($showQr)): ?>
+                        <form method="POST">
+                            <input type="hidden" name="action" value="start_totp">
+                            <button type="submit" class="settings-btn btn-totp">
+                                🔐
+                                <?php echo ($currentMethod === 'none') ? 'Enable' : 'Switch to'; ?> Authenticator App
+                            </button>
+                        </form>
+                    <?php endif; ?>
+
+                    <?php if ($currentMethod !== 'none'): ?>
+                        <form method="POST" onsubmit="return confirm('Disable 2FA? This makes your account less secure.')">
+                            <input type="hidden" name="action" value="disable">
+                            <button type="submit" class="settings-btn btn-disable">
+                                🔓 Disable Two-Factor
+                            </button>
+                        </form>
+                    <?php endif; ?>
                 </div>
-            <?php endif; ?>
 
-            <div class="settings-actions">
-                <?php if ($currentMethod !== 'email'): ?>
-                    <form method="POST">
-                        <input type="hidden" name="action" value="enable_email">
-                        <button type="submit" class="settings-btn btn-email">
-                            📧
-                            <?php echo ($currentMethod === 'none') ? 'Enable' : 'Switch to'; ?> Email OTP
-                        </button>
-                    </form>
+            <?php elseif ($currentTab === 'orders'): ?>
+                <!-- Orders Tab Content -->
+                <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    📦 My Orders
+                </h3>
+
+                <?php
+                $orderStmt = $conn->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+                $orderStmt->bind_param("i", $userId);
+                $orderStmt->execute();
+                $ordersResult = $orderStmt->get_result();
+
+                if ($ordersResult && $ordersResult->num_rows > 0):
+                    while ($order = $ordersResult->fetch_assoc()):
+                        // Fetch items for this order
+                        $itemsStmt = $conn->prepare("SELECT * FROM order_items WHERE order_id = ?");
+                        $itemsStmt->bind_param("i", $order['id']);
+                        $itemsStmt->execute();
+                        $itemsResult = $itemsStmt->get_result();
+
+                        // Fetch payment details
+                        $paymentStmt = $conn->prepare("SELECT method, status FROM payments WHERE order_id = ? LIMIT 1");
+                        $paymentStmt->bind_param("i", $order['id']);
+                        $paymentStmt->execute();
+                        $paymentData = $paymentStmt->get_result()->fetch_assoc();
+
+                        $statusClass = 'status-pending';
+                        if ($order['status'] === 'paid')
+                            $statusClass = 'status-paid';
+                        if ($order['status'] === 'cancelled' || $order['status'] === 'failed')
+                            $statusClass = 'status-cancelled';
+                        ?>
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <h4 style="margin: 0; color: #333;">Order #<?php echo $order['id']; ?></h4>
+                                    <small
+                                        style="color: #888;"><?php echo date('M d, Y - h:i A', strtotime($order['created_at'])); ?></small>
+                                </div>
+                                <span class="order-status <?php echo $statusClass; ?>">
+                                    <?php echo ucfirst($order['status']); ?>
+                                </span>
+                            </div>
+
+                            <div style="margin-bottom: 15px;">
+                                <?php while ($item = $itemsResult->fetch_assoc()): ?>
+                                    <div class="order-item">
+                                        <span><?php echo $item['quantity']; ?>x
+                                            <?php echo htmlspecialchars($item['product_name']); ?></span>
+                                        <span><?php echo CURRENCY_SYMBOL . number_format($item['price'] * $item['quantity'], 2); ?></span>
+                                    </div>
+                                <?php endwhile; ?>
+                                <div class="order-item" style="border-top: 2px solid #ddd; border-bottom: none; font-weight: bold;">
+                                    <span>Total Amount:</span>
+                                    <span><?php echo CURRENCY_SYMBOL . number_format($order['total_amount'], 2); ?></span>
+                                </div>
+                            </div>
+
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; background: #fff; padding: 10px; border-radius: 8px;">
+                                <div>
+                                    <strong>Payment:</strong>
+                                    <?php echo $paymentData ? ucfirst($paymentData['method']) . " (" . ucfirst($paymentData['status']) . ")" : "Pending"; ?>
+                                </div>
+
+                                <?php if ($order['status'] === 'pending'): ?>
+                                    <form method="POST" style="margin:0;"
+                                        onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                                        <input type="hidden" name="action" value="cancel_order">
+                                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                                        <button type="submit"
+                                            style="background:#dc3545; color:white; border:none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">Cancel
+                                            Order</button>
+                                    </form>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php
+                    endwhile;
+                else:
+                    ?>
+                    <div style="text-align: center; padding: 40px; color: #888; background: #f8f9fa; border-radius: 10px;">
+                        <span style="font-size: 3rem;">🛍️</span>
+                        <p style="margin-top: 15px;">You haven't placed any orders yet.</p>
+                        <a href="shop.php" class="login-btn"
+                            style="display: inline-block; text-decoration: none; margin-top: 10px;">Start Shopping</a>
+                    </div>
                 <?php endif; ?>
 
-                <?php if ($currentMethod !== 'totp' && empty($showQr)): ?>
-                    <form method="POST">
-                        <input type="hidden" name="action" value="start_totp">
-                        <button type="submit" class="settings-btn btn-totp">
-                            🔐
-                            <?php echo ($currentMethod === 'none') ? 'Enable' : 'Switch to'; ?> Authenticator App
-                        </button>
-                    </form>
-                <?php endif; ?>
-
-                <?php if ($currentMethod !== 'none'): ?>
-                    <form method="POST" onsubmit="return confirm('Disable 2FA? This makes your account less secure.')">
-                        <input type="hidden" name="action" value="disable">
-                        <button type="submit" class="settings-btn btn-disable">
-                            🔓 Disable Two-Factor
-                        </button>
-                    </form>
-                <?php endif; ?>
-            </div>
+            <?php endif; // End of tabs switch ?>
         </div>
     </div>
 </div>

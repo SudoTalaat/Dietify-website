@@ -58,8 +58,7 @@ $run_select = $conn->query($select);
                     Shop</a></li>
             <li><a href="Dashboard.php">Dashboard</a></li>
             <li><a href="useradmin.php">Users</a></li>
-            <li><a href="addproduct.php">Add Products</a></li>
-            <li><a href="viewproduct.php">View Products</a></li>
+            <li><a href="products.php">Products</a></li>
             <li><a href="#" class="active">Inventory Management</a></li>
             <li><a href="order_management.php">Order Management</a></li>
             <li><a href="reviews_management.php">Reviews</a></li>

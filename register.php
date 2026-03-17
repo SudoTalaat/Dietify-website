@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/db_connect.php';
+require_once __DIR__ . '/init.php';
+require_once __DIR__ . '/includes/send_otp_email.php';
 
 $error = '';
 $success = '';
@@ -53,13 +54,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // password_hash() with PASSWORD_BCRYPT automatically generates a secure, random salt.
                 // The salt is included in the resulting hash string.
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-                $insertStmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-                $insertStmt->bind_param("sss", $username, $email, $hashedPassword);
+                $isVerified = 0; // Default to unverified
+                $insertStmt = $conn->prepare("INSERT INTO users (username, email, password, is_verified) VALUES (?, ?, ?, ?)");
+                $insertStmt->bind_param("sssi", $username, $email, $hashedPassword, $isVerified);
 
                 if ($insertStmt->execute() === TRUE) {
-                    // Redirect to login page with success message (or handle here)
-                    header("Location: login.php?registered=1");
-                    exit();
+                    // Generate verification token
+                    $token = bin2hex(random_bytes(32));
+
+                    // Store token in Redis with 1-hour expiration
+                    $redis = new Predis\Client();
+                    $redis->setex("email_verification:" . strtolower($email), 3600, $token);
+
+                    // Send verification email
+                    try {
+                        sendVerificationEmail($email, $username, $token);
+                        // Redirect to login page with verification message
+                        header("Location: login.php?verify_sent=1");
+                        exit();
+                    } catch (Exception $e) {
+                        $error = "Account created, but failed to send verification email. Please contact support.";
+                    }
                 } else {
                     $error = "Error: " . $insertStmt->error;
                 }

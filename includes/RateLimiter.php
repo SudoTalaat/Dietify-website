@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-function check_rate_limit($ip, $limit = 1111, $window = 60)
+function check_rate_limit($ip, $limit = 120, $window = 60)
 {
     try {
         $redis = new Predis\Client([
