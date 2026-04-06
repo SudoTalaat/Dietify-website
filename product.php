@@ -187,8 +187,12 @@ include __DIR__ . '/header.php';
 </div>
 
 <!-- Simple Review Modal -->
-<div id="reviewModel" class="modal">
-    <div class="modal-content" style="max-width: 500px; padding: 40px;">
+<div id="reviewModel" class="modal" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-content" style="max-width: 500px; padding: 40px; position: relative;">
+        <!-- Close (X) button -->
+        <button type="button" onclick="document.getElementById('reviewModel').style.display='none'"
+            style="position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; line-height: 1; padding: 4px 8px;"
+            title="Close">&times;</button>
         <h3 style="margin-bottom: 20px;">Write a Review</h3>
         <form action="actions/review_action.php" method="POST">
             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
@@ -206,7 +210,7 @@ include __DIR__ . '/header.php';
             <div class="form-group" style="text-align: left;">
                 <label>Your Comment</label>
                 <textarea name="comment" required
-                    style="width: 100%; height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #ddd;"></textarea>
+                    style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; border: 1px solid #ddd; resize: vertical; max-width: 100%;"></textarea>
             </div>
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button type="submit" class="login-btn" style="flex: 1; margin: 0;">Post Review</button>
@@ -216,6 +220,15 @@ include __DIR__ . '/header.php';
         </form>
     </div>
 </div>
+
+<script>
+    // Close the review the review window when pressing Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            document.getElementById('reviewModel').style.display = 'none';
+        }
+    });
+</script>
 
 </main>
 </body>

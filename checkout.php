@@ -92,7 +92,7 @@ $checkout_session = \Stripe\Checkout\Session::create([
     'success_url' => APP_URL . 'payment_success.php?session_id={CHECKOUT_SESSION_ID}',
     'cancel_url' => APP_URL . 'payment_success.php?session_id={CHECKOUT_SESSION_ID}&cancelled=1',
 ]);
-
+// i need to check this code 
 // 303 See Other code is to make browser forget the post ensures that the transition from  server to Stripe's server is clean
 //avoid data resending from browser 
 header("HTTP/1.1 303 See Other");

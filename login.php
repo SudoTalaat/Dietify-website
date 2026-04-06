@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/RateLimiter.php';
 
 $error = '';
 $success = '';
-$username = '';
+$email = '';
 
 if (check_rate_limit($_SERVER['REMOTE_ADDR'])) {
     //when i did the rate limit it did't return code 429 so that why i add it http_response_code
@@ -28,20 +28,20 @@ if (isset($_GET['reset']) && $_GET['reset'] == 1) {
 //if server get post from login form it will be sent to server to process it
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //TRIM remove white space
-    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($username) || empty($password)) {
+    if (empty($email) || empty($password)) {
         $error = "Please fill in all fields.";
     } else {
         //prepare statment to prevent sql injection (: i will test with sqlmap later on 
         //TO DO prepared sql stmt you have The query must consist of a single SQL statement
         $stmt = $conn->prepare(
             "SELECT id, username, email, password, twofa_method, role, is_verified
-             FROM users WHERE username = ?"
+             FROM users WHERE email = ?"
         );
         //bind_param "s" means string aka it select that type that will go in ? that you leave when you make prepare sql stmt
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("s", $email);
         //execute the prepared statement (: nothing new
         $stmt->execute();
         $result = $stmt->get_result();
@@ -86,8 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $error = "Invalid password.";
 
-                // Track failure for this username
-                $failCount = record_login_failure($username);
+                // Track failure for this email
+                $failCount = record_login_failure($email);
                 if ($failCount >= 25) {
                     require_once __DIR__ . '/includes/send_otp_email.php';
                     sendSecurityAlertEmail((string) $row['email'], (string) $row['username']);
@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Note: We don't have an email to send to if user doesn't exist,
             // but we could still record the failure if we want to track attempts against non-existent users but that feel stupid 
 
-            record_login_failure($username);
+            record_login_failure($email);
         }
         $stmt->close();
     }
@@ -149,10 +149,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <form class="login-form" method="POST" action="login.php">
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username"
-                            value="<?php echo htmlspecialchars($username); ?>" required>
-                        <span class="error-message" id="usernameError"></span>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email"
+                            value="<?php echo htmlspecialchars($email); ?>" required>
+                        <span class="error-message" id="emailError"></span>
                     </div>
 
                     <div class="form-group">
@@ -187,4 +187,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-</body></html>
+</body>
+
+</html>
