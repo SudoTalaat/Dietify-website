@@ -30,7 +30,7 @@ function check_rate_limit($ip, $limit = 120, $window = 60)
     }
 }
 
-function record_login_failure($username, $window = 3600)
+function record_login_failure($identifier, $window = 3600)
 {
     try {
         $redis = new Predis\Client([
@@ -39,7 +39,7 @@ function record_login_failure($username, $window = 3600)
             'port' => 6379,
         ]);
 
-        $key = "brute_force:$username";
+        $key = "brute_force:$identifier";
         $count = $redis->incr($key);
 
         if ($count === 1) {
