@@ -58,7 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
             unset($_SESSION['2fa_user_id']);
-            header("Location: profile.php");
+            
+            if ($user['role'] === 'admin') {
+                header("Location: admin/Dashboard.php");
+            } else {
+                header("Location: profile.php");
+            }
             exit();
         } else {
             $error = "Invalid or expired code. Please try again.";
@@ -71,7 +76,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
             unset($_SESSION['2fa_user_id']);
-            header("Location: profile.php");
+            
+            if ($user['role'] === 'admin') {
+                header("Location: admin/Dashboard.php");
+            } else {
+                header("Location: profile.php");
+            }
             exit();
         } else {
             // Try backup codes
@@ -93,7 +103,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
                     unset($_SESSION['2fa_user_id']);
-                    header("Location: profile.php");
+                    
+                    if ($user['role'] === 'admin') {
+                        header("Location: admin/Dashboard.php");
+                    } else {
+                        header("Location: profile.php");
+                    }
                     exit();
                 }
             }

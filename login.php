@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/RateLimiter.php';
 
 $error = '';
 $success = '';
-$email = '';
+$identity = '';
 
 if (check_rate_limit($_SERVER['REMOTE_ADDR'])) {
     //when i did the rate limit it did't return code 429 so that why i add it http_response_code
@@ -28,20 +28,20 @@ if (isset($_GET['reset']) && $_GET['reset'] == 1) {
 //if server get post from login form it will be sent to server to process it
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //TRIM remove white space
-    $email = trim($_POST['email'] ?? '');
+    $identity = trim($_POST['identity'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
+    if (empty($identity) || empty($password)) {
         $error = "Please fill in all fields.";
     } else {
         //prepare statment to prevent sql injection (: i will test with sqlmap later on 
         //TO DO prepared sql stmt you have The query must consist of a single SQL statement
         $stmt = $conn->prepare(
             "SELECT id, username, email, password, twofa_method, role, is_verified
-             FROM users WHERE email = ?"
+             FROM users WHERE email = ? OR username = ?"
         );
-        //bind_param "s" means string aka it select that type that will go in ? that you leave when you make prepare sql stmt
-        $stmt->bind_param("s", $email);
+        //bind_param "ss" means two strings for the OR condition
+        $stmt->bind_param("ss", $identity, $identity);
         //execute the prepared statement (: nothing new
         $stmt->execute();
         $result = $stmt->get_result();
@@ -77,7 +77,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $_SESSION['user_id'] = $row['id'];
                         $_SESSION['username'] = $row['username'];
                         $_SESSION['role'] = $row['role'];
-                        header("Location: profile.php");
+
+                        // If user is admin, redirect to admin dashboard
+                        if ($row['role'] === 'admin') {
+                            header("Location: admin/Dashboard.php");
+                        } else {
+                            header("Location: profile.php");
+                        }
                         exit();
                     }
                     // ──────────────────────────────────────────────────────────
@@ -86,8 +92,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $error = "Invalid password.";
 
-                // Track failure for this email
-                $failCount = record_login_failure($email);
+                // Track failure for this identity
+                $failCount = record_login_failure($identity);
                 if ($failCount >= 25) {
                     require_once __DIR__ . '/includes/send_otp_email.php';
                     sendSecurityAlertEmail((string) $row['email'], (string) $row['username']);
@@ -98,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Note: We don't have an email to send to if user doesn't exist,
             // but we could still record the failure if we want to track attempts against non-existent users but that feel stupid 
 
-            record_login_failure($email);
+            record_login_failure($identity);
         }
         $stmt->close();
     }
@@ -149,10 +155,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <form class="login-form" method="POST" action="login.php">
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email"
-                            value="<?php echo htmlspecialchars($email); ?>" required>
-                        <span class="error-message" id="emailError"></span>
+                        <label for="identity">Email or Username</label>
+                        <input type="text" id="identity" name="identity"
+                            value="<?php echo htmlspecialchars($identity); ?>" required>
+                        <span class="error-message" id="identityError"></span>
                     </div>
 
                     <div class="form-group">
@@ -170,11 +176,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php endif; ?>
 
                     <div class="form-options">
+                        <!-- Remember Me feature (currently disabled)
                         <label class="checkbox-container">
                             <input type="checkbox" id="rememberMe" name="rememberMe">
                             <span class="checkmark"></span>
                             Remember me
                         </label>
+                        -->
                         <a href="forgot_password.php" class="forgot-password">Forgot password?</a>
                     </div>
 
