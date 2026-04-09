@@ -608,6 +608,52 @@ input[type="tel"]:focus {
     color: #ff6b35;
 }
 
+/* ── Cart Icon & Badge ─────────────────────────────────────────────────────── */
+.cart-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease !important;
+}
+
+.cart-link i {
+    font-size: 1.15rem;
+    color: #444;
+}
+
+.cart-link:hover {
+    background: #fff0ea;
+    transform: translateY(-2px);
+}
+
+.cart-link:hover i {
+    color: #ff6b35;
+}
+
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff6b35;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
+}
+
 .btn-login {
     background: #ff6b35;
     color: white !important;

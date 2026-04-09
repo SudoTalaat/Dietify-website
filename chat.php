@@ -182,12 +182,16 @@ if (!isLoggedIn()) {
             } catch (e) { console.error(e); }
         }
 
-        async function sendMessage() {
-            const text = textarea.value.trim();
+        async function sendMessage(retryText = null) {
+            const text = retryText !== null ? retryText : textarea.value.trim();
             if (!text || isLoading) return;
-            appendMessage('user', text);
-            textarea.value = '';
-            textarea.style.height = 'auto';
+
+            if (retryText === null) {
+                appendMessage('user', text);
+                textarea.value = '';
+                textarea.style.height = 'auto';
+            }
+            
             setLoading(true);
             try {
                 const res = await fetch(API_URL, {
@@ -196,9 +200,9 @@ if (!isLoggedIn()) {
                     body: JSON.stringify({ action: 'message', message: text }),
                 });
                 const data = await res.json();
-                if (data.error) showError(data.error);
+                if (data.error) showError(data.error, text);
                 else appendMessage('bot', data.reply);
-            } catch (e) { showError('Network error.'); }
+            } catch (e) { showError('Network error.', text); }
             finally { setLoading(false); }
         }
 
@@ -244,12 +248,28 @@ if (!isLoggedIn()) {
             else textarea.focus();
         }
 
-        function showError(msg) {
+        function showError(msg, retryText = null) {
             const el = document.createElement('div');
             el.className = 'chatbot-error';
-            el.textContent = msg;
+            el.innerHTML = `<span>${msg}</span>`;
+            
+            if (retryText) {
+                const retryBtn = document.createElement('button');
+                retryBtn.className = 'chatbot-retry-btn';
+                retryBtn.innerHTML = '<i class="fas fa-redo"></i> Retry';
+                retryBtn.onclick = () => {
+                    el.remove();
+                    sendMessage(retryText);
+                };
+                el.appendChild(retryBtn);
+            }
+            
             msgArea.insertBefore(el, typingEl);
             scrollToBottom();
+            
+            if (!retryText) {
+                setTimeout(() => el.remove(), 6000);
+            }
         }
     })();
 </script>

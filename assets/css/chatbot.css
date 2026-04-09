@@ -469,11 +469,40 @@
     background: #fef2f2;
     color: #b91c1c;
     font-size: 0.78rem;
-    padding: 8px 14px;
-    border-radius: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
     border: 1px solid #fecaca;
     text-align: center;
     animation: msgFadeIn 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.chatbot-retry-btn {
+    background: #ff6b35;
+    color: #fff;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.chatbot-retry-btn:hover {
+    background: #f7931e;
+}
+.chatbot-retry-btn:active {
+    transform: scale(0.95);
+}
+.chatbot-retry-btn i {
+    font-size: 0.7rem;
 }
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */

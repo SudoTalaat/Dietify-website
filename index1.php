@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/init.php';
 include __DIR__ . '/header.php';
-
+//it show frist 6 items the are active and in stock
 // Fetch featured products (active and in stock)
 $featured = $conn->query("SELECT * FROM products WHERE status = 'active' AND stock > 0 ORDER BY created_at DESC LIMIT 6");
 ?>
