@@ -18,9 +18,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_quantity'])) {
     exit;
 }
 
-// Fetch products
-$select = "SELECT id, name, price, image_path, description, type, stock FROM `products`";
-$run_select = $conn->query($select);
+// Fetch products with filters
+$search_id = isset($_GET['product_id']) ? intval($_GET['product_id']) : '';
+$search_type = isset($_GET['type']) ? $_GET['type'] : '';
+
+$select = "SELECT id, name, price, image_path, description, type, stock FROM `products` WHERE 1=1";
+$params = [];
+$types = "";
+
+if ($search_id) {
+    $select .= " AND id = ?";
+    $params[] = $search_id;
+    $types .= "i";
+}
+
+if ($search_type) {
+    $select .= " AND type = ?";
+    $params[] = $search_type;
+    $types .= "s";
+}
+
+$select .= " ORDER BY id DESC";
+
+$stmt = $conn->prepare($select);
+if ($types) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$run_select = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -47,6 +72,68 @@ $run_select = $conn->query($select);
         .update-btn:hover {
             background-color: #45a049;
         }
+
+        .search-form {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .btn-search {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-search:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+        }
     </style>
 </head>
 
@@ -67,6 +154,26 @@ $run_select = $conn->query($select);
     </nav>
     <main>
         <h2>Inventory Management</h2>
+
+        <!-- Search Form -->
+        <form action="" method="GET" class="search-form">
+            <div class="form-group">
+                <label for="product_id">Product ID</label>
+                <input type="number" name="product_id" id="product_id"
+                    value="<?php echo htmlspecialchars($search_id); ?>" placeholder="e.g. 1">
+            </div>
+            <div class="form-group">
+                <label for="type">Category</label>
+                <select name="type" id="type">
+                    <option value="">All Categories</option>
+                    <option value="food" <?php echo $search_type == 'food' ? 'selected' : ''; ?>>Food</option>
+                    <option value="drink" <?php echo $search_type == 'drink' ? 'selected' : ''; ?>>Drink</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-search">🔍 Search</button>
+            <a href="Inventory.php" class="btn-reset">↺ Reset</a>
+        </form>
+
         <table class="table">
             <thead>
                 <tr>

@@ -82,7 +82,7 @@ if (!isLoggedIn() || !isAdmin()) {
                 echo "<tr>
                   <td>" . htmlspecialchars($user['username']) . "</td>
                   <td>" . htmlspecialchars($user['email']) . "</td>
-                  <td>{$user['created_at']}</td>
+                  <td>" . date('Y-m-d', strtotime($user['created_at'])) . "</td>
                 </tr>";
             }
             echo "</table>";
@@ -116,7 +116,7 @@ if (!isLoggedIn() || !isAdmin()) {
                   <td>" . htmlspecialchars($order['email']) . "</td>
                   <td>" . htmlspecialchars($order['location_description']) . "</td>
                   <td>" . number_format($order['total_amount'], 2) . "</td>
-                  <td>{$order['created_at']}</td>
+                  <td>" . date('Y-m-d', strtotime($order['created_at'])) . "</td>
                 </tr>";
             }
             echo "</table>";

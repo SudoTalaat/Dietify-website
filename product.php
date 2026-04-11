@@ -164,7 +164,7 @@ include __DIR__ . '/header.php';
                                 <?php echo htmlspecialchars($review['username']); ?>
                             </span>
                             <span style="color: #999; font-size: 0.85rem;">
-                                <?php echo date('M d, Y', strtotime($review['created_at'])); ?>
+                                <?php echo date('Y-m-d', strtotime($review['created_at'])); ?>
                             </span>
                         </div>
                         <div style="color: #f1c40f; margin-bottom: 10px; font-size: 0.8rem;">
