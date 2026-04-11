@@ -19,14 +19,53 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-// Fetch all reviews with user and product details
-$query = "SELECT r.id, r.rating, r.comment, r.created_at, u.username, p.name as product_name 
-          FROM reviews r 
-          JOIN users u ON r.user_id = u.id 
-          JOIN products p ON r.product_id = p.id 
-          ORDER BY r.created_at DESC";
-$result = $conn->query($query);
-$reviews = $result->fetch_all(MYSQLI_ASSOC);
+// Search and Filter Logic
+$search_user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : '';
+$search_product_id = isset($_GET['product_id']) ? intval($_GET['product_id']) : '';
+$search_rating_min = isset($_GET['rating_min']) ? intval($_GET['rating_min']) : '';
+$search_rating_max = isset($_GET['rating_max']) ? intval($_GET['rating_max']) : '';
+
+$sql = "SELECT r.id, r.rating, r.comment, r.created_at, r.user_id, r.product_id, u.username, p.name as product_name 
+        FROM reviews r 
+        JOIN users u ON r.user_id = u.id 
+        JOIN products p ON r.product_id = p.id 
+        WHERE 1=1";
+
+$params = [];
+$types = "";
+
+if ($search_user_id) {
+    $sql .= " AND r.user_id = ?";
+    $params[] = $search_user_id;
+    $types .= "i";
+}
+
+if ($search_product_id) {
+    $sql .= " AND r.product_id = ?";
+    $params[] = $search_product_id;
+    $types .= "i";
+}
+
+if ($search_rating_min) {
+    $sql .= " AND r.rating >= ?";
+    $params[] = $search_rating_min;
+    $types .= "i";
+}
+
+if ($search_rating_max) {
+    $sql .= " AND r.rating <= ?";
+    $params[] = $search_rating_max;
+    $types .= "i";
+}
+
+$sql .= " ORDER BY r.created_at DESC";
+
+$stmt = $conn->prepare($sql);
+if ($types) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$reviews = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -37,36 +76,99 @@ $reviews = $result->fetch_all(MYSQLI_ASSOC);
     <title>Review Management - Healthy Food</title>
     <link rel="stylesheet" href="assets/css/dashboard.css">
     <style>
-        .review-card {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-
         .rating {
             color: #f1c40f;
-            font-weight: bold;
+            font-size: 1.1rem;
         }
 
         .delete-btn {
-            color: #e74c3c;
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            transition: background 0.2s;
         }
 
         .delete-btn:hover {
-            text-decoration: underline;
+            background-color: #c0392b;
+        }
+
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .search-form {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .btn-search {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-search:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+        }
+
+        .id-badge {
+            background: #f0f2f5;
+            color: #666;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: monospace;
         }
     </style>
 </head>
@@ -90,38 +192,80 @@ $reviews = $result->fetch_all(MYSQLI_ASSOC);
         <h1>💬 Product Reviews</h1>
 
         <?php if (isset($_GET['msg']) && $_GET['msg'] == 'deleted'): ?>
-            <p style="color: #27ae60; background: #d4edda; padding: 10px; border-radius: 5px;">Review deleted successfully.
-            </p>
+            <p style="color: #27ae60; background: #d4edda; padding: 10px; border-radius: 5px;">Review deleted successfully.</p>
         <?php endif; ?>
 
+        <!-- Search Form -->
+        <form action="" method="GET" class="search-form">
+            <div class="form-group">
+                <label for="user_id">User ID</label>
+                <input type="number" name="user_id" id="user_id" value="<?php echo htmlspecialchars($search_user_id); ?>" placeholder="e.g. 45">
+            </div>
+            <div class="form-group">
+                <label for="product_id">Product ID</label>
+                <input type="number" name="product_id" id="product_id" value="<?php echo htmlspecialchars($search_product_id); ?>" placeholder="e.g. 1">
+            </div>
+            <div class="form-group">
+                <label for="rating_min">Min Rating</label>
+                <select name="rating_min" id="rating_min">
+                    <option value="">Any</option>
+                    <?php for($i=1; $i<=5; $i++): ?>
+                        <option value="<?php echo $i; ?>" <?php echo $search_rating_min == $i ? 'selected' : ''; ?>><?php echo $i; ?> Star<?php echo $i>1?'s':''; ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="rating_max">Max Rating</label>
+                <select name="rating_max" id="rating_max">
+                    <option value="">Any</option>
+                    <?php for($i=1; $i<=5; $i++): ?>
+                        <option value="<?php echo $i; ?>" <?php echo $search_rating_max == $i ? 'selected' : ''; ?>><?php echo $i; ?> Star<?php echo $i>1?'s':''; ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <button type="submit" class="btn-search">🔍 Search</button>
+            <a href="reviews_management.php" class="btn-reset">↺ Reset</a>
+        </form>
+
         <?php if (count($reviews) > 0): ?>
-            <?php foreach ($reviews as $review): ?>
-                <div class="review-card">
-                    <div class="review-header">
-                        <span>
-                            <strong>
-                                <?php echo htmlspecialchars($review['username']); ?>
-                            </strong>
-                            on <em>
-                                <?php echo htmlspecialchars($review['product_name']); ?>
-                            </em>
-                        </span>
-                        <span class="rating">
-                            <?php echo str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']); ?>
-                        </span>
-                    </div>
-                    <p style="margin: 10px 0;">
-                        <?php echo htmlspecialchars($review['comment']); ?>
-                    </p>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <small style="color: #888;">
-                            <?php echo $review['created_at']; ?>
-                        </small>
-                        <a href="?delete=<?php echo $review['id']; ?>" class="delete-btn"
-                            onclick="return confirm('Are you sure you want to delete this review?');">Delete</a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Product</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($reviews as $review): ?>
+                            <tr>
+                                <td>#<?php echo $review['id']; ?></td>
+                                <td>
+                                    <strong><?php echo htmlspecialchars($review['username']); ?></strong>
+                                    <br><span class="id-badge">ID: #<?php echo $review['user_id']; ?></span>
+                                </td>
+                                <td>
+                                    <strong><?php echo htmlspecialchars($review['product_name']); ?></strong>
+                                </td>
+                                <td class="rating">
+                                    <?php echo str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']); ?>
+                                </td>
+                                <td><?php echo htmlspecialchars($review['comment']); ?></td>
+                                <td><small><?php echo date('Y-m-d', strtotime($review['created_at'])); ?></small></td>
+                                <td>
+                                    <a href="?delete=<?php echo $review['id']; ?>" class="delete-btn"
+                                        onclick="return confirm('Are you sure you want to delete this review?');">Delete</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         <?php else: ?>
             <p>No reviews found.</p>
         <?php endif; ?>

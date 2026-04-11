@@ -459,7 +459,7 @@ include __DIR__ . '/header.php';
                     <?php echo htmlspecialchars($user['username']); ?>
                 </h2>
                 <p>Member since
-                    <?php echo date('M Y', strtotime($user['created_at'])); ?>
+                    <?php echo date('Y-m-d', strtotime($user['created_at'])); ?>
                 </p>
 
                 <div class="info-grid">
@@ -632,7 +632,7 @@ include __DIR__ . '/header.php';
                                 <div>
                                     <h4 style="margin: 0; color: #333;">Order #<?php echo $order['id']; ?></h4>
                                     <small
-                                        style="color: #888;"><?php echo date('M d, Y - h:i A', strtotime($order['created_at'])); ?></small>
+                                        style="color: #888;"><?php echo date('Y-m-d H:i', strtotime($order['created_at'])); ?></small>
                                 </div>
                                 <span class="order-status <?php echo $statusClass; ?>">
                                     <?php echo ucfirst($order['status']); ?>
