@@ -18,8 +18,17 @@ $action = $input['action'] ?? 'message';
 
 
 // ── Send message ─────────────────────────────────────────────────────────────
-$userMessage = trim($input['message'] ?? '');
-if ($userMessage === '' && $action === 'message') {
+$userMessageRaw = $input['message'] ?? '';
+if (is_array($userMessageRaw)) {
+    // Log the anomaly: why is it an array? (Likely WAF or specific tool)
+    error_log("Chatbot API Error: Received array for message. Data: " . print_r($userMessageRaw, true));
+    // Fallback: convert to string or pick first element
+    $userMessage = (string) ($userMessageRaw[0] ?? '');
+} else {
+    $userMessage = (string) $userMessageRaw;
+}
+
+if (trim($userMessage) === '' && $action === 'message') {
     http_response_code(400);
     echo json_encode(['error' => 'Message cannot be empty.']);
     exit;
@@ -51,7 +60,7 @@ if ($action === 'clear') {
 
 // ── Handle Set Goal Action ───────────────────────────────────────────────────
 if ($action === 'set_goal') {
-    $allowed = ['weight_loss', 'muscle_gain', 'general'];
+    $allowed = ['weight_loss', 'muscle_gain', 'general', 'recipe_creator', 'meal_planner'];
     $goal = in_array($input['goal'] ?? '', $allowed) ? $input['goal'] : 'general';
     $_SESSION['chat_goal'] = $goal;
     echo json_encode(['status' => 'goal_set', 'goal' => $goal]);
@@ -122,6 +131,8 @@ $history = array_reverse($history); // Re-order back to chronological for API
 $goalDescriptions = [
     'weight_loss' => 'The user wants to lose weight. Suggest low-calorie, high-fiber, protein-rich meals. Avoid suggesting fried or high-sugar foods.',
     'muscle_gain' => 'The user wants to build muscle. Suggest high-protein meals with adequate carbs for energy. Include chicken, eggs, beans, rice, and dairy.',
+    'recipe_creator' => 'The user wants detailed, step-by-step recipes. Provide a full ingredient list with quantities and clear cooking instructions. You may give longer responses to ensure the recipe is complete. Format recipes with numbered steps.',
+    'meal_planner' => 'The user wants a structured meal plan. IMPORTANT: Before generating any plan, you MUST first ask the user whether they want a 3-day or 7-day meal plan. Only generate the plan after they choose. Include breakfast, lunch, and dinner for each day. Cross-use ingredients to save money.',
     'general' => 'The user wants to eat healthier in general. Suggest balanced, nutritious meals with variety.',
 ];
 $goalContext = $goalDescriptions[$goal] ?? $goalDescriptions['general'];
@@ -131,8 +142,9 @@ You are a friendly Healthy Food Assistant. Your job is to help users choose heal
 
 RULES:
 1. Focus on common, affordable foods: rice, eggs, chicken, vegetables, beans, lentils, oats, fruits, bread, dairy.
-2. Keep answers SHORT — 2 to 4 lines maximum. Be concise and practical.
-3. Give simple meal suggestions with brief preparation tips when asked.
+2. For general chat, keep answers SHORT — 2 to 4 lines maximum. Be concise and practical.
+3. EXCEPTION: In "Recipe Creator" mode, provide full step-by-step recipes with ingredients. In "Meal Planner" mode, provide full structured plans. Longer responses are allowed for these two modes.
+4. Give simple meal suggestions with brief preparation tips when asked.
 4. You may use emojis sparingly to be friendly (🥗🍳🥚🍗🥦).
 5. NEVER give medical advice or diagnose conditions.
 6. If the user asks about diseases, medications, or medical conditions, respond ONLY with: "Please consult a doctor for medical advice. I can only help with general food suggestions! 🩺"
@@ -170,9 +182,9 @@ curl_setopt_array($ch, [
         'max_tokens' => 256,
         'temperature' => 0.7,
     ]),
-    CURLOPT_TIMEOUT => 60,
+    CURLOPT_TIMEOUT => 222,
     //CURLOPT_TIMEOUT => 60: This is the limit for the entire process. It says: "From the moment I start until I get the full answer back, don't take more than 60 seconds total."
-    CURLOPT_CONNECTTIMEOUT => 30,
+    CURLOPT_CONNECTTIMEOUT => 333,
     //CURLOPT_CONNECTTIMEOUT => 30: This tells the server to wait up to 30 seconds just to "knock on the door" of the AI service. If the AI doesn't answer the door in 30 seconds, it stops trying
 
     CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4, // Use IPv4 for stability in XAMPP

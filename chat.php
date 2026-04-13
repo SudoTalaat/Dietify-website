@@ -27,10 +27,25 @@ if (!isLoggedIn()) {
             </div>
         </div>
 
-        <div class="chatbot-goal-bar">
-            <button class="goal-pill-page item-goal-page active" data-goal="general">🍽️ General</button>
-            <button class="goal-pill-page item-goal-page" data-goal="weight_loss">⚖️ Weight Loss</button>
-            <button class="goal-pill-page item-goal-page" data-goal="muscle_gain">💪 Muscle Gain</button>
+        <div class="chatbot-selector-container">
+            <!-- Row 1: Diet Goals -->
+            <div class="chatbot-goal-bar">
+                <button class="goal-pill-page item-goal-page active" data-goal="general">General</button>
+                <button class="goal-pill-page item-goal-page" data-goal="weight_loss">Weight Loss</button>
+                <button class="goal-pill-page item-goal-page" data-goal="muscle_gain">Muscle Gain</button>
+                <button id="btn-apply-diet-page" class="btn-apply-goal" disabled>Apply</button>
+            </div>
+
+            <!-- Row 2: Tools (as requested in image) -->
+            <div class="chatbot-tools-bar">
+                <span class="selector-label">tools</span>
+                <button class="tool-pill-page recipe-creator" data-goal="recipe_creator">
+                    <i class="fas fa-utensils"></i> recipe creator
+                </button>
+                <button class="tool-pill-page meal-planner" data-goal="meal_planner">
+                    <i class="fas fa-calendar-alt"></i> meal planner
+                </button>
+            </div>
         </div>
 
         <div id="chatbot-messages-page" class="chatbot-messages">
@@ -63,20 +78,23 @@ if (!isLoggedIn()) {
         margin: 40px auto;
         padding: 0 20px;
     }
+
     .chat-page-header {
         text-align: center;
         margin-bottom: 30px;
     }
+
     .chat-page-header h1 {
         color: #333;
         font-size: 2.5rem;
         margin-bottom: 10px;
     }
+
     .chat-page-header p {
         color: #666;
         font-size: 1.1rem;
     }
-    
+
     /* Modify existing chatbot window styles for static mode */
     .chatbot-window.static-mode {
         position: relative;
@@ -88,7 +106,7 @@ if (!isLoggedIn()) {
         transform: none;
         pointer-events: auto;
         margin: 0 auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         border: 1px solid #eee;
     }
 
@@ -96,6 +114,7 @@ if (!isLoggedIn()) {
     .chatbot-bubble {
         display: none !important;
     }
+
     /* Hide the floating window in header as well to avoid conflicts */
     #chatbot-window:not(.static-mode) {
         display: none !important;
@@ -105,17 +124,20 @@ if (!isLoggedIn()) {
 <script>
     // Initialize the page version of the chatbot using the same API
     // We can reuse the logic but we need to bind to the page-specific IDs
-    (function() {
+    (function () {
         const API_URL = '/app/chatbot_api.php';
-        
+
         const msgArea = document.getElementById('chatbot-messages-page');
         const textarea = document.getElementById('chatbot-input-page');
         const sendBtn = document.getElementById('chatbot-send-page');
         const clearBtn = document.getElementById('chatbot-clear-page');
-        const goalPills = document.querySelectorAll('.goal-pill-page');
+        const dietPills = document.querySelectorAll('.item-goal-page');
+        const toolPills = document.querySelectorAll('.tool-pill-page');
+        const applyBtn = document.getElementById('btn-apply-diet-page');
         const typingEl = document.getElementById('chatbot-typing-page');
 
         let isLoading = false;
+        let selectedDiet = 'general';
 
         // Auto-load history
         loadHistory();
@@ -128,23 +150,61 @@ if (!isLoggedIn()) {
                 sendMessage();
             }
         });
-        
+
         textarea.addEventListener('input', () => {
             textarea.style.height = 'auto';
             textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
         });
 
-        goalPills.forEach(pill => {
+        // ── Diet selection (Local only until Apply) ──────────────────────────
+        dietPills.forEach(pill => {
             pill.addEventListener('click', () => {
                 const goal = pill.dataset.goal;
-                goalPills.forEach(p => p.classList.remove('active'));
+                selectedDiet = goal;
+
+                // UI state only
+                dietPills.forEach(p => p.classList.remove('active'));
                 pill.classList.add('active');
+
+                // Optional: Remove active state from tools if diet is selected
+                toolPills.forEach(p => p.classList.remove('active'));
+
+                // Enable Apply button
+                applyBtn.disabled = false;
+            });
+        });
+
+        applyBtn.addEventListener('click', async () => {
+            applyBtn.disabled = true;
+            await setGoal(selectedDiet);
+
+            // Show a brief visual confirmation on the button
+            const originalText = applyBtn.textContent;
+            applyBtn.textContent = 'Applied!';
+            setTimeout(() => {
+                applyBtn.textContent = originalText;
+            }, 2000);
+        });
+
+        // ── Tools (Activate instantly) ───────────────────────────────────────
+        toolPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                const goal = pill.dataset.goal;
+
+                // Activate instantly
+                toolPills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+
+                // Clear diet active state
+                dietPills.forEach(p => p.classList.remove('active'));
+                applyBtn.disabled = true;
+
                 setGoal(goal);
             });
         });
 
         clearBtn.addEventListener('click', () => {
-            if(confirm("Are you sure you want to clear the chat history?")) {
+            if (confirm("Are you sure you want to clear the chat history?")) {
                 fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -163,7 +223,7 @@ if (!isLoggedIn()) {
                     body: JSON.stringify({ action: 'get_history' }),
                 });
                 const data = await res.json();
-                
+
                 // Update Status UI
                 const statusInfo = document.querySelector('.chatbot-header-info span');
                 if (data.service_online) {
@@ -182,16 +242,22 @@ if (!isLoggedIn()) {
             } catch (e) { console.error(e); }
         }
 
-        async function sendMessage(retryText = null) {
-            const text = retryText !== null ? retryText : textarea.value.trim();
-            if (!text || isLoading) return;
+        async function sendMessage(retryText = null, showBubble = false) {
+            // Ensure we don't treat the Click Event as the message text
+            const isEvent = retryText && (retryText instanceof Event || retryText.nativeEvent);
+            const text = (retryText !== null && !isEvent) ? retryText : textarea.value;
 
-            if (retryText === null) {
+            if (!text.trim() || isLoading) return;
+
+            // Show user message in UI if it's a new message or an interactive choice
+            if (retryText === null || showBubble) {
                 appendMessage('user', text);
-                textarea.value = '';
-                textarea.style.height = 'auto';
+                if (retryText === null) {
+                    textarea.value = '';
+                    textarea.style.height = 'auto';
+                }
             }
-            
+
             setLoading(true);
             try {
                 const res = await fetch(API_URL, {
@@ -229,8 +295,36 @@ if (!isLoggedIn()) {
             bubble.appendChild(time);
             wrapper.appendChild(avatar);
             wrapper.appendChild(bubble);
+
+            // Add interactive options if this is a bot message asking for duration
+            if (type === 'bot' && (content.includes('3-day') || content.includes('7-day'))) {
+                addOptions(bubble, ['3-day', '7-day']);
+            }
+
             msgArea.insertBefore(wrapper, typingEl);
             scrollToBottom();
+        }
+
+        function addOptions(bubble, options) {
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'chat-options';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = '📅 ' + opt;
+
+                btn.addEventListener('click', () => {
+                    sendMessage(opt, true);
+                    btn.classList.add('selected');
+                    const siblings = optionsContainer.querySelectorAll('.option-btn');
+                    siblings.forEach(s => s.disabled = true);
+                });
+
+                optionsContainer.appendChild(btn);
+            });
+
+            bubble.appendChild(optionsContainer);
         }
 
         function formatContent(text) {
@@ -238,7 +332,7 @@ if (!isLoggedIn()) {
         }
 
         function scrollToBottom() { msgArea.scrollTop = msgArea.scrollHeight; }
-        
+
         function setLoading(state) {
             isLoading = state;
             sendBtn.disabled = state;
@@ -252,7 +346,7 @@ if (!isLoggedIn()) {
             const el = document.createElement('div');
             el.className = 'chatbot-error';
             el.innerHTML = `<span>${msg}</span>`;
-            
+
             if (retryText) {
                 const retryBtn = document.createElement('button');
                 retryBtn.className = 'chatbot-retry-btn';
@@ -263,10 +357,10 @@ if (!isLoggedIn()) {
                 };
                 el.appendChild(retryBtn);
             }
-            
+
             msgArea.insertBefore(el, typingEl);
             scrollToBottom();
-            
+
             if (!retryText) {
                 setTimeout(() => el.remove(), 6000);
             }
@@ -276,4 +370,5 @@ if (!isLoggedIn()) {
 
 </main>
 </body>
+
 </html>

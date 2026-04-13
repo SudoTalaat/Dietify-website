@@ -195,18 +195,41 @@
     background: rgba(255,255,255,0.35);
 }
 
-/* ── Goal Selector ────────────────────────────────────────────────────────── */
-.chatbot-goal-bar {
+/* ── Goal Selector & Tools Bar ────────────────────────────────────────────── */
+.chatbot-selector-container {
     background: #fef7f3;
     border-bottom: 1px solid #fde8dd;
-    padding: 10px 16px;
     display: flex;
-    gap: 6px;
+    flex-direction: column;
     flex-shrink: 0;
+}
+
+.chatbot-goal-bar, 
+.chatbot-tools-bar {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     overflow-x: auto;
 }
-.chatbot-goal-bar::-webkit-scrollbar { display: none; }
-.goal-pill {
+.chatbot-goal-bar::-webkit-scrollbar, 
+.chatbot-tools-bar::-webkit-scrollbar { display: none; }
+
+.chatbot-tools-bar {
+    padding-top: 0;
+    padding-bottom: 12px;
+}
+
+/* Section labels */
+.selector-label {
+    font-size: 0.72rem;
+    color: #94a3b8; /* Light gray-blue */
+    font-weight: 500;
+    margin-right: 4px;
+    text-transform: lowercase;
+}
+
+.goal-pill, .tool-pill {
     padding: 5px 14px;
     border-radius: 20px;
     border: 1.5px solid #f0d0be;
@@ -218,16 +241,132 @@
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
+
 .goal-pill:hover {
     border-color: #ff6b35;
     color: #ff6b35;
 }
-.goal-pill.active {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+
+.goal-pill.active,
+.goal-pill-page.active,
+.item-goal-page.active {
+    background: #ff6b35;
     color: #fff;
     border-color: transparent;
     box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+}
+
+/* Apply Button */
+.btn-apply-goal {
+    padding: 5px 12px;
+    background: #4ade80;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: auto;
+    transition: all 0.2s;
+}
+.btn-apply-goal:hover:not(:disabled) {
+    background: #22c55e;
+    transform: translateY(-1px);
+}
+.btn-apply-goal:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Tool Buttons (Matching provided image) */
+.tool-pill {
+    background: #fff;
+    border-width: 1px;
+}
+
+.tool-pill.recipe-creator {
+    border-color: #8b5cf6; /* Purple */
+    color: #7c3aed;
+}
+.tool-pill.recipe-creator i { color: #8b5cf6; }
+.tool-pill.recipe-creator:hover, 
+.tool-pill-page.recipe-creator:hover,
+.tool-pill.recipe-creator.active,
+.tool-pill-page.recipe-creator.active {
+    background: #8b5cf6;
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+.tool-pill.recipe-creator:hover i,
+.tool-pill-page.recipe-creator:hover i,
+.tool-pill.recipe-creator.active i,
+.tool-pill-page.recipe-creator.active i { color: #fff; }
+
+.tool-pill.meal-planner {
+    border-color: #f97316; /* Orange */
+    color: #ea580c;
+}
+.tool-pill.meal-planner i { color: #f97316; }
+.tool-pill.meal-planner:hover, 
+.tool-pill-page.meal-planner:hover,
+.tool-pill.meal-planner.active,
+.tool-pill-page.meal-planner.active {
+    background: #f97316;
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+}
+.tool-pill.meal-planner:hover i,
+.tool-pill-page.meal-planner:hover i,
+.tool-pill.meal-planner.active i,
+.tool-pill-page.meal-planner.active i { color: #fff; }
+
+/* ── Interactive Option Buttons in Chat ────────────────────────────────────── */
+.chat-options {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.option-btn {
+    padding: 6px 16px;
+    background: #fff;
+    border: 1.5px solid #ff6b35;
+    color: #ff6b35;
+    border-radius: 18px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.option-btn:hover:not(:disabled) {
+    background: #fdf2f0;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(255, 107, 53, 0.2);
+}
+
+.option-btn.selected {
+    background: #ff6b35;
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+}
+
+.option-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+    border-color: #ddd;
+    color: #999;
 }
 
 /* ── Messages Area ────────────────────────────────────────────────────────── */
@@ -323,6 +462,7 @@
     line-height: 1.55;
     font-family: 'Inter', sans-serif;
     word-wrap: break-word;
+    white-space: pre-wrap;
 }
 .chat-msg.bot .msg-bubble {
     background: #fff;
