@@ -44,7 +44,7 @@ while ($row = $result->fetch_assoc()) {
             'currency' => strtolower(CURRENCY_CODE),
             'product_data' => [
                 'name' => $row['name'],
-                'images' => [$row['image_path'] ? (str_starts_with($row['image_path'], 'http') ? $row['image_path'] : APP_URL . $row['image_path']) : 'https://via.placeholder.com/300'],
+                'images' => [getImageUrl($row['image_path']) ? (str_starts_with(getImageUrl($row['image_path']), 'http') ? getImageUrl($row['image_path']) : APP_URL . getImageUrl($row['image_path'])) : 'https://via.placeholder.com/300'],
             ],
             'unit_amount' => $row['price'] * 100, // Amount in cents
         ],

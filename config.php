@@ -45,6 +45,22 @@ define('APP_URL', $_ENV['APP_URL'] ?? 'http://localhost/app/');
 
 // ── Helper functions ──────────────────────────────────────────────────────────
 
+/** Extracts direct image URL from Google imgres links, otherwise returns original. */
+function getImageUrl($url)
+{
+    if (empty($url))
+        return '';
+    if (strpos($url, 'google.com/imgres') !== false) {
+        $components = parse_url($url);
+        if (isset($components['query'])) {
+            parse_str($components['query'], $query);
+            if (isset($query['imgurl']))
+                return urldecode($query['imgurl']);
+        }
+    }
+    return $url;
+}
+
 /** Returns true if the current user has the admin role. */
 function isAdmin(): bool
 {

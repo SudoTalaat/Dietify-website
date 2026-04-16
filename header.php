@@ -32,7 +32,10 @@
                         </span>
                     </a>
                     <a href="/app/profile.php">Profile</a>
+                    <a href="/app/recommendations.php">Recommendations</a>
+                    <a href="/app/kcal_tracking.php">Kcal Tracking</a>
                     <a href="/app/chat.php">Chatbot</a>
+
                     <?php if (isAdmin()): ?>
                         <a href="/app/admin/Dashboard.php" class="btn-admin">Admin</a>
                     <?php endif; ?>
@@ -66,11 +69,18 @@
                     </div>
                 </div>
 
-                <!-- Goal selector -->
-                <div class="chatbot-goal-bar">
-                    <button class="goal-pill active" data-goal="general">🍽️ General</button>
-                    <button class="goal-pill" data-goal="weight_loss">⚖️ Weight Loss</button>
-                    <button class="goal-pill" data-goal="muscle_gain">💪 Muscle Gain</button>
+                <!-- Selector Bar -->
+                <!-- Simplified Selector -->
+                <div class="chatbot-selector-container" style="background: #fff9f6; border-bottom: 1px solid #f0d0be;">
+                    <div class="chatbot-goal-bar" style="justify-content: center; padding: 10px 12px 2px; gap: 8px;">
+                        <button class="goal-pill item-goal-widget" data-goal="general">🍽️ General</button>
+                        <button class="goal-pill item-goal-widget" data-goal="weight_loss">⚖️ Weight Loss</button>
+                        <button class="goal-pill item-goal-widget" data-goal="muscle_gain">💪 Muscle Gain</button>
+                    </div>
+                    <div class="chatbot-goal-bar" style="justify-content: center; padding: 2px 12px 10px; gap: 8px;">
+                        <button class="goal-pill item-tool-widget" data-tool="recipe_creator">🍳 Recipes</button>
+                        <button class="goal-pill item-tool-widget" data-tool="meal_planner">📅 Meal Planner</button>
+                    </div>
                 </div>
 
                 <!-- Messages -->

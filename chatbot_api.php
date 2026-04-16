@@ -18,19 +18,32 @@ $action = $input['action'] ?? 'message';
 
 
 // ── Send message ─────────────────────────────────────────────────────────────
-$userMessage = trim($input['message'] ?? '');
-if ($userMessage === '' && $action === 'message') {
+$userMessageRaw = $input['message'] ?? '';
+if (is_array($userMessageRaw)) {
+    // Log the anomaly: why is it an array? (Likely WAF or specific tool)
+    error_log("Chatbot API Error: Received array for message. Data: " . print_r($userMessageRaw, true));
+    // Fallback: convert to string or pick first element
+    $userMessage = (string) ($userMessageRaw[0] ?? '');
+} else {
+    $userMessage = (string) $userMessageRaw;
+}
+
+if (trim($userMessage) === '' && $action === 'message') {
     http_response_code(400);
     echo json_encode(['error' => 'Message cannot be empty.']);
     exit;
 }
 
 // ── Database Table and Session Initialization ───────────────────────────────
-$userId = $_SESSION['user_id'] ?? 'anonymous';
+$userId = $_SESSION['user_id'] ?? 0;
 if (!isset($_SESSION['chat_goal'])) {
     $_SESSION['chat_goal'] = 'general';
 }
+if (!isset($_SESSION['chat_tool'])) {
+    $_SESSION['chat_tool'] = null;
+}
 $goal = $_SESSION['chat_goal'];
+$tool = $_SESSION['chat_tool'];
 
 // ── Handle Clear Action ──────────────────────────────────────────────────────
 if ($action === 'clear') {
@@ -49,19 +62,31 @@ if ($action === 'clear') {
     exit;
 }
 
-// ── Handle Set Goal Action ───────────────────────────────────────────────────
+// ── Handle Set Goal/Tool Action ──────────────────────────────────────────────
 if ($action === 'set_goal') {
-    $allowed = ['weight_loss', 'muscle_gain', 'general'];
-    $goal = in_array($input['goal'] ?? '', $allowed) ? $input['goal'] : 'general';
-    $_SESSION['chat_goal'] = $goal;
-    echo json_encode(['status' => 'goal_set', 'goal' => $goal]);
+    $allowedGoals = ['weight_loss', 'muscle_gain', 'general'];
+    $allowedTools = ['recipe_creator', 'meal_planner'];
+
+    if (isset($input['goal'])) {
+        $_SESSION['chat_goal'] = in_array($input['goal'], $allowedGoals) ? $input['goal'] : 'general';
+    }
+    if (array_key_exists('tool', $input)) {
+        $inTool = $input['tool'];
+        $_SESSION['chat_tool'] = ($inTool === 'none' || !in_array($inTool, $allowedTools)) ? null : $inTool;
+    }
+
+    echo json_encode([
+        'status' => 'state_updated',
+        'goal'   => $_SESSION['chat_goal'],
+        'tool'   => $_SESSION['chat_tool']
+    ]);
     exit;
 }
 
 // ── Handle Get History Action ────────────────────────────────────────────────
 if ($action === 'get_history') {
     try {
-        $stmt = $conn->prepare("SELECT role, message as content FROM messages WHERE user_id = ? ORDER BY created_at ASC LIMIT 50");
+        $stmt = $conn->prepare("SELECT message AS content FROM messages WHERE user_id = ? ORDER BY created_at ASC LIMIT 50");
         if (!$stmt)
             throw new Exception($conn->error);
         $stmt->bind_param("s", $userId);
@@ -69,13 +94,17 @@ if ($action === 'get_history') {
             throw new Exception($stmt->error);
         $result = $stmt->get_result();
         $history = [];
+        $i = 0;
         while ($row = $result->fetch_assoc()) {
-            $history[] = $row;
+            // Alternate roles by position: even index = user, odd = assistant
+            $history[] = ['role' => ($i % 2 === 0 ? 'user' : 'assistant'), 'content' => $row['content']];
+            $i++;
         }
         echo json_encode([
-            'history' => $history,
-            'goal' => $goal,
-            'service_online' => (!empty($_ENV['GROQ_API_KEY']))
+            'history'        => $history,
+            'goal'           => $goal,
+            'tool'           => $tool,
+            'service_online' => !empty($_ENV['GROQ_API_KEY'])
         ]);
     } catch (Exception $e) {
         http_response_code(500);
@@ -95,53 +124,86 @@ if ($apiKey === '') {
 // ── Save User Message to Database ───────────────────────────────────────────
 if ($action === 'message') {
     try {
-        $stmt = $conn->prepare("INSERT INTO messages (user_id, role, message) VALUES (?, 'user', ?)");
+        $stmt = $conn->prepare("INSERT INTO messages (user_id, message) VALUES (?, ?)");
         if (!$stmt)
             throw new Exception($conn->error);
         $stmt->bind_param("ss", $userId, $userMessage);
         if (!$stmt->execute())
             throw new Exception($stmt->error);
     } catch (Exception $e) {
-        // Log but don't strictly fail the whole request yet
-        error_log("Chat Save Error: " . $e->getMessage());
+        error_log("Chat Save (user) Error: " . $e->getMessage());
     }
 }
 
 // ── Build Context from Database (Last 10 messages) ──────────────────────────
-$stmt = $conn->prepare("SELECT role, message as content FROM messages WHERE user_id = ? ORDER BY created_at DESC LIMIT 10");
+$stmt = $conn->prepare("SELECT message AS content FROM messages WHERE user_id = ? ORDER BY created_at DESC LIMIT 10");
 $stmt->bind_param("s", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
-$history = [];
+$rawHistory = [];
 while ($row = $result->fetch_assoc()) {
-    $history[] = $row;
+    $rawHistory[] = $row;
 }
-$history = array_reverse($history); // Re-order back to chronological for API
+$rawHistory = array_reverse($rawHistory); // oldest first
+// Assign alternating roles by position
+$history = [];
+foreach ($rawHistory as $idx => $row) {
+    $history[] = ['role' => ($idx % 2 === 0 ? 'user' : 'assistant'), 'content' => $row['content']];
+}
 
 // ── System prompt ────────────────────────────────────────────────────────────
-$goalDescriptions = [
-    'weight_loss' => 'The user wants to lose weight. Suggest low-calorie, high-fiber, protein-rich meals. Avoid suggesting fried or high-sugar foods.',
-    'muscle_gain' => 'The user wants to build muscle. Suggest high-protein meals with adequate carbs for energy. Include chicken, eggs, beans, rice, and dairy.',
-    'general' => 'The user wants to eat healthier in general. Suggest balanced, nutritious meals with variety.',
-];
-$goalContext = $goalDescriptions[$goal] ?? $goalDescriptions['general'];
+$goalContext = "";
+switch ($goal) {
+    case 'weight_loss':
+        $goalContext = "The user wants to lose weight. Suggest low-calorie, high-fiber, protein-rich options. Avoid suggesting fried or high-sugar foods.";
+        break;
+    case 'muscle_gain':
+        $goalContext = "The user wants to build muscle. Suggest high-protein options with adequate carbs for energy. Include chicken, eggs, beans, rice, and dairy.";
+        break;
+    default:
+        $goalContext = "The user wants to eat healthier in general. Suggest balanced, nutritious options with variety.";
+        break;
+}
+
+$toolContext = "";
+switch ($tool) {
+    case 'recipe_creator':
+        $toolContext = "The user specifically wants a DETAILED RECIPE. Provide a full ingredient list with quantities and step-by-step cooking instructions. Format instructions with numbered steps. Use '### Ingredients' and '### Instructions' headers for a modern card layout.";
+        break;
+    case 'meal_planner':
+        $toolContext = "The user specifically wants a STRUCTURED MEAL PLAN. IMPORTANT: Before generating any plan, you MUST first ask the user whether they want a 3-day or 7-day meal plan. Only generate the plan after they choose. Include breakfast, lunch, dinner, and a '### Nutrition Tip' section.";
+        break;
+    default:
+        $toolContext = "Engage in general nutrition conversation. Keep answers concise (2-4 lines) unless asked for something complex.";
+        break;
+}
+
+$isHamboula = isset($_GET['bot']) && $_GET['bot'] === 'hamboula';
 
 $systemPrompt = <<<PROMPT
 You are a friendly Healthy Food Assistant. Your job is to help users choose healthy, affordable, and practical meals.
+PROMPT;
+
+if ($isHamboula) {
+    $systemPrompt = <<<PROMPT
+You are Mr Hamboula, a wise, slightly humorous, and highly practical personalized food guru. Your job is to help users choose healthy, affordable, and practical meals while adding a touch of your unique seasoned charm.
+PROMPT;
+}
+
+$systemPrompt .= <<<PROMPT
+
+USER STATUS:
+- DIET GOAL: {$goal} ({$goalContext})
+- ACTIVE TOOL: " . ($tool ?? "None") . " ({$toolContext})
 
 RULES:
 1. Focus on common, affordable foods: rice, eggs, chicken, vegetables, beans, lentils, oats, fruits, bread, dairy.
-2. Keep answers SHORT — 2 to 4 lines maximum. Be concise and practical.
-3. Give simple meal suggestions with brief preparation tips when asked.
-4. You may use emojis sparingly to be friendly (🥗🍳🥚🍗🥦).
-5. NEVER give medical advice or diagnose conditions.
-6. If the user asks about diseases, medications, or medical conditions, respond ONLY with: "Please consult a doctor for medical advice. I can only help with general food suggestions! 🩺"
-7. When giving dietary advice, include this disclaimer if relevant: "This is general advice, not medical guidance."
+2. If an ACTIVE TOOL is selected, prioritize that specific output format (Recipe or Plan).
+3. If no Tool is selected, follow the brevity rule (concise answers).
+4. Use emojis sparingly to be friendly (🥗🍳🥚🍗🥦).
+5. NEVER give medical advice. If asked, respond with the mandatory disclaimer: "Please consult a doctor for medical advice. I can only help with general food suggestions! 🩺"
 
-USER GOAL:
-{$goalContext}
-
-Be helpful, warm, and encouraging. Remember previous messages in the conversation.
+Be helpful, warm, and combine the USER STATUS to give personalized advice.
 PROMPT;
 
 // ── Build messages array for API ─────────────────────────────────────────────
@@ -170,9 +232,9 @@ curl_setopt_array($ch, [
         'max_tokens' => 256,
         'temperature' => 0.7,
     ]),
-    CURLOPT_TIMEOUT => 60,
+    CURLOPT_TIMEOUT => 222,
     //CURLOPT_TIMEOUT => 60: This is the limit for the entire process. It says: "From the moment I start until I get the full answer back, don't take more than 60 seconds total."
-    CURLOPT_CONNECTTIMEOUT => 30,
+    CURLOPT_CONNECTTIMEOUT => 333,
     //CURLOPT_CONNECTTIMEOUT => 30: This tells the server to wait up to 30 seconds just to "knock on the door" of the AI service. If the AI doesn't answer the door in 30 seconds, it stops trying
 
     CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4, // Use IPv4 for stability in XAMPP
@@ -214,7 +276,7 @@ if ($reply === '') {
 
 // ── Save Assistant Response to Database ─────────────────────────────────────
 if ($reply !== '') {
-    $stmt = $conn->prepare("INSERT INTO messages (user_id, role, message) VALUES (?, 'assistant', ?)");
+    $stmt = $conn->prepare("INSERT INTO messages (user_id, message) VALUES (?, ?)");
     $stmt->bind_param("ss", $userId, $reply);
     $stmt->execute();
 }

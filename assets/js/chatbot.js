@@ -8,19 +8,22 @@
     const API_URL = '/app/chatbot_api.php';
 
     // ── DOM refs ──────────────────────────────────────────────────────────
-    const bubble     = document.getElementById('chatbot-bubble');
-    const badge      = document.getElementById('chatbot-badge');
+    const bubble = document.getElementById('chatbot-bubble');
+    const badge = document.getElementById('chatbot-badge');
     const chatWindow = document.getElementById('chatbot-window');
-    const msgArea    = document.getElementById('chatbot-messages');
-    const textarea   = document.getElementById('chatbot-input');
-    const sendBtn    = document.getElementById('chatbot-send');
-    const clearBtn   = document.getElementById('chatbot-clear');
-    const goalPills  = document.querySelectorAll('.goal-pill');
-    const typingEl   = document.getElementById('chatbot-typing');
+    const msgArea = document.getElementById('chatbot-messages');
+    const textarea = document.getElementById('chatbot-input');
+    const sendBtn = document.getElementById('chatbot-send');
+    const clearBtn = document.getElementById('chatbot-clear');
+    const dietPills = document.querySelectorAll('.item-goal-widget');
+    const toolPills = document.querySelectorAll('.item-tool-widget');
+    const typingEl = document.getElementById('chatbot-typing');
 
-    let isOpen   = false;
+    let isOpen = false;
     let isLoading = false;
     let hasLoadedHistory = false;
+    let selectedGoal = 'general';
+    let selectedTool = null;
 
     // ── Toggle chat window ───────────────────────────────────────────────
     bubble.addEventListener('click', () => {
@@ -51,26 +54,53 @@
         textarea.style.height = Math.min(textarea.scrollHeight, 90) + 'px';
     });
 
-    // ── Goal pills ───────────────────────────────────────────────────────
-    goalPills.forEach(pill => {
+    // ── Independent Selection Logic ──────────────────────────────────────
+    dietPills.forEach(pill => {
         pill.addEventListener('click', () => {
-            const goal = pill.dataset.goal;
-            goalPills.forEach(p => p.classList.remove('active'));
+            selectedGoal = pill.dataset.goal;
+            dietPills.forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
-            setGoal(goal);
+            updateState({ goal: selectedGoal });
         });
     });
 
+    toolPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            const tool = pill.dataset.tool;
+            if (selectedTool === tool) {
+                selectedTool = null; // Toggle off
+                pill.classList.remove('active');
+                updateState({ tool: 'none' });
+            } else {
+                selectedTool = tool;
+                toolPills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                updateState({ tool: selectedTool });
+            }
+        });
+    });
+
+    async function updateState(data) {
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'set_goal', ...data }),
+            });
+        } catch (e) { console.error('State sync failed', e); }
+    }
+
     // ── Clear chat ───────────────────────────────────────────────────────
     clearBtn.addEventListener('click', () => {
-        fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'clear' }),
-        });
-        // Remove all messages except welcome
-        const msgs = msgArea.querySelectorAll('.chat-msg, .chatbot-error');
-        msgs.forEach(m => m.remove());
+        if (confirm("Are you sure you want to clear the chat history?")) {
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'clear' }),
+            });
+            const msgs = msgArea.querySelectorAll('.chat-msg, .chatbot-error');
+            msgs.forEach(m => m.remove());
+        }
     });
 
     // ── Load history on first open ───────────────────────────────────────
@@ -83,11 +113,14 @@
             });
             const data = await res.json();
 
-            // Set active goal pill
+            // Sync UI active states
             if (data.goal) {
-                goalPills.forEach(p => {
-                    p.classList.toggle('active', p.dataset.goal === data.goal);
-                });
+                selectedGoal = data.goal;
+                dietPills.forEach(p => p.classList.toggle('active', p.dataset.goal === data.goal));
+            }
+            if (data.tool) {
+                selectedTool = data.tool;
+                toolPills.forEach(p => p.classList.toggle('active', p.dataset.tool === data.tool));
             }
 
             // Update online status
@@ -114,17 +147,22 @@
     }
 
     // ── Send message ─────────────────────────────────────────────────────
-    async function sendMessage(retryText = null) {
-        const text = retryText !== null ? retryText : textarea.value.trim();
-        if (!text || isLoading) return;
+    async function sendMessage(retryText = null, showBubble = false) {
+        // Ensure we don't treat the Click Event as the message text
+        const isEvent = retryText && (retryText instanceof Event || retryText.nativeEvent);
+        const text = (retryText !== null && !isEvent) ? retryText : textarea.value;
 
-        // Only show user message in UI if it's NOT a retry (to avoid duplicates)
-        if (retryText === null) {
+        if (!text.trim() || isLoading) return;
+
+        // Show user message in UI if it's a new message or an interactive choice
+        if (retryText === null || showBubble) {
             appendMessage('user', text);
-            textarea.value = '';
-            textarea.style.height = 'auto';
+            if (retryText === null) {
+                textarea.value = '';
+                textarea.style.height = 'auto';
+            }
         }
-        
+
         setLoading(true);
 
         try {
@@ -187,9 +225,40 @@
         wrapper.appendChild(avatar);
         wrapper.appendChild(bubble);
 
+        // Add interactive options if this is a bot message asking for duration
+        if (type === 'bot' && (content.includes('3-day') || content.includes('7-day'))) {
+            addOptions(bubble, ['3-day', '7-day']);
+        }
+
         // Insert before typing indicator
         msgArea.insertBefore(wrapper, typingEl);
         scrollToBottom();
+    }
+
+    // ── Add interactive options to bubble ───────────────────────────────
+    function addOptions(bubble, options) {
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'chat-options';
+
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = (opt === '3-day' ? '📅 ' : '📅 ') + opt;
+
+            btn.addEventListener('click', () => {
+                // Send as a message
+                sendMessage(opt, true);
+
+                // Highlight and disable
+                btn.classList.add('selected');
+                const siblings = optionsContainer.querySelectorAll('.option-btn');
+                siblings.forEach(s => s.disabled = true);
+            });
+
+            optionsContainer.appendChild(btn);
+        });
+
+        bubble.appendChild(optionsContainer);
     }
 
     // ── Format bot text ──────────────────────────────────────────────────
@@ -224,7 +293,7 @@
         const el = document.createElement('div');
         el.className = 'chatbot-error';
         el.innerHTML = `<span>${msg}</span>`;
-        
+
         if (retryText) {
             const retryBtn = document.createElement('button');
             retryBtn.className = 'chatbot-retry-btn';
@@ -235,10 +304,10 @@
             };
             el.appendChild(retryBtn);
         }
-        
+
         msgArea.insertBefore(el, typingEl);
         scrollToBottom();
-        
+
         // Only auto-remove if NOT a retryable error
         if (!retryText) {
             setTimeout(() => el.remove(), 6000);
