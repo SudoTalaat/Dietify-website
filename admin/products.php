@@ -206,7 +206,8 @@ $view = isset($_GET['form']) || isset($_GET['edit']) ? 'form' : 'list';
                                 <?php echo $value['stock']; ?>
                             </td>
                             <td><img style="width:40px; height:40px; object-fit: cover;"
-                                    src="../<?php echo $value['image_path'] ?: 'assets/images/placeholder-300x300.png'; ?>"
+                                    src="<?php $imgUrl = getImageUrl($value['image_path']);
+                                    echo (str_starts_with($imgUrl, 'http') ? $imgUrl : '../' . ($imgUrl ?: 'assets/images/placeholder-300x300.png')); ?>"
                                     alt="Product"></td>
                             <td>
                                 <?php echo ucfirst($value['type']); ?>
@@ -248,7 +249,9 @@ $view = isset($_GET['form']) || isset($_GET['edit']) ? 'form' : 'list';
                 <label for="image">Product Image</label>
                 <?php if (!empty($image)): ?>
                     <div style="margin-bottom: 10px;">
-                        <img src="../<?php echo $image; ?>" alt="Current Image" width="100">
+                        <img src="<?php $imgUrl = getImageUrl($image);
+                        echo (str_starts_with($imgUrl, 'http') ? $imgUrl : '../' . ($imgUrl ?: 'assets/images/placeholder-300x300.png')); ?>"
+                            alt="Current Image" width="100">
                     </div>
                 <?php endif; ?>
                 <input id="image" type="file" name="image"><br><br>

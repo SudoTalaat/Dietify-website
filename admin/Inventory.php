@@ -193,7 +193,7 @@ $run_select = $stmt->get_result();
                         <td><?php echo $product['id']; ?></td>
                         <td><?php echo htmlspecialchars($product['name']); ?></td>
                         <td><?php echo $product['price']; ?></td>
-                        <td><img src="../<?php echo $product['image_path'] ?: 'placeholder.png'; ?>" width="40" height="40">
+                        <td><img src="<?php $imgUrl = getImageUrl($product['image_path']); echo (str_starts_with($imgUrl, 'http') ? $imgUrl : '../' . ($imgUrl ?: 'assets/images/placeholder-300x300.png')); ?>" width="40" height="40" style="object-fit: cover; border-radius: 4px;">
                         </td>
                         <td><?php echo htmlspecialchars($product['description']); ?></td>
                         <td><?php echo ucfirst($product['type']); ?></td>
