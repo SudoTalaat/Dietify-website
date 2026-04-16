@@ -16,11 +16,11 @@ $userId = (int) $_SESSION['user_id'];
 $message = '';
 $msgType = 'success';
 $google2fa = new Google2FA();
-$currentTab = $_GET['tab'] ?? 'security';
+$currentTab = $_GET['tab'] ?? 'orders';
 
 // ── Load user details ────────────────────────────────────────────────────────
 $stmt = $conn->prepare(
-    "SELECT u.id, u.username, u.email, u.twofa_method, u.role, u.created_at, t.totp_secret, t.confirmed_at as totp_confirmed_at
+    "SELECT u.id, u.username, u.email, u.password, u.twofa_method, u.role, u.created_at, u.avatar, u.age, u.weight, u.height, u.gender, u.phone, t.totp_secret, t.confirmed_at as totp_confirmed_at
      FROM users u
      LEFT JOIN user_totp t ON u.id = t.user_id
      WHERE u.id = ?"
@@ -212,6 +212,37 @@ elseif ($action === 'confirm_totp') {
         $msgType = 'error';
         $showQr = true;
         $user['totp_secret'] = $secret;
+    }
+}
+// 5. CHANGE PASSWORD
+elseif ($action === 'change_password') {
+    $currentPass = $_POST['current_password'] ?? '';
+    $newPass = $_POST['new_password'] ?? '';
+    $confirmPass = $_POST['confirm_password'] ?? '';
+
+    if (!password_verify($currentPass, $user['password'])) {
+        $message = "Current password is incorrect.";
+        $msgType = 'error';
+    } elseif ($newPass !== $confirmPass) {
+        $message = "New passwords do not match.";
+        $msgType = 'error';
+    } elseif (strlen($newPass) < 8) {
+        $message = "New password must be at least 8 characters.";
+        $msgType = 'error';
+    } else {
+        $hashed = password_hash($newPass, PASSWORD_BCRYPT);
+        $upd = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $upd->bind_param('si', $hashed, $userId);
+        if ($upd->execute()) {
+            $message = "Password updated successfully! 🔐";
+            $msgType = 'success';
+            // Update the local $user array so subsequent checks use the new hash
+            $user['password'] = $hashed;
+        } else {
+            $message = "Error updating password.";
+            $msgType = 'error';
+        }
+        $upd->close();
     }
 }
 
@@ -445,15 +476,57 @@ include __DIR__ . '/header.php';
             grid-template-columns: 1fr;
         }
     }
+
+    .password-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 400px;
+        margin-top: 20px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #ff6b35;
+    }
+
+    .btn-save-pass {
+        background: #333;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .btn-save-pass:hover {
+        background: #000;
+        transform: translateY(-1px);
+    }
 </style>
 
 <div style="background: #f0f2f5; min-height: calc(100vh - 70px); padding: 40px 0;">
     <div class="profile-container">
         <!-- ── LEFT: USER INFO ── -->
         <div class="user-card">
-            <div class="avatar-circle">
-                <?php echo strtoupper(substr($user['username'], 0, 1)); ?>
-            </div>
+            <?php if (!empty($user['avatar']) && $user['avatar'] !== 'assets/images/default_avatar.png'): ?>
+                <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; display: block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <?php else: ?>
+                <div class="avatar-circle">
+                    <?php echo strtoupper(substr($user['username'], 0, 1)); ?>
+                </div>
+            <?php endif; ?>
             <div class="user-info">
                 <h2>
                     <?php echo htmlspecialchars($user['username']); ?>
@@ -461,37 +534,73 @@ include __DIR__ . '/header.php';
                 <p>Member since
                     <?php echo date('Y-m-d', strtotime($user['created_at'])); ?>
                 </p>
+                <a href="edit_profile.php" class="settings-btn" style="background:#ff6b35; color:white; border:none; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px; font-size: 0.9rem;">✏️ Edit Profile</a>
 
                 <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Email Address</div>
-                        <div class="info-value">
-                            <?php echo htmlspecialchars($user['email']); ?>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="info-item">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value">
+                                <?php echo htmlspecialchars($user['email']); ?>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone</div>
+                            <div class="info-value">
+                                <?php echo $user['phone'] ? htmlspecialchars($user['phone']) : '<span style="color:#aaa;font-weight:normal;">Not provided</span>'; ?>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Age</div>
+                            <div class="info-value">
+                                <?php echo $user['age'] ? htmlspecialchars($user['age']) . ' yrs' : '<span style="color:#aaa;font-weight:normal;">Not provided</span>'; ?>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Gender</div>
+                            <div class="info-value">
+                                <?php echo $user['gender'] ? ucfirst(htmlspecialchars($user['gender'])) : '<span style="color:#aaa;font-weight:normal;">Not provided</span>'; ?>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Weight</div>
+                            <div class="info-value">
+                                <?php echo $user['weight'] ? htmlspecialchars($user['weight']) . ' kg' : '<span style="color:#aaa;font-weight:normal;">Not provided</span>'; ?>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Height</div>
+                            <div class="info-value">
+                                <?php echo $user['height'] ? htmlspecialchars($user['height']) . ' cm' : '<span style="color:#aaa;font-weight:normal;">Not provided</span>'; ?>
+                            </div>
                         </div>
                     </div>
-                    <!-- Role check restored -->
-                    <div class="info-item">
-                        <div class="info-label">Account Role</div>
-                        <div class="info-value"
-                            style="color: <?php echo $user['role'] === 'admin' ? '#ff6b35' : '#444'; ?>;">
-                            <?php echo ucfirst(htmlspecialchars($user['role'])); ?>
+
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee;">
+                        <!-- Role check restored -->
+                        <div class="info-item">
+                            <div class="info-label">Account Role</div>
+                            <div class="info-value"
+                                style="color: <?php echo $user['role'] === 'admin' ? '#ff6b35' : '#444'; ?>;">
+                                <?php echo ucfirst(htmlspecialchars($user['role'])); ?>
+                            </div>
                         </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Account Security</div>
-                        <div class="info-value">
-                            <?php if ($currentMethod === 'none'): ?>
-                                <span style="color:#dc3545">● Standard</span>
-                            <?php else: ?>
-                                <span style="color:#28a745">● 2FA Protected</span>
-                            <?php endif; ?>
+                        <div class="info-item">
+                            <div class="info-label">Account Security</div>
+                            <div class="info-value">
+                                <?php if ($currentMethod === 'none'): ?>
+                                    <span style="color:#dc3545">● Standard</span>
+                                <?php else: ?>
+                                    <span style="color:#28a745">● 2FA Protected</span>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="profile-tabs">
-                    <a href="?tab=security" class="tab-link <?php echo $currentTab === 'security' ? 'active' : ''; ?>">
-                        🛡️ Security Settings
+                    <a href="?tab=settings" class="tab-link <?php echo $currentTab === 'settings' ? 'active' : ''; ?>">
+                        ⚙️ Settings
                     </a>
                     <a href="?tab=orders" class="tab-link <?php echo $currentTab === 'orders' ? 'active' : ''; ?>">
                         📦 My Orders
@@ -510,10 +619,10 @@ include __DIR__ . '/header.php';
                 </div>
             <?php endif; ?>
 
-            <?php if ($currentTab === 'security'): ?>
-                <!-- Security Tab Content -->
+            <?php if ($currentTab === 'settings'): ?>
+                <!-- Settings Tab Content -->
                 <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                    🛡️ Security Settings
+                    ⚙️ Account Settings
                 </h3>
 
                 <!-- Backup Codes Display (One-time) -->
@@ -534,11 +643,11 @@ include __DIR__ . '/header.php';
 
                 <div class="twofa-status">
                     <?php if ($currentMethod === 'none'): ?>
-                        <span class="badge badge-off">🔓 2FA is currently Disabled</span>
+                        <span class="badge badge-off">🔓 Two-Factor Authentication is currently Disabled</span>
                     <?php elseif ($currentMethod === 'email'): ?>
-                        <span class="badge badge-on">✅ Email OTP Protected</span>
+                        <span class="badge badge-on">✅ Email 2FA enabled</span>
                     <?php elseif ($currentMethod === 'totp'): ?>
-                        <span class="badge badge-on">✅ Authenticator App Protected</span>
+                        <span class="badge badge-on">✅ Authenticator Apps enabled</span>
                     <?php endif; ?>
                 </div>
 
@@ -570,7 +679,7 @@ include __DIR__ . '/header.php';
                             <input type="hidden" name="action" value="enable_email">
                             <button type="submit" class="settings-btn btn-email">
                                 📧
-                                <?php echo ($currentMethod === 'none') ? 'Enable' : 'Switch to'; ?> Email OTP
+                                <?php echo ($currentMethod === 'none') ? 'Enable' : 'Switch to'; ?> Email 2FA
                             </button>
                         </form>
                     <?php endif; ?>
@@ -580,19 +689,43 @@ include __DIR__ . '/header.php';
                             <input type="hidden" name="action" value="start_totp">
                             <button type="submit" class="settings-btn btn-totp">
                                 🔐
-                                <?php echo ($currentMethod === 'none') ? 'Enable' : 'Switch to'; ?> Authenticator App
+                                <?php echo ($currentMethod === 'none') ? 'Enable' : 'Switch to'; ?> Authenticator Apps
                             </button>
                         </form>
                     <?php endif; ?>
 
                     <?php if ($currentMethod !== 'none'): ?>
-                        <form method="POST" onsubmit="return confirm('Disable 2FA? This makes your account less secure.')">
+                        <form method="POST" onsubmit="return confirm('Disable Two-Factor Authentication? Your account will be less secure.')">
                             <input type="hidden" name="action" value="disable">
                             <button type="submit" class="settings-btn btn-disable">
-                                🔓 Disable Two-Factor
+                                🔓 Disable 2FA
                             </button>
                         </form>
                     <?php endif; ?>
+                </div>
+                
+                <div style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 30px;">
+                    <h4 style="margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 8px;">
+                        🔑 Update Your Password
+                    </h4>
+                    <form method="POST" class="password-form">
+                        <input type="hidden" name="action" value="change_password">
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label style="font-size: 0.85rem; color: #666; font-weight: 600;">Current Password</label>
+                            <input type="password" name="current_password" class="form-input" required placeholder="••••••••">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label style="font-size: 0.85rem; color: #666; font-weight: 600;">New Password</label>
+                            <input type="password" name="new_password" class="form-input" required placeholder="Minimum 8 characters">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <label style="font-size: 0.85rem; color: #666; font-weight: 600;">Confirm New Password</label>
+                            <input type="password" name="confirm_password" class="form-input" required placeholder="Repeat new password">
+                        </div>
+                        <button type="submit" class="btn-save-pass">
+                            Save New Password
+                        </button>
+                    </form>
                 </div>
 
             <?php elseif ($currentTab === 'orders'): ?>
@@ -644,12 +777,12 @@ include __DIR__ . '/header.php';
                                     <div class="order-item">
                                         <span><?php echo $item['quantity']; ?>x
                                             <?php echo htmlspecialchars($item['product_name']); ?></span>
-                                        <span><?php echo CURRENCY_SYMBOL . number_format($item['price'] * $item['quantity'], 2); ?></span>
+                                        <span style="color: #27ae60; font-weight: 600;"><?php echo CURRENCY_SYMBOL . number_format($item['price'] * $item['quantity'], 2); ?></span>
                                     </div>
                                 <?php endwhile; ?>
                                 <div class="order-item" style="border-top: 2px solid #ddd; border-bottom: none; font-weight: bold;">
                                     <span>Total Amount:</span>
-                                    <span><?php echo CURRENCY_SYMBOL . number_format($order['total_amount'], 2); ?></span>
+                                    <span style="color: #27ae60;"><?php echo CURRENCY_SYMBOL . number_format($order['total_amount'], 2); ?></span>
                                 </div>
                             </div>
 

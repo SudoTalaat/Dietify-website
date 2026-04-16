@@ -64,7 +64,7 @@ include __DIR__ . '/header.php';
     <div
         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; align-items: start;">
         <div class="product-image">
-            <img src="<?php echo $product['image_path'] ?: 'assets/images/placeholder-300x300.png'; ?>"
+            <img src="<?php echo getImageUrl($product['image_path']) ?: 'assets/images/placeholder-300x300.png'; ?>"
                 alt="<?php echo htmlspecialchars($product['name']); ?>"
                 style="width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
         </div>
@@ -96,9 +96,11 @@ include __DIR__ . '/header.php';
                 </span>
             </div>
 
-            <div style="font-size: 2rem; font-weight: 700; color: #333; margin-bottom: 25px;">
+            <div style="font-size: 2rem; font-weight: 700; color: #27ae60; margin-bottom: 25px;">
                 <?php echo CURRENCY_SYMBOL; ?><?php echo number_format($product['price'], 2); ?>
             </div>
+            
+            <?php $inStock = ($product['stock'] > 0); ?>
 
             <p style="color: #666; line-height: 1.8; margin-bottom: 30px; font-size: 1.1rem;">
                 <?php echo nl2br(htmlspecialchars($product['description'])); ?>
@@ -109,26 +111,26 @@ include __DIR__ . '/header.php';
                 <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                 <input type="hidden" name="action" value="add">
                 <div
-                    style="display: flex; align-items: center; border: 2px solid #e1e5e9; border-radius: 12px; overflow: hidden;">
+                    style="display: flex; align-items: center; border: 2px solid #e1e5e9; border-radius: 12px; overflow: hidden; <?php echo $inStock ? '' : 'opacity: 0.5; pointer-events: none;'; ?>">
                     <button type="button" onclick="const q = this.nextElementSibling; if(q.value > 1) q.value--;"
-                        style="padding: 10px 15px; border: none; background: white; cursor: pointer;"><i
+                        style="padding: 10px 15px; border: none; background: white; cursor: pointer;" <?php echo $inStock ? '' : 'disabled'; ?>><i
                             class="fas fa-minus"></i></button>
-                    <input type="number" name="quantity" value="1" min="1" max="<?php echo $product['stock']; ?>"
-                        style="width: 50px; text-align: center; border: none; font-weight: 700; font-size: 1rem; padding: 10px 0;">
+                    <input type="number" name="quantity" value="<?php echo $inStock ? 1 : 0; ?>" min="<?php echo $inStock ? 1 : 0; ?>" max="<?php echo $product['stock']; ?>"
+                        style="width: 50px; text-align: center; border: none; font-weight: 700; font-size: 1rem; padding: 10px 0;" <?php echo $inStock ? '' : 'disabled'; ?>>
                     <button type="button"
                         onclick="const q = this.previousElementSibling; if(q.value < <?php echo $product['stock']; ?>) q.value++;"
-                        style="padding: 10px 15px; border: none; background: white; cursor: pointer;"><i
+                        style="padding: 10px 15px; border: none; background: white; cursor: pointer;" <?php echo $inStock ? '' : 'disabled'; ?>><i
                             class="fas fa-plus"></i></button>
                 </div>
-                <button type="submit" class="login-btn" style="flex: 1; margin-bottom: 0;">
-                    <i class="fas fa-shopping-basket"></i> Add to Cart
+                <button type="submit" class="login-btn" style="flex: 1; margin-bottom: 0; <?php echo $inStock ? '' : 'background: #bdc3c7; cursor: not-allowed;'; ?>" <?php echo $inStock ? '' : 'disabled'; ?>>
+                    <i class="fas <?php echo $inStock ? 'fa-shopping-basket' : 'fa-times-circle'; ?>"></i> <?php echo $inStock ? 'Add to Cart' : 'Out of Stock'; ?>
                 </button>
             </form>
 
             <div style="border-top: 1px solid #eee; padding-top: 25px;">
                 <div style="display: flex; gap: 20px; color: #666; font-size: 0.9rem;">
-                    <span><i class="fas fa-check-circle" style="color: #27ae60;"></i> In Stock:
-                        <?php echo $product['stock']; ?>
+                    <span><i class="fas <?php echo $inStock ? 'fa-check-circle' : 'fa-exclamation-triangle'; ?>" style="color: <?php echo $inStock ? '#27ae60' : '#e74c3c'; ?>;"></i> 
+                        <?php echo $inStock ? 'In Stock: ' . $product['stock'] : 'Out of Stock'; ?>
                     </span>
                     <span><i class="fas fa-shipping-fast"></i> Delivery in 30 mins</span>
                 </div>

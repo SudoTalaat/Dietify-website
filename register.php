@@ -158,19 +158,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label class="checkbox-container">
                             <input type="checkbox" id="terms" name="terms" required>
                             <span class="checkmark"></span>
-                            I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#"
-                                class="terms-link">Privacy Policy</a>
+                            I agree to the <a href="tos.php" class="terms-link" target="_blank">Terms of Service</a> and
+                            <a href="privacy.php" class="terms-link" target="_blank">Privacy Policy</a>
                         </label>
                         <span class="error-message" id="termsError"></span>
                     </div>
 
-                    <div class="form-group">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="newsletter" name="newsletter">
-                            <span class="checkmark"></span>
-                            Subscribe to our newsletter for healthy tips and recipes
-                        </label>
-                    </div>
+
 
                     <div class="h-captcha" data-sitekey="c5bca084-e8b0-45cc-afc2-b42e11e2e1c4"></div>
 

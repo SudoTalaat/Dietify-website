@@ -135,23 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <span class="server-error"><?php echo $error; ?></span>
                     <?php endif; ?>
 
-                    <div class="form-group">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="terms" name="terms" required>
-                            <span class="checkmark"></span>
-                            I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#"
-                                class="terms-link">Privacy Policy</a>
-                        </label>
-                        <span class="error-message" id="termsError"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="checkbox-container">
-                            <input type="checkbox" id="newsletter" name="newsletter">
-                            <span class="checkmark"></span>
-                            Subscribe to our newsletter for healthy tips and recipes
-                        </label>
-                    </div>
+                  
 
                     <button type="submit" class="register-btn"><span>Create Account</span></button>
 

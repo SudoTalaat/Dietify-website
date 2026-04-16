@@ -38,14 +38,14 @@ include __DIR__ . '/header.php';
                 <?php foreach ($items as $item): ?>
                     <div
                         style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; align-items: center; gap: 20px;">
-                        <img src="<?php echo $item['image_path'] ?: 'assets/images/placeholder-300x300.png'; ?>" alt=""
+                        <img src="<?php echo getImageUrl($item['image_path']) ?: 'assets/images/placeholder-300x300.png'; ?>" alt=""
                             style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px;">
                         <div style="flex: 1;">
                             <h3 style="margin-bottom: 5px;">
                                 <?php echo htmlspecialchars($item['name']); ?>
                             </h3>
-                            <div style="color: #ff6b35; font-weight: 700;">
-                                <?php echo CURRENCY_SYMBOL; ?>         <?php echo number_format($item['price'], 2); ?>
+                            <div style="color: #27ae60; font-weight: 700;">
+                                <?php echo CURRENCY_SYMBOL; ?> <?php echo number_format($item['price'], 2); ?>
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
@@ -88,8 +88,8 @@ include __DIR__ . '/header.php';
                 <div
                     style="border-top: 2px solid #eee; margin: 20px 0; padding-top: 20px; display: flex; justify-content: space-between; font-weight: 700; font-size: 1.25rem;">
                     <span>Total</span>
-                    <span>
-                        <?php echo CURRENCY_SYMBOL; ?>     <?php echo number_format($total, 2); ?>
+                    <span style="color: #27ae60;">
+                        <?php echo CURRENCY_SYMBOL; ?> <?php echo number_format($total, 2); ?>
                     </span>
                 </div>
                 <a href="checkout.php" class="login-btn"

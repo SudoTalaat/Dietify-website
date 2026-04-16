@@ -10,16 +10,18 @@ if (!isLoggedIn()) {
 
 <div class="chat-page-container">
     <div class="chat-page-header">
-        <h1>Healthy Food Assistant</h1>
-        <p>Your personal guide to healthy, affordable, and nutritious meals.</p>
+        <h1>Mr Hamboula Assistant</h1>
+        <p>Talk to Mr Hamboula, your personalized food guru.</p>
     </div>
 
     <!-- The Chat Window Embedded in the Page -->
     <div id="page-chatbot-window" class="chatbot-window static-mode is-visible">
         <div class="chatbot-header">
-            <div class="chatbot-avatar">🥗</div>
+            <div class="chatbot-avatar" style="overflow: hidden; padding: 0;">
+                <img src="/app/assets/images/hamboula.jpg" alt="Mr Hamboula" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
             <div class="chatbot-header-info">
-                <h3>Food Assistant</h3>
+                <h3>Mr Hamboula</h3>
                 <span><span class="status-dot"></span> Online</span>
             </div>
             <div class="chatbot-header-actions">
@@ -45,11 +47,13 @@ if (!isLoggedIn()) {
             <div class="chatbot-welcome">
                 <span class="welcome-emoji">👋</span>
                 <h4>Hi there!</h4>
-                <p>I'm your Healthy Food Assistant.<br>Ask me about meals, nutrition, or set a goal above!</p>
+                <p>I'm Mr Hamboula.<br>Ask me about meals, routines, or set a goal above!</p>
             </div>
 
             <div id="chatbot-typing-page" class="typing-indicator">
-                <div class="msg-avatar">🥗</div>
+                <div class="msg-avatar" style="overflow: hidden; padding: 0;">
+                    <img src="/app/assets/images/hamboula.jpg" alt="Mr Hamboula" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 <div class="typing-dots">
                     <span></span><span></span><span></span>
                 </div>
@@ -57,7 +61,7 @@ if (!isLoggedIn()) {
         </div>
 
         <div class="chatbot-input-area">
-            <textarea id="chatbot-input-page" placeholder="Ask about healthy meals..." rows="1"></textarea>
+            <textarea id="chatbot-input-page" placeholder="Ask Mr Hamboula..." rows="1"></textarea>
             <button id="chatbot-send-page" class="chatbot-send-btn" aria-label="Send message">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -117,7 +121,7 @@ if (!isLoggedIn()) {
 <script>
     // Initialize the page version of the chatbot using the same API
     (function () {
-        const API_URL = '/app/chatbot_api.php';
+        const API_URL = '/app/chatbot_api.php?bot=hamboula';
 
         const msgArea = document.getElementById('chatbot-messages-page');
         const textarea = document.getElementById('chatbot-input-page');
@@ -265,7 +269,13 @@ if (!isLoggedIn()) {
             wrapper.className = `chat-msg ${type}`;
             const avatar = document.createElement('div');
             avatar.className = 'msg-avatar';
-            avatar.textContent = type === 'bot' ? '🥗' : '👤';
+            if (type === 'bot') {
+                avatar.style.overflow = 'hidden';
+                avatar.style.padding = '0';
+                avatar.innerHTML = '<img src="/app/assets/images/hamboula.jpg" alt="Mr Hamboula" style="width: 100%; height: 100%; object-fit: cover;">';
+            } else {
+                avatar.textContent = '👤';
+            }
             const bubble = document.createElement('div');
             bubble.className = 'msg-bubble';
             bubble.innerHTML = formatContent(content);

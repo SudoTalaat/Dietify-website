@@ -31,7 +31,7 @@ include __DIR__ . '/header.php';
         <?php if ($result->num_rows > 0): ?>
             <?php while ($product = $result->fetch_assoc()): ?>
                 <div class="feature-card" style="text-align: left;">
-                    <img src="<?php echo $product['image_path'] ?: 'assets/images/placeholder-300x300.png'; ?>"
+                    <img src="<?php echo getImageUrl($product['image_path']) ?: 'assets/images/placeholder-300x300.png'; ?>"
                         alt="<?php echo htmlspecialchars($product['name']); ?>"
                         style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -45,8 +45,8 @@ include __DIR__ . '/header.php';
                     <h3 style="margin: 10px 0;">
                         <?php echo htmlspecialchars($product['name']); ?>
                     </h3>
-                    <div style="font-weight: 700; color: #333; font-size: 1.25rem;">
-                        <?php echo CURRENCY_SYMBOL; ?>        <?php echo number_format($product['price'], 2); ?>
+                    <div style="font-weight: 700; color: #27ae60; font-size: 1.25rem;">
+                        <?php echo CURRENCY_SYMBOL; ?> <?php echo number_format($product['price'], 2); ?>
                     </div>
                     <a href="product.php?id=<?php echo $product['id']; ?>" class="login-btn"
                         style="display: block; text-align: center; margin-top: 15px; text-decoration: none;">View Details</a>
