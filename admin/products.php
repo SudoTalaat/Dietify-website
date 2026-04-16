@@ -12,13 +12,29 @@ $error = '';
 // Handle delete action
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    $stmt = $conn->prepare("DELETE FROM `products` WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    if ($stmt->execute()) {
-        header("Location: products.php?msg=deleted");
-        exit;
-    } else {
-        $error = "Error deleting product: " . $conn->error;
+    try {
+        $conn->begin_transaction();
+
+        // 1. Delete dependent entries first (Cascade Simulation)
+        $conn->query("DELETE FROM `cart_items` WHERE `product_id` = $id");
+        $conn->query("DELETE FROM `order_items` WHERE `product_id` = $id");
+        $conn->query("DELETE FROM `reviews` WHERE `product_id` = $id");
+
+        // 2. Delete the actual product
+        $stmt = $conn->prepare("DELETE FROM `products` WHERE id = ?");
+        $stmt->bind_param("i", $id);
+
+        if ($stmt->execute()) {
+            $conn->commit();
+            header("Location: products.php?msg=deleted");
+            exit;
+        } else {
+            $conn->rollback();
+            $error = "Error deleting product: " . $conn->error;
+        }
+    } catch (Exception $e) {
+        $conn->rollback();
+        $error = "Database Error: " . $e->getMessage();
     }
 }
 
@@ -207,8 +223,8 @@ $view = isset($_GET['form']) || isset($_GET['edit']) ? 'form' : 'list';
                             </td>
                             <td><img style="width:40px; height:40px; object-fit: cover;"
                                     src="<?php $imgUrl = getImageUrl($value['image_path']);
-                                    echo (str_starts_with($imgUrl, 'http') ? $imgUrl : '../' . ($imgUrl ?: 'assets/images/placeholder-300x300.png')); ?>"
-                                    alt="Product"></td>
+                                    echo (str_starts_with($imgUrl, 'http') ? $imgUrl : '../' . ($imgUrl ?: 'assets/images/placeholder-300x300.png')); ?>" alt="Product">
+                            </td>
                             <td>
                                 <?php echo ucfirst($value['type']); ?>
                             </td>

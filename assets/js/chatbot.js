@@ -11,7 +11,6 @@
     const bubble = document.getElementById('chatbot-bubble');
     const badge = document.getElementById('chatbot-badge');
     const chatWindow = document.getElementById('chatbot-window');
-<<<<<<< HEAD
     const msgArea = document.getElementById('chatbot-messages');
     const textarea = document.getElementById('chatbot-input');
     const sendBtn = document.getElementById('chatbot-send');
@@ -19,26 +18,12 @@
     const dietPills = document.querySelectorAll('.item-goal-widget');
     const toolPills = document.querySelectorAll('.item-tool-widget');
     const typingEl = document.getElementById('chatbot-typing');
-=======
-    const msgArea    = document.getElementById('chatbot-messages');
-    const textarea   = document.getElementById('chatbot-input');
-    const sendBtn    = document.getElementById('chatbot-send');
-    const clearBtn   = document.getElementById('chatbot-clear');
-    const dietPills = document.querySelectorAll('.goal-pill');
-    const toolPills = document.querySelectorAll('.tool-pill');
-    const applyBtn  = document.getElementById('btn-apply-diet');
-    const typingEl  = document.getElementById('chatbot-typing');
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
 
     let isOpen = false;
     let isLoading = false;
     let hasLoadedHistory = false;
-<<<<<<< HEAD
     let selectedGoal = 'general';
     let selectedTool = null;
-=======
-    let selectedDiet = 'general'; // Default
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
 
     // ── Toggle chat window ───────────────────────────────────────────────
     bubble.addEventListener('click', () => {
@@ -69,7 +54,6 @@
         textarea.style.height = Math.min(textarea.scrollHeight, 90) + 'px';
     });
 
-<<<<<<< HEAD
     // ── Independent Selection Logic ──────────────────────────────────────
     dietPills.forEach(pill => {
         pill.addEventListener('click', () => {
@@ -77,52 +61,6 @@
             dietPills.forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
             updateState({ goal: selectedGoal });
-=======
-    // ── Diet selection (Local only until Apply) ──────────────────────────
-    dietPills.forEach(pill => {
-        pill.addEventListener('click', () => {
-            const goal = pill.dataset.goal;
-            selectedDiet = goal;
-            
-            // UI state only
-            dietPills.forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            
-            // Optional: Remove active state from tools if diet is selected
-            toolPills.forEach(p => p.classList.remove('active'));
-            
-            // Enable Apply button
-            applyBtn.disabled = false;
-        });
-    });
-
-    applyBtn.addEventListener('click', async () => {
-        applyBtn.disabled = true;
-        await setGoal(selectedDiet);
-        
-        // Show a brief visual confirmation on the button
-        const originalText = applyBtn.textContent;
-        applyBtn.textContent = 'Applied!';
-        setTimeout(() => {
-            applyBtn.textContent = originalText;
-        }, 2000);
-    });
-
-    // ── Tools (Activate instantly) ───────────────────────────────────────
-    toolPills.forEach(pill => {
-        pill.addEventListener('click', () => {
-            const goal = pill.dataset.goal;
-            
-            // Activate instantly
-            toolPills.forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            
-            // Clear diet active state
-            dietPills.forEach(p => p.classList.remove('active'));
-            applyBtn.disabled = true;
-            
-            setGoal(goal);
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
         });
     });
 
@@ -213,15 +151,9 @@
         // Ensure we don't treat the Click Event as the message text
         const isEvent = retryText && (retryText instanceof Event || retryText.nativeEvent);
         const text = (retryText !== null && !isEvent) ? retryText : textarea.value;
-<<<<<<< HEAD
 
         if (!text.trim() || isLoading) return;
 
-=======
-        
-        if (!text.trim() || isLoading) return;
-
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
         // Show user message in UI if it's a new message or an interactive choice
         if (retryText === null || showBubble) {
             appendMessage('user', text);
@@ -307,44 +239,25 @@
     function addOptions(bubble, options) {
         const optionsContainer = document.createElement('div');
         optionsContainer.className = 'chat-options';
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
         options.forEach(opt => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.innerHTML = (opt === '3-day' ? '📅 ' : '📅 ') + opt;
-<<<<<<< HEAD
 
             btn.addEventListener('click', () => {
                 // Send as a message
                 sendMessage(opt, true);
 
-=======
-            
-            btn.addEventListener('click', () => {
-                // Send as a message
-                sendMessage(opt, true);
-                
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
                 // Highlight and disable
                 btn.classList.add('selected');
                 const siblings = optionsContainer.querySelectorAll('.option-btn');
                 siblings.forEach(s => s.disabled = true);
             });
-<<<<<<< HEAD
 
             optionsContainer.appendChild(btn);
         });
 
-=======
-            
-            optionsContainer.appendChild(btn);
-        });
-        
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
         bubble.appendChild(optionsContainer);
     }
 

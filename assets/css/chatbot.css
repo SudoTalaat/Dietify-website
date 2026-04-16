@@ -241,11 +241,7 @@
     flex-shrink: 0;
 }
 
-<<<<<<< HEAD
 .chatbot-goal-bar,
-=======
-.chatbot-goal-bar, 
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
 .chatbot-tools-bar {
     padding: 8px 16px;
     display: flex;
@@ -253,16 +249,11 @@
     gap: 6px;
     overflow-x: auto;
 }
-<<<<<<< HEAD
 
 .chatbot-goal-bar::-webkit-scrollbar,
 .chatbot-tools-bar::-webkit-scrollbar {
     display: none;
 }
-=======
-.chatbot-goal-bar::-webkit-scrollbar, 
-.chatbot-tools-bar::-webkit-scrollbar { display: none; }
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
 
 .chatbot-tools-bar {
     padding-top: 0;
@@ -272,25 +263,17 @@
 /* Section labels */
 .selector-label {
     font-size: 0.72rem;
-<<<<<<< HEAD
     color: #94a3b8;
     /* Light gray-blue */
-=======
-    color: #94a3b8; /* Light gray-blue */
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
     font-weight: 500;
     margin-right: 4px;
     text-transform: lowercase;
 }
 
-<<<<<<< HEAD
 .goal-pill,
 .goal-pill-page,
 .tool-pill,
 .tool-pill-page {
-=======
-.goal-pill, .tool-pill {
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
     padding: 5px 14px;
     border-radius: 20px;
     border: 1.5px solid #f0d0be;
@@ -301,24 +284,16 @@
     font-family: 'Inter', sans-serif;
     cursor: pointer;
     white-space: nowrap;
-<<<<<<< HEAD
     transition: all 0.25s cubic-bezier(.16, 1, .3, 1);
-=======
-    transition: all 0.25s ease;
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
     display: inline-flex;
     align-items: center;
     gap: 6px;
 }
 
-<<<<<<< HEAD
 .goal-pill:hover,
 .goal-pill-page:hover,
 .tool-pill:hover,
 .tool-pill-page:hover {
-=======
-.goal-pill:hover {
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
     border-color: #ff6b35;
     color: #ff6b35;
     transform: translateY(-1px);
@@ -326,7 +301,6 @@
 
 .goal-pill.active,
 .goal-pill-page.active,
-<<<<<<< HEAD
 .tool-pill.active,
 .tool-pill-page.active {
     background: #ff6b35;
@@ -389,9 +363,6 @@
 }
 
 .option-btn.selected {
-=======
-.item-goal-page.active {
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
     background: #ff6b35;
     color: #fff;
     border-color: transparent;

@@ -29,7 +29,6 @@ if (!isLoggedIn()) {
 
         <div class="chatbot-selector-container">
             <!-- Row 1: Diet Goals -->
-<<<<<<< HEAD
             <div class="chatbot-goal-bar" style="justify-content: center; padding: 8px 12px 4px;">
                 <button class="goal-pill item-goal-page active" data-goal="general">🍽️ General</button>
                 <button class="goal-pill item-goal-page" data-goal="weight_loss">⚖️ Weight Loss</button>
@@ -39,24 +38,6 @@ if (!isLoggedIn()) {
             <div class="chatbot-goal-bar" style="justify-content: center; padding: 4px 12px 8px;">
                 <button class="goal-pill item-tool-page" data-tool="recipe_creator">🍳 Recipes</button>
                 <button class="goal-pill item-tool-page" data-tool="meal_planner">📅 Meal Planner</button>
-=======
-            <div class="chatbot-goal-bar">
-                <button class="goal-pill-page item-goal-page active" data-goal="general">General</button>
-                <button class="goal-pill-page item-goal-page" data-goal="weight_loss">Weight Loss</button>
-                <button class="goal-pill-page item-goal-page" data-goal="muscle_gain">Muscle Gain</button>
-                <button id="btn-apply-diet-page" class="btn-apply-goal" disabled>Apply</button>
-            </div>
-
-            <!-- Row 2: Tools (as requested in image) -->
-            <div class="chatbot-tools-bar">
-                <span class="selector-label">tools</span>
-                <button class="tool-pill-page recipe-creator" data-goal="recipe_creator">
-                    <i class="fas fa-utensils"></i> recipe creator
-                </button>
-                <button class="tool-pill-page meal-planner" data-goal="meal_planner">
-                    <i class="fas fa-calendar-alt"></i> meal planner
-                </button>
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
             </div>
         </div>
 
@@ -135,10 +116,6 @@ if (!isLoggedIn()) {
 
 <script>
     // Initialize the page version of the chatbot using the same API
-<<<<<<< HEAD
-=======
-    // We can reuse the logic but we need to bind to the page-specific IDs
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
     (function () {
         const API_URL = '/app/chatbot_api.php';
 
@@ -154,15 +131,6 @@ if (!isLoggedIn()) {
         let isLoading = false;
         let selectedGoal = 'general';
         let selectedTool = null;
-=======
-        const dietPills = document.querySelectorAll('.item-goal-page');
-        const toolPills = document.querySelectorAll('.tool-pill-page');
-        const applyBtn = document.getElementById('btn-apply-diet-page');
-        const typingEl = document.getElementById('chatbot-typing-page');
-
-        let isLoading = false;
-        let selectedDiet = 'general';
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
 
         // Auto-load history
         loadHistory();
@@ -181,7 +149,6 @@ if (!isLoggedIn()) {
             textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
         });
 
-<<<<<<< HEAD
         // ── Independent Selection Logic ──────────────────────────────────────
         goalPills.forEach(pill => {
             pill.addEventListener('click', () => {
@@ -189,52 +156,6 @@ if (!isLoggedIn()) {
                 goalPills.forEach(p => p.classList.remove('active'));
                 pill.classList.add('active');
                 updateState({ goal: selectedGoal });
-=======
-        // ── Diet selection (Local only until Apply) ──────────────────────────
-        dietPills.forEach(pill => {
-            pill.addEventListener('click', () => {
-                const goal = pill.dataset.goal;
-                selectedDiet = goal;
-
-                // UI state only
-                dietPills.forEach(p => p.classList.remove('active'));
-                pill.classList.add('active');
-
-                // Optional: Remove active state from tools if diet is selected
-                toolPills.forEach(p => p.classList.remove('active'));
-
-                // Enable Apply button
-                applyBtn.disabled = false;
-            });
-        });
-
-        applyBtn.addEventListener('click', async () => {
-            applyBtn.disabled = true;
-            await setGoal(selectedDiet);
-
-            // Show a brief visual confirmation on the button
-            const originalText = applyBtn.textContent;
-            applyBtn.textContent = 'Applied!';
-            setTimeout(() => {
-                applyBtn.textContent = originalText;
-            }, 2000);
-        });
-
-        // ── Tools (Activate instantly) ───────────────────────────────────────
-        toolPills.forEach(pill => {
-            pill.addEventListener('click', () => {
-                const goal = pill.dataset.goal;
-
-                // Activate instantly
-                toolPills.forEach(p => p.classList.remove('active'));
-                pill.classList.add('active');
-
-                // Clear diet active state
-                dietPills.forEach(p => p.classList.remove('active'));
-                applyBtn.disabled = true;
-
-                setGoal(goal);
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
             });
         });
 

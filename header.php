@@ -69,7 +69,6 @@
                     </div>
                 </div>
 
-<<<<<<< HEAD
                 <!-- Selector Bar -->
                 <!-- Simplified Selector -->
                 <div class="chatbot-selector-container" style="background: #fff9f6; border-bottom: 1px solid #f0d0be;">
@@ -81,27 +80,6 @@
                     <div class="chatbot-goal-bar" style="justify-content: center; padding: 2px 12px 10px; gap: 8px;">
                         <button class="goal-pill item-tool-widget" data-tool="recipe_creator">🍳 Recipes</button>
                         <button class="goal-pill item-tool-widget" data-tool="meal_planner">📅 Meal Planner</button>
-=======
-                <!-- Goal selector -->
-                <div class="chatbot-selector-container">
-                    <!-- Row 1: Diet Goals -->
-                    <div class="chatbot-goal-bar">
-                        <button class="goal-pill active" data-goal="general">General</button>
-                        <button class="goal-pill" data-goal="weight_loss">Weight Loss</button>
-                        <button class="goal-pill" data-goal="muscle_gain">Muscle Gain</button>
-                        <button id="btn-apply-diet" class="btn-apply-goal" disabled>Apply</button>
-                    </div>
-
-                    <!-- Row 2: Tools (as requested in image) -->
-                    <div class="chatbot-tools-bar">
-                        <span class="selector-label">tools</span>
-                        <button class="tool-pill recipe-creator" data-goal="recipe_creator">
-                            <i class="fas fa-utensils"></i> recipe creator
-                        </button>
-                        <button class="tool-pill meal-planner" data-goal="meal_planner">
-                            <i class="fas fa-calendar-alt"></i> meal planner
-                        </button>
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
                     </div>
                 </div>
 

@@ -64,7 +64,6 @@ if ($action === 'clear') {
 
 // ── Handle Set Goal/Tool Action ──────────────────────────────────────────────
 if ($action === 'set_goal') {
-<<<<<<< HEAD
     $allowedGoals = ['weight_loss', 'muscle_gain', 'general'];
     $allowedTools = ['recipe_creator', 'meal_planner'];
 
@@ -81,12 +80,6 @@ if ($action === 'set_goal') {
         'goal'   => $_SESSION['chat_goal'],
         'tool'   => $_SESSION['chat_tool']
     ]);
-=======
-    $allowed = ['weight_loss', 'muscle_gain', 'general', 'recipe_creator', 'meal_planner'];
-    $goal = in_array($input['goal'] ?? '', $allowed) ? $input['goal'] : 'general';
-    $_SESSION['chat_goal'] = $goal;
-    echo json_encode(['status' => 'goal_set', 'goal' => $goal]);
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
     exit;
 }
 
@@ -159,7 +152,6 @@ foreach ($rawHistory as $idx => $row) {
 }
 
 // ── System prompt ────────────────────────────────────────────────────────────
-<<<<<<< HEAD
 $goalContext = "";
 switch ($goal) {
     case 'weight_loss':
@@ -187,16 +179,6 @@ switch ($tool) {
 }
 
 $isHamboula = isset($_GET['bot']) && $_GET['bot'] === 'hamboula';
-=======
-$goalDescriptions = [
-    'weight_loss' => 'The user wants to lose weight. Suggest low-calorie, high-fiber, protein-rich meals. Avoid suggesting fried or high-sugar foods.',
-    'muscle_gain' => 'The user wants to build muscle. Suggest high-protein meals with adequate carbs for energy. Include chicken, eggs, beans, rice, and dairy.',
-    'recipe_creator' => 'The user wants detailed, step-by-step recipes. Provide a full ingredient list with quantities and clear cooking instructions. You may give longer responses to ensure the recipe is complete. Format recipes with numbered steps.',
-    'meal_planner' => 'The user wants a structured meal plan. IMPORTANT: Before generating any plan, you MUST first ask the user whether they want a 3-day or 7-day meal plan. Only generate the plan after they choose. Include breakfast, lunch, and dinner for each day. Cross-use ingredients to save money.',
-    'general' => 'The user wants to eat healthier in general. Suggest balanced, nutritious meals with variety.',
-];
-$goalContext = $goalDescriptions[$goal] ?? $goalDescriptions['general'];
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
 
 $systemPrompt = <<<PROMPT
 You are a friendly Healthy Food Assistant. Your job is to help users choose healthy, affordable, and practical meals.
@@ -216,20 +198,10 @@ USER STATUS:
 
 RULES:
 1. Focus on common, affordable foods: rice, eggs, chicken, vegetables, beans, lentils, oats, fruits, bread, dairy.
-<<<<<<< HEAD
 2. If an ACTIVE TOOL is selected, prioritize that specific output format (Recipe or Plan).
 3. If no Tool is selected, follow the brevity rule (concise answers).
 4. Use emojis sparingly to be friendly (🥗🍳🥚🍗🥦).
 5. NEVER give medical advice. If asked, respond with the mandatory disclaimer: "Please consult a doctor for medical advice. I can only help with general food suggestions! 🩺"
-=======
-2. For general chat, keep answers SHORT — 2 to 4 lines maximum. Be concise and practical.
-3. EXCEPTION: In "Recipe Creator" mode, provide full step-by-step recipes with ingredients. In "Meal Planner" mode, provide full structured plans. Longer responses are allowed for these two modes.
-4. Give simple meal suggestions with brief preparation tips when asked.
-4. You may use emojis sparingly to be friendly (🥗🍳🥚🍗🥦).
-5. NEVER give medical advice or diagnose conditions.
-6. If the user asks about diseases, medications, or medical conditions, respond ONLY with: "Please consult a doctor for medical advice. I can only help with general food suggestions! 🩺"
-7. When giving dietary advice, include this disclaimer if relevant: "This is general advice, not medical guidance."
->>>>>>> 951859244ce44a49fad8a3edf1fa7c51fbfeca4b
 
 Be helpful, warm, and combine the USER STATUS to give personalized advice.
 PROMPT;
