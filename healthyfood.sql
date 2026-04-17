@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 09, 2026 at 09:59 PM
+-- Generation Time: Apr 17, 2026 at 09:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -96,7 +96,8 @@ INSERT INTO `email_otps` (`id`, `user_id`, `otp_hash`, `purpose`, `expires_at`, 
 (10, 2, '$2y$10$Z1y5x0oANalXRRJMKab8au3jVYEm7kgdT1afUCG5wI4rJkqVWuMR6', 'password_reset', '2026-03-04 15:52:30', '2026-03-04 15:43:03', '2026-03-04 15:42:30'),
 (11, 2, '$2y$10$sGmvQf6rZKQIHohOxpYqx.qUY1D2ycUT0e0xab8tD5zDAPbWTvdr.', 'password_reset', '2026-03-04 17:37:28', '2026-03-04 17:28:05', '2026-03-04 17:27:28'),
 (12, 2, '$2y$10$lioz.0Decdofj2itWuKZSOQYsAGnHJNu3DLaG04CHQqBe2/si1qbO', 'twofa', '2026-03-04 17:38:34', '2026-03-04 17:28:46', '2026-03-04 17:28:34'),
-(13, 4, '$2y$10$J3pr15tTnn1hcwyCM7Zrz.WE3X.sAqwtYNKs5oeHktiYesEFg4PKy', 'password_reset', '2026-03-17 14:34:43', NULL, '2026-03-17 14:24:43');
+(13, 4, '$2y$10$J3pr15tTnn1hcwyCM7Zrz.WE3X.sAqwtYNKs5oeHktiYesEFg4PKy', 'password_reset', '2026-03-17 14:34:43', NULL, '2026-03-17 14:24:43'),
+(15, 2, '$2y$10$C3UH4ufa/XSmjEY2NwnAEOdiKW.PHdnRwgKQ3hfm2Bl7U9p6Eyt3e', 'twofa', '2026-04-15 05:13:24', NULL, '2026-04-15 05:03:24');
 
 -- --------------------------------------------------------
 
@@ -107,7 +108,6 @@ INSERT INTO `email_otps` (`id`, `user_id`, `otp_hash`, `purpose`, `expires_at`, 
 CREATE TABLE `messages` (
   `id` int(11) NOT NULL,
   `user_id` varchar(50) DEFAULT NULL,
-  `role` varchar(20) DEFAULT NULL,
   `message` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -116,30 +116,23 @@ CREATE TABLE `messages` (
 -- Dumping data for table `messages`
 --
 
-INSERT INTO `messages` (`id`, `user_id`, `role`, `message`, `created_at`) VALUES
-(1, '2', 'user', 'how can i cut my kcals', '2026-04-09 17:38:25'),
-(2, '2', 'assistant', 'Great goal! 🥗 Cutting calories doesn\'t have to mean cutting flavor. Try these tips:\n- Eat more protein-rich foods like eggs, chicken, and legumes.\n- Focus on whole grains like brown rice and whole wheat bread.\n- Include lots of veggies like leafy greens, broccoli, and bell peppers.\n- Drink plenty of water to stay hydrated and reduce cravings.\n\nLet\'s start with a healthy breakfast idea: Scrambled eggs with spinach and whole wheat toast. How does that sound?', '2026-04-09 17:38:26'),
-(3, '2', 'user', 'is pizza bad for wight loss ?', '2026-04-09 17:39:12'),
-(4, '2', 'assistant', 'Pizza can be a calorie bomb! 🍕 Especially if loaded with cheese, meat, and sugar. A slice of pizza can range from 200-500 calories. If you\'re trying to lose weight, it\'s best to limit or avoid pizza.\n\nInstead, try making a healthier homemade pizza with a whole wheat crust, veggies like bell peppers, and lean protein like chicken. This way, you can control the ingredients and keep it balanced.', '2026-04-09 17:39:12'),
-(5, '2', 'user', 'can we talk about sex ?', '2026-04-09 17:56:32'),
-(6, '2', 'assistant', 'Please consult a doctor for medical advice. I can only help with general food suggestions! 🩺', '2026-04-09 17:56:32'),
-(7, '2', 'user', 'why not', '2026-04-09 17:56:41'),
-(8, '2', 'assistant', 'I can provide general advice on nutrition and healthy eating, but when it comes to personal topics like sex, I\'m not the right assistant for that. If you\'re looking for information on health or wellness, I\'d be happy to help with topics like nutrition, exercise, or stress management. How about we focus on a healthy recipe idea instead? 🥗', '2026-04-09 17:56:41'),
-(9, '2', 'user', 'how much kcal in tuna', '2026-04-09 19:41:10'),
-(10, '2', 'user', 'how much kcal in tuna', '2026-04-09 19:41:37'),
-(11, '2', 'user', 'how much kcal in tuna', '2026-04-09 19:42:13'),
-(12, '2', 'user', 'how much kcal in tuna', '2026-04-09 19:48:33'),
-(13, '2', 'user', 'how much kcal in tuna', '2026-04-09 19:48:50'),
-(14, '2', 'assistant', 'A can of tuna (drained and flaked) typically has around 150-200 kcal.', '2026-04-09 19:48:51'),
-(15, '2', 'user', 'how much kcal in tuna', '2026-04-09 19:49:50'),
-(16, '2', 'user', 'how many kcals i need', '2026-04-09 19:51:18'),
-(17, '2', 'assistant', 'A person\'s daily energy needs depend on their age, sex, weight, and activity level. Here\'s a rough estimate:\n\n- Sedentary (little or no exercise): 1,600-2,000 kcal/day\n- Lightly active (light exercise/sports 1-3 days/week): 1,900-2,400 kcal/day\n- Moderately active (moderate exercise/sports 3-5 days/week): 2,000-2,800 kcal/day\n- Very active (hard exercise/sports 6-7 days a week): 2,400-3,000 kcal/day\n- Extremely active (very hard exercise/sports & physical job or 2x training): 3,000-4,000 kcal/day\n\nPlease note: This is a general guideline. Consult a doctor or a registered dietitian for your specific needs.', '2026-04-09 19:51:19'),
-(18, '2', 'user', 'how mant kcal my kid will need', '2026-04-09 19:56:00'),
-(19, '2', 'user', 'how mant kcal my kid will need', '2026-04-09 19:56:17'),
-(20, '2', 'user', 'how mant kcal my kid will need', '2026-04-09 19:57:04'),
-(21, '2', 'assistant', 'Kid\'s energy needs depend on age and activity level. Here\'s a rough estimate:\n\n- Infants (1-2 years): 1,000-1,400 kcal/day\n- Toddlers (2-3 years): 1,200-1,800 kcal/day\n- Preschoolers (4-5 years): 1,400-2,000 kcal/day\n- School-age kids (6-12 years): 1,600-2,200 kcal/day\n\nFor a specific age, please let me know!', '2026-04-09 19:57:05'),
-(22, '2', 'user', 'HOW MANY TIME i shopuld workout', '2026-04-09 19:57:35'),
-(23, '2', 'assistant', 'The American Heart Association recommends at least 150 minutes of moderate-intensity aerobic activity or 75 minutes of vigorous-intensity aerobic activity per week. You can break it down into:\n\n- 30 minutes, 5 days a week (moderate intensity)\n- 25 minutes, 3 days a week (vigorous intensity)\n\nAlso, aim for 2-3 strength training sessions per week to build muscle and support overall health. 🏋️‍♀️', '2026-04-09 19:57:40');
+INSERT INTO `messages` (`id`, `user_id`, `message`, `created_at`) VALUES
+(117, '2', 'sup man', '2026-04-16 20:54:08'),
+(118, '2', 'What\'s up? 😊 You\'re looking to eat healthier in general, right? I\'d be happy to help you with some balanced meal ideas. How about some grilled chicken with roasted veggies and quinoa? Or a hearty bowl of lentil soup with whole grain bread? Which one sounds good to you?', '2026-04-16 20:54:09'),
+(119, '2', 'make dite plan for me ', '2026-04-16 20:54:39'),
+(120, '2', 'You want a structured meal plan, huh? Before I can do that, I need to know how many days you\'d like the plan to cover. Do you want a 3-day meal plan or a 7-day meal plan?\n\nAlso, let me know if you have any dietary restrictions or preferences (e.g. vegetarian, gluten-free, etc.) that I should keep in mind while creating the plan.', '2026-04-16 20:54:39'),
+(121, '2', '3-day', '2026-04-16 20:54:50'),
+(122, '2', 'I\'ll create a 3-day structured meal plan for you. Before I begin, I just need to confirm a few details.\n\nSince you didn\'t mention any dietary restrictions, I\'ll assume you\'re looking for a general meal plan. If you\'re vegetarian, gluten-free, or have any other specific needs, please let me know.\n\nAlso, would you like your meals to be relatively light and easy to prepare, or can you spend a bit more time in the kitchen cooking?\n\n### Meal Plan Options:\n\nA) Quick & Easy\nB) Cooking Time Doesn\'t Matter\n\nPlease respond with the letter of your preferred meal plan option!', '2026-04-16 20:54:50'),
+(123, '2', '3-day', '2026-04-16 20:54:53'),
+(124, '2', 'You didn\'t answer the question. Please respond with \"A)\" for Quick & Easy or \"B)\" for Cooking Time Doesn\'t Matter.', '2026-04-16 20:54:53'),
+(125, '2', 'A', '2026-04-16 20:55:12'),
+(126, '2', 'You\'ve chosen the Quick & Easy option.\n\nHere\'s a 3-day structured meal plan for you:\n\n**Day 1**\n\n* Breakfast: Overnight oats with banana and almond milk 🥗\n	+ 1/2 cup rolled oats, 1/2 cup almond milk, 1 mashed banana, 1 tablespoon honey\n* Lunch: Grilled chicken breast with mixed greens salad 🥦\n	+ 4 oz grilled chicken, 2 cups mixed greens, 1 cup cherry tomatoes, 1 tablespoon vinaigrette\n* Dinner: One-pot pasta with marinara sauce and vegetables 🍝\n	+ 1 cup pasta, 1 cup marinara sauce, 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n\n**Day 2**\n\n* Breakfast: Scrambled eggs with whole wheat toast and avocado 🥚\n	+ 2 scrambled eggs, 1 slice whole wheat toast, 1/2 avocado\n* Lunch: Turkey and cheese sandwich on whole wheat bread with carrot sticks 🥗\n	+ 2 slices whole wheat bread, 2 oz turkey breast, 1 oz cheese, 1 cup carrot sticks\n* Dinner: Baked salmon with roasted broccoli and quinoa 🍗', '2026-04-16 20:55:13'),
+(127, '2', '3-day', '2026-04-16 20:55:16'),
+(128, '2', ' Meal Plan (Continued)\n\n**Day 3**\n\n* Breakfast: Yogurt parfait with granola and mixed berries 🍓\n	+ 6 oz yogurt, 2 tablespoons granola, 1 cup mixed berries\n* Lunch: Chicken Caesar salad 🥗\n	+ 4 oz grilled chicken, 2 cups romaine lettuce, 1 cup croutons, 1 tablespoon Caesar dressing\n* Dinner: Black bean and corn tacos with whole wheat tortillas 🌯\n	+ 1 cup cooked black beans, 1 cup frozen corn, 2 whole wheat tortillas, 1 cup shredded cheese\n\n### Nutrition Tip\nRemember to stay hydrated by drinking plenty of water throughout the day. Aim for at least 8 cups (64 oz) of water daily.\n\nPlease let me know if you have any questions or if you\'d like to make any changes to this meal plan!', '2026-04-16 20:55:17'),
+(129, '2', 'what is your name', '2026-04-16 20:58:41'),
+(130, '2', '?', '2026-04-16 20:58:41'),
+(131, '2', 'you namme ?', '2026-04-16 20:58:47'),
+(132, '2', ' I\'m Mr. Hamboula, your personalized food guru! I\'m here to help you with all your culinary needs and make healthy eating a breeze.', '2026-04-16 20:58:47');
 
 -- --------------------------------------------------------
 
@@ -169,7 +162,8 @@ INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `location_descr
 (16, 2, 200.00, 'paid', 'No Address Provided', '0000000000', '2026-03-06 09:02:40'),
 (17, 2, 200.00, 'paid', 'No Address Provided', '0000000000', '2026-03-06 09:07:02'),
 (18, 2, 200.00, 'paid', 'No Address Provided', '0000000000', '2026-03-07 20:18:14'),
-(20, 2, 200.00, 'cancelled', 'No Address Provided', '0000000000', '2026-03-10 11:25:12');
+(20, 2, 200.00, 'cancelled', 'No Address Provided', '0000000000', '2026-03-10 11:25:12'),
+(21, 2, 340.00, 'cancelled', 'No Address Provided', '0000000000', '2026-04-16 18:51:20');
 
 -- --------------------------------------------------------
 
@@ -198,7 +192,8 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `pric
 (16, 16, 3, 'Crazy Chicken Sandwich', 200.00, 1),
 (17, 17, 3, 'Crazy Chicken Sandwich', 200.00, 1),
 (18, 18, 3, 'Crazy Chicken Sandwich', 200.00, 1),
-(20, 20, 3, 'Crazy Chicken Sandwich', 200.00, 1);
+(20, 20, 3, 'Crazy Chicken Sandwich', 200.00, 1),
+(21, 21, 5, 'Tikka Masala Chicken', 340.00, 1);
 
 -- --------------------------------------------------------
 
@@ -254,7 +249,10 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image_path`, `type`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'salad ', 'salad low kcal', 35.00, 55, 'assets/images/841d05fa5ee60b73637cccdc1373760a.jpg', 'food', 'active', '2026-02-27 22:25:49', '2026-02-27 22:25:49'),
-(3, 'Crazy Chicken Sandwich', '4 pieces, cream cheese, chicken, jalapeno, crushed bread, tortilla, eggs and black. Calories 316, fat 6, protein 40, carbs 22.4', 200.00, 97, 'assets/images/1772645704_e5045101d028d974.webp', 'food', 'active', '2026-03-04 17:35:04', '2026-03-04 17:35:04');
+(3, 'Crazy Chicken Sandwich', '4 pieces, cream cheese, chicken, jalapeno, crushed bread, tortilla, eggs and black. Calories 316, fat 6, protein 40, carbs 22.4', 200.00, 97, 'assets/images/1772645704_e5045101d028d974.webp', 'food', 'active', '2026-03-04 17:35:04', '2026-03-04 17:35:04'),
+(5, 'Tikka Masala Chicken', 'Grilled chicken breasts with Healthy tikka masala sauce. Served With White Rice & Veggies Kcals : 575 protein 62 carb 60. Fat 10', 340.00, 10, 'assets/images/1776364889_2f0e6c94a2c46e82.webp', 'food', 'active', '2026-04-16 18:41:29', '2026-04-16 18:41:29'),
+(6, 'Chicken Curry sauce', 'Chicken with Curry Sauce Calories 167, Fat 4, Protein 25, Carb 7 -100 g', 225.00, 55, 'assets/images/1776365214_75275a266146e67c.webp', 'food', 'active', '2026-04-16 18:46:54', '2026-04-16 18:46:54'),
+(7, 'Chicken with Buffalo sauce Burger', 'Breaded Chicken, Buffalo Sauce, Pickled and Cheese Calories 429, Protein 49.5, Fat 19.9 and Carb 13.7', 150.00, 69, 'assets/images/1776368179_787ab29e9e7497da.webp', 'food', 'active', '2026-04-16 19:36:19', '2026-04-16 19:36:19');
 
 -- --------------------------------------------------------
 
@@ -294,19 +292,25 @@ CREATE TABLE `users` (
   `twofa_method` enum('none','totp','email') NOT NULL DEFAULT 'none',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `is_verified` tinyint(1) DEFAULT 0
+  `is_verified` tinyint(1) DEFAULT 0,
+  `avatar` varchar(255) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `weight` decimal(5,2) DEFAULT NULL,
+  `height` decimal(5,2) DEFAULT NULL,
+  `gender` varchar(20) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`) VALUES
-(2, '224021', '224021@eru.edu.eg', '$2y$10$nGoaQauVmcWHOlFzdgEEZ.kaqnFRxFjsBsRAUT0cQMxzlEJE9Sx06', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1),
-(3, 'test1', 'xedave6583@paylaar.com', '$2y$10$Bd.Ee0grhbpiiT21Zu.cwem5aJuU6y7zqaEF8ON8odntPaGRng6L.', 'customer', 'none', '2026-03-17 14:16:07', '2026-03-17 14:16:07', 0),
-(4, 'testuser2', 'cicalopy@denipl.com', '$2y$10$sfZ4eiqZIa1WuaqyVYNhHeXCxFd8My.xNf1FSzWD6KZju9xaJBON6', 'customer', 'none', '2026-03-17 14:22:50', '2026-03-17 14:22:50', 0),
-(5, 'korzegelti@necub.com', 'korzegelti@necub.com', '$2y$10$EyYD.pTAZJL3fk3wXIL.5ej/DWb76/A0DUKjqrnyqs6mZ7eO74.zi', 'customer', 'none', '2026-03-17 14:25:41', '2026-03-17 14:25:41', 0),
-(6, 'wyyig29694@minitts.net', 'wyyig29694@minitts.net', '$2y$10$4NokIwkRtvluBiLkIKp8l.WlFfbFBO674xRrdVKJcN2g7ljKLvoxi', 'customer', 'none', '2026-03-17 14:34:21', '2026-03-17 14:34:21', 1);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`, `avatar`, `age`, `weight`, `height`, `gender`, `phone`) VALUES
+(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1, 'assets/images/avatar_2_1776340436.jpg', 21, 100.00, 170.00, 'male', '01066458690'),
+(4, 'testuser2', 'cicalopy@denipl.com', '$2y$10$sfZ4eiqZIa1WuaqyVYNhHeXCxFd8My.xNf1FSzWD6KZju9xaJBON6', 'customer', 'none', '2026-03-17 14:22:50', '2026-03-17 14:22:50', 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 'korzegelti@necub.com', 'korzegelti@necub.com', '$2y$10$EyYD.pTAZJL3fk3wXIL.5ej/DWb76/A0DUKjqrnyqs6mZ7eO74.zi', 'customer', 'none', '2026-03-17 14:25:41', '2026-03-17 14:25:41', 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 'wyyig29694@minitts.net', 'wyyig29694@minitts.net', '$2y$10$4NokIwkRtvluBiLkIKp8l.WlFfbFBO674xRrdVKJcN2g7ljKLvoxi', 'customer', 'none', '2026-03-17 14:34:21', '2026-03-17 14:34:21', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', '2026-04-12 09:29:56', 1, 'assets/images/default_avatar.png', 27, 60.00, 185.00, 'male', '01056988987');
 
 -- --------------------------------------------------------
 
@@ -453,128 +457,37 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `email_otps`
 --
 ALTER TABLE `email_otps`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `products`
---
-ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `reviews`
---
-ALTER TABLE `reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `user_addresses`
---
-ALTER TABLE `user_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `backup_codes`
---
-ALTER TABLE `backup_codes`
-  ADD CONSTRAINT `backup_codes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `carts`
---
-ALTER TABLE `carts`
-  ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `cart_items`
---
-ALTER TABLE `cart_items`
-  ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `carts` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
-
---
--- Constraints for table `email_otps`
---
-ALTER TABLE `email_otps`
-  ADD CONSTRAINT `email_otps_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `orders`
---
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-
---
--- Constraints for table `order_items`
---
-ALTER TABLE `order_items`
-  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
-
---
--- Constraints for table `payments`
---
-ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `reviews`
---
-ALTER TABLE `reviews`
-  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `user_addresses`
---
-ALTER TABLE `user_addresses`
-  ADD CONSTRAINT `user_addresses_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `user_totp`
---
-ALTER TABLE `user_totp`
-  ADD CONSTRAINT `user_totp_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

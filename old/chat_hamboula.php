@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../header.php';
 
 // Ensure user is logged in
 if (!isLoggedIn()) {
@@ -18,7 +18,8 @@ if (!isLoggedIn()) {
     <div id="page-chatbot-window" class="chatbot-window static-mode is-visible">
         <div class="chatbot-header">
             <div class="chatbot-avatar" style="overflow: hidden; padding: 0;">
-                <img src="/app/assets/images/hamboula.jpg" alt="Mr Hamboula" style="width: 100%; height: 100%; object-fit: cover;">
+                <img src="/app/assets/images/hamboula.jpg" alt="Mr Hamboula"
+                    style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <div class="chatbot-header-info">
                 <h3>Mr Hamboula</h3>
@@ -52,7 +53,8 @@ if (!isLoggedIn()) {
 
             <div id="chatbot-typing-page" class="typing-indicator">
                 <div class="msg-avatar" style="overflow: hidden; padding: 0;">
-                    <img src="/app/assets/images/hamboula.jpg" alt="Mr Hamboula" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="/app/assets/images/hamboula.jpg" alt="Mr Hamboula"
+                        style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="typing-dots">
                     <span></span><span></span><span></span>

@@ -59,8 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($updateStmt->execute()) {
-            $message = "Profile updated successfully!";
-            $msgType = 'success';
+            header("Location: profile.php?updated=1");
+            exit();
         } else {
             $message = "Error updating profile. Email or username might already exist.";
             $msgType = 'error';
