@@ -11,7 +11,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
 // ── Database connection ───────────────────────────────────────────────────────
-$conn = new mysqli('localhost', 'root', '', 'healthyfood_v2');
+$conn = new mysqli('localhost', 'root', '', 'healthyfood');
 
 
 //i need to check this for logs 
