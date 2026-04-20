@@ -137,8 +137,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch products for list view
-$run_select = $conn->query("SELECT id, name, price, image_path, description, type, stock FROM `products` ORDER BY id DESC");
+// Handle search and filtering
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$type_filter = isset($_GET['type_filter']) ? trim($_GET['type_filter']) : '';
+
+$query = "SELECT id, name, price, image_path, description, type, stock FROM `products` WHERE 1=1";
+$params = [];
+$types = "";
+
+if ($search !== '') {
+    if (is_numeric($search)) {
+        $query .= " AND (id = ? OR name LIKE ?)";
+        $params[] = (int) $search;
+        $likeSearch = "%$search%";
+        $params[] = $likeSearch;
+        $types .= "is";
+    } else {
+        $query .= " AND name LIKE ?";
+        $likeSearch = "%$search%";
+        $params[] = $likeSearch;
+        $types .= "s";
+    }
+}
+
+if ($type_filter !== '' && in_array($type_filter, ['food', 'drink'])) {
+    $query .= " AND type = ?";
+    $params[] = $type_filter;
+    $types .= "s";
+}
+
+$query .= " ORDER BY id DESC";
+
+$stmt = $conn->prepare($query);
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$run_select = $stmt->get_result();
 
 $view = isset($_GET['form']) || isset($_GET['edit']) ? 'form' : 'list';
 ?>
@@ -192,7 +227,36 @@ $view = isset($_GET['form']) || isset($_GET['edit']) ? 'form' : 'list';
         </div>
 
         <?php if ($view === 'list'): ?>
-            <h2>Product List</h2>
+            <div class="filter-header" style="margin-bottom: 30px;">
+                <h2 style="margin-bottom: 15px;">Product Inventory</h2>
+                <form action="products.php" method="GET" class="filter-form"
+                    style="display: flex; gap: 12px; background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #eef0f2; align-items: center; flex-wrap: wrap;">
+
+                    <div style="flex: 1; min-width: 200px;">
+                        <input type="text" name="search" placeholder="Search by ID or Name..."
+                            value="<?php echo htmlspecialchars($search); ?>"
+                            style="width: 100%; padding: 12px 15px; border: 1.5px solid #dee2e6; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.2s;">
+                    </div>
+
+                    <div style="min-width: 150px;">
+                        <select name="type_filter"
+                            style="width: 100%; padding: 12px 15px; border: 1.5px solid #dee2e6; border-radius: 8px; font-size: 0.95rem; background: white; cursor: pointer; outline: none;">
+                            <option value="">All Categories</option>
+                            <option value="food" <?php echo $type_filter === 'food' ? 'selected' : ''; ?>>🍎 Food</option>
+                            <option value="drink" <?php echo $type_filter === 'drink' ? 'selected' : ''; ?>>🥤 Drink</option>
+                        </select>
+                    </div>
+
+                    <button type="submit"
+                        style="padding: 12px 25px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; min-width: 100px;">Filter
+                        Results</button>
+
+                    <?php if ($search !== '' || $type_filter !== ''): ?>
+                        <a href="products.php"
+                            style="padding: 12px 20px; background: #adb5bd; color: white; border: none; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; transition: background 0.2s;">Reset</a>
+                    <?php endif; ?>
+                </form>
+            </div>
             <table class="table">
                 <thead>
                     <tr>

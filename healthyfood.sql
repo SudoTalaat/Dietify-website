@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 17, 2026 at 09:46 AM
+-- Generation Time: Apr 20, 2026 at 10:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -132,7 +132,21 @@ INSERT INTO `messages` (`id`, `user_id`, `message`, `created_at`) VALUES
 (129, '2', 'what is your name', '2026-04-16 20:58:41'),
 (130, '2', '?', '2026-04-16 20:58:41'),
 (131, '2', 'you namme ?', '2026-04-16 20:58:47'),
-(132, '2', ' I\'m Mr. Hamboula, your personalized food guru! I\'m here to help you with all your culinary needs and make healthy eating a breeze.', '2026-04-16 20:58:47');
+(132, '2', ' I\'m Mr. Hamboula, your personalized food guru! I\'m here to help you with all your culinary needs and make healthy eating a breeze.', '2026-04-16 20:58:47'),
+(133, '2', 'your name', '2026-04-20 19:40:17'),
+(134, '2', ' is not Mr. Hamboula', '2026-04-20 19:40:18'),
+(135, '2', 'did i ask you about your name ?', '2026-04-20 19:40:47'),
+(136, '2', 'did i ask you about your name ?', '2026-04-20 19:40:50'),
+(137, '2', 'name ?', '2026-04-20 19:40:54'),
+(138, '2', 'hi', '2026-04-20 19:40:57'),
+(139, '2', ', i\'m your friendly Healthy Food Assistant! 👋', '2026-04-20 19:40:57'),
+(140, '2', 'name ?', '2026-04-20 19:41:00'),
+(141, '2', 'name ?', '2026-04-20 19:41:03'),
+(142, '2', ' it\'s a pleasure to meet you, but I don\'t have a personal name. I\'m here to help you with healthy food suggestions!', '2026-04-20 19:41:04'),
+(143, '2', 'did i ask you about your name ?', '2026-04-20 19:41:06'),
+(144, '2', 'did i ask you about your name ?', '2026-04-20 19:41:07'),
+(145, '2', 'name', '2026-04-20 19:41:26'),
+(146, '2', ' is still \'Healthy Food Assistant\'. I\'m here to help!', '2026-04-20 19:41:26');
 
 -- --------------------------------------------------------
 
@@ -252,7 +266,9 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image_pa
 (3, 'Crazy Chicken Sandwich', '4 pieces, cream cheese, chicken, jalapeno, crushed bread, tortilla, eggs and black. Calories 316, fat 6, protein 40, carbs 22.4', 200.00, 97, 'assets/images/1772645704_e5045101d028d974.webp', 'food', 'active', '2026-03-04 17:35:04', '2026-03-04 17:35:04'),
 (5, 'Tikka Masala Chicken', 'Grilled chicken breasts with Healthy tikka masala sauce. Served With White Rice & Veggies Kcals : 575 protein 62 carb 60. Fat 10', 340.00, 10, 'assets/images/1776364889_2f0e6c94a2c46e82.webp', 'food', 'active', '2026-04-16 18:41:29', '2026-04-16 18:41:29'),
 (6, 'Chicken Curry sauce', 'Chicken with Curry Sauce Calories 167, Fat 4, Protein 25, Carb 7 -100 g', 225.00, 55, 'assets/images/1776365214_75275a266146e67c.webp', 'food', 'active', '2026-04-16 18:46:54', '2026-04-16 18:46:54'),
-(7, 'Chicken with Buffalo sauce Burger', 'Breaded Chicken, Buffalo Sauce, Pickled and Cheese Calories 429, Protein 49.5, Fat 19.9 and Carb 13.7', 150.00, 69, 'assets/images/1776368179_787ab29e9e7497da.webp', 'food', 'active', '2026-04-16 19:36:19', '2026-04-16 19:36:19');
+(7, 'Chicken with Buffalo sauce Burger', 'Breaded Chicken, Buffalo Sauce, Pickled and Cheese Calories 429, Protein 49.5, Fat 19.9 and Carb 13.7', 150.00, 69, 'assets/images/1776368179_787ab29e9e7497da.webp', 'food', 'active', '2026-04-16 19:36:19', '2026-04-16 19:36:19'),
+(8, 'Banana walnut power shake', 'Calories: 625 kcal\r\nProtein: 29 g\r\nCarbohydrates: 63 g\r\nSugars: 37 g\r\n Fibers: 7g \r\nFat: 31 g', 100.00, 33, 'assets/images/1776714402_5102915060da6432.webp', 'drink', 'active', '2026-04-20 19:46:42', '2026-04-20 19:46:42'),
+(9, 'Banana with Milk', '327 cal, with non dairy almond milk.', 85.00, 222, 'assets/images/1776717664_5a44a2d1361b5609.webp', 'drink', 'active', '2026-04-20 20:41:04', '2026-04-20 20:41:04');
 
 -- --------------------------------------------------------
 
@@ -306,7 +322,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`, `avatar`, `age`, `weight`, `height`, `gender`, `phone`) VALUES
-(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1, 'assets/images/avatar_2_1776340436.jpg', 21, 100.00, 170.00, 'male', '01066458690'),
+(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1, 'assets/images/avatar_2_1776340436.jpg', 21, 90.00, 170.00, 'male', '0106634324234'),
 (4, 'testuser2', 'cicalopy@denipl.com', '$2y$10$sfZ4eiqZIa1WuaqyVYNhHeXCxFd8My.xNf1FSzWD6KZju9xaJBON6', 'customer', 'none', '2026-03-17 14:22:50', '2026-03-17 14:22:50', 0, NULL, NULL, NULL, NULL, NULL, NULL),
 (5, 'korzegelti@necub.com', 'korzegelti@necub.com', '$2y$10$EyYD.pTAZJL3fk3wXIL.5ej/DWb76/A0DUKjqrnyqs6mZ7eO74.zi', 'customer', 'none', '2026-03-17 14:25:41', '2026-03-17 14:25:41', 0, NULL, NULL, NULL, NULL, NULL, NULL),
 (6, 'wyyig29694@minitts.net', 'wyyig29694@minitts.net', '$2y$10$4NokIwkRtvluBiLkIKp8l.WlFfbFBO674xRrdVKJcN2g7ljKLvoxi', 'customer', 'none', '2026-03-17 14:34:21', '2026-03-17 14:34:21', 1, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -469,7 +485,7 @@ ALTER TABLE `email_otps`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -488,6 +504,30 @@ ALTER TABLE `order_items`
 --
 ALTER TABLE `payments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `user_addresses`
+--
+ALTER TABLE `user_addresses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
