@@ -20,8 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Please fill in all fields.";
     } elseif ($newPassword !== $confirmPassword) {
         $error = "Passwords do not match.";
-    } elseif (strlen($newPassword) < 8) {
-        $error = "Password must be at least 8 characters.";
+    } elseif (strlen($newPassword) < 12) {
+        $error = "Password must be at least 12 characters.";
+    } elseif (isPasswordPwned($newPassword)) {
+        $error = "This password has been found in a data breach. Please choose a more secure password.";
     } else {
         // Verify OTP
         $stmt = $conn->prepare(

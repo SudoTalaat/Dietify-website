@@ -18,8 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Please fill in all required fields.";
     } elseif ($password !== $confirmPassword) {
         $error = "Passwords do not match.";
-    } elseif (strlen($password) < 8) {
-        $error = "Password must be at least 8 characters.";
+    } elseif (strlen($password) < 12) {
+        $error = "Password must be at least 12 characters.";
+    } elseif (isPasswordPwned($password)) {
+        $error = "This password has been found in a data breach. Please choose a more secure password.";
     } elseif (!$terms) {
         $error = "You must agree to the terms and conditions.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

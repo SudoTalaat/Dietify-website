@@ -123,7 +123,6 @@ if (!isLoggedIn()) {
         const textarea = document.getElementById('chatbot-input-page');
         const sendBtn = document.getElementById('chatbot-send-page');
         const clearBtn = document.getElementById('chatbot-clear-page');
-<<<<<<< HEAD
         const goalPills = document.querySelectorAll('.item-goal-page');
         const toolPills = document.querySelectorAll('.item-tool-page');
         const typingEl = document.getElementById('chatbot-typing-page');

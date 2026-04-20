@@ -91,4 +91,39 @@ function getCartCount(mysqli $conn): int
     $result = $stmt->get_result()->fetch_assoc();
     return (int) ($result['total'] ?? 0);
 }
+
+/** Checks if a password exists in a data breach using the HIBP Pwned Passwords API. */
+function isPasswordPwned($password): bool
+{
+    $hash = strtoupper(sha1($password));
+    $prefix = substr($hash, 0, 5);
+    $suffix = substr($hash, 5);
+
+    $url = "https://api.pwnedpasswords.com/range/" . $prefix;
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    // Use IPv4 and bypass SSL for stability in local dev if needed, 
+    // but better keep defaults for security unless issues arise.
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    if ($response === false) {
+        return false;
+    }
+
+    $lines = explode("\n", $response);
+    foreach ($lines as $line) {
+        if (strpos($line, ':') !== false) {
+            list($matchedSuffix, $count) = explode(':', trim($line));
+            if ($matchedSuffix === $suffix) {
+                return (int) $count > 0;
+            }
+        }
+    }
+
+    return false;
+}
 ?>
