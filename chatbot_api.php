@@ -77,8 +77,8 @@ if ($action === 'set_goal') {
 
     echo json_encode([
         'status' => 'state_updated',
-        'goal'   => $_SESSION['chat_goal'],
-        'tool'   => $_SESSION['chat_tool']
+        'goal' => $_SESSION['chat_goal'],
+        'tool' => $_SESSION['chat_tool']
     ]);
     exit;
 }
@@ -101,9 +101,9 @@ if ($action === 'get_history') {
             $i++;
         }
         echo json_encode([
-            'history'        => $history,
-            'goal'           => $goal,
-            'tool'           => $tool,
+            'history' => $history,
+            'goal' => $goal,
+            'tool' => $tool,
             'service_online' => !empty($_ENV['GROQ_API_KEY'])
         ]);
     } catch (Exception $e) {
@@ -171,10 +171,10 @@ switch ($tool) {
         $toolContext = "The user specifically wants a DETAILED RECIPE. Provide a full ingredient list with quantities and step-by-step cooking instructions. Format instructions with numbered steps. Use '### Ingredients' and '### Instructions' headers for a modern card layout.";
         break;
     case 'meal_planner':
-        $toolContext = "The user specifically wants a STRUCTURED MEAL PLAN. IMPORTANT: Before generating any plan, you MUST first ask the user whether they want a 3-day or 7-day meal plan. Only generate the plan after they choose. Include breakfast, lunch, dinner, and a '### Nutrition Tip' section.";
+        $toolContext = "The user specifically wants a STRUCTURED MEAL PLAN. Include breakfast, lunch, dinner, and a '### Nutrition Tip' section. IMPORTANT: If the user hasn't specified a duration, ask whether they want a 3-day or 7-day meal plan. If they HAVE specified (e.g., '7-day plan'), generate the full plan immediately.";
         break;
     default:
-        $toolContext = "Engage in general nutrition conversation. Keep answers concise (2-4 lines) unless asked for something complex.";
+        $toolContext = "Engage in general nutrition conversation. Keep answers concise (2-4 lines) unless asked for something complex (like a meal plan or recipe).";
         break;
 }
 
@@ -190,16 +190,17 @@ You are Mr Hamboula, a wise, slightly humorous, and highly practical personalize
 PROMPT;
 }
 
+$displayTool = $tool ?? "None";
 $systemPrompt .= <<<PROMPT
 
 USER STATUS:
 - DIET GOAL: {$goal} ({$goalContext})
-- ACTIVE TOOL: " . ($tool ?? "None") . " ({$toolContext})
+- ACTIVE TOOL: {$displayTool} ({$toolContext})
 
 RULES:
 1. Focus on common, affordable foods: rice, eggs, chicken, vegetables, beans, lentils, oats, fruits, bread, dairy.
 2. If an ACTIVE TOOL is selected, prioritize that specific output format (Recipe or Plan).
-3. If no Tool is selected, follow the brevity rule (concise answers).
+3. Follow the brevity rule (concise answers) for general chat, but provide full length content for meal plans and recipes.
 4. Use emojis sparingly to be friendly (🥗🍳🥚🍗🥦).
 5. NEVER give medical advice. If asked, respond with the mandatory disclaimer: "Please consult a doctor for medical advice. I can only help with general food suggestions! 🩺"
 
@@ -229,7 +230,7 @@ curl_setopt_array($ch, [
     CURLOPT_POSTFIELDS => json_encode([
         'model' => 'llama-3.1-8b-instant',
         'messages' => $messages,
-        'max_tokens' => 256,
+        'max_tokens' => 3000,
         'temperature' => 0.7,
     ]),
     CURLOPT_TIMEOUT => 222,

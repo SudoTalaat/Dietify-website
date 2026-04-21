@@ -33,7 +33,7 @@
                     </a>
                     <a href="/app/profile.php">Profile</a>
                     <a href="/app/recommendations.php">Recommendations</a>
-                    <a href="/app/kcal_tracking.php">Kcal Tracking</a>
+
                     <a href="/app/chat.php">Chatbot</a>
 
                     <?php if (isAdmin()): ?>
