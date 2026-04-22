@@ -28,12 +28,9 @@ $conn->query("SET time_zone = '+00:00'");
 // ── Session ───────────────────────────────────────────────────────────────────
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
-        'lifetime' => 0,
+        'lifetime' => 604800, // 7 days
         'path' => '/',
-        'domain' => '',
-        'secure' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'),
-        'httponly' => true,
-        'samesite' => 'Lax'
+        'httponly' => true
     ]);
     session_start();
 }
