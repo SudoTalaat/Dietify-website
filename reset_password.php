@@ -102,12 +102,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <div class="form-group">
                         <label for="new_password">New Password</label>
-                        <input type="password" id="new_password" name="new_password" minlength="8" required>
+                        <input type="password" id="new_password" name="new_password" minlength="12" required>
                     </div>
 
                     <div class="form-group">
                         <label for="confirm_password">Confirm New Password</label>
-                        <input type="password" id="confirm_password" name="confirm_password" minlength="8" required>
+                        <input type="password" id="confirm_password" name="confirm_password" minlength="12" required>
                     </div>
 
                     <?php if ($error): ?>

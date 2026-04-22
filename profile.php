@@ -17,6 +17,10 @@ $message = '';
 $msgType = 'success';
 $google2fa = new Google2FA();
 $currentTab = $_GET['tab'] ?? 'orders';
+$allowedTabs = ['settings', 'orders', 'addresses'];
+if (!in_array($currentTab, $allowedTabs)) {
+    $currentTab = 'orders';
+}
 
 // ── Load user details ────────────────────────────────────────────────────────
 $stmt = $conn->prepare(
@@ -53,6 +57,49 @@ if ($action === 'cancel_order') {
         $msgType = 'error';
     }
     $cancelStmt->close();
+}
+
+// ── ADDRESS MANAGEMENT ────────────────────────────────────────────────────────
+if ($action === 'add_address') {
+    $location = trim($_POST['location_description'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $is_default = isset($_POST['is_default']) ? 1 : 0;
+
+    if (!empty($location) && !empty($phone)) {
+        if ($is_default) {
+            $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
+        }
+        
+        $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, location_description, phone, is_default) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("issi", $userId, $location, $phone, $is_default);
+        if ($stmt->execute()) {
+            $message = "Address added successfully!";
+            $msgType = 'success';
+        } else {
+            $message = "Error adding address.";
+            $msgType = 'error';
+        }
+        $stmt->close();
+    }
+} elseif ($action === 'delete_address') {
+    $addrId = (int)($_POST['address_id'] ?? 0);
+    $stmt = $conn->prepare("DELETE FROM user_addresses WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $addrId, $userId);
+    if ($stmt->execute()) {
+        $message = "Address deleted successfully.";
+        $msgType = 'success';
+    }
+    $stmt->close();
+} elseif ($action === 'set_default_address') {
+    $addrId = (int)($_POST['address_id'] ?? 0);
+    $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
+    $stmt = $conn->prepare("UPDATE user_addresses SET is_default = 1 WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $addrId, $userId);
+    if ($stmt->execute()) {
+        $message = "Default address updated.";
+        $msgType = 'success';
+    }
+    $stmt->close();
 }
 
 // 1. DISABLE 2FA
@@ -226,8 +273,8 @@ elseif ($action === 'change_password') {
     } elseif ($newPass !== $confirmPass) {
         $message = "New passwords do not match.";
         $msgType = 'error';
-    } elseif (strlen($newPass) < 8) {
-        $message = "New password must be at least 8 characters.";
+    } elseif (strlen($newPass) < 12) {
+        $message = "New password must be at least 12 characters.";
         $msgType = 'error';
     } else {
         $hashed = password_hash($newPass, PASSWORD_BCRYPT);
@@ -605,6 +652,9 @@ include __DIR__ . '/header.php';
                     <a href="?tab=orders" class="tab-link <?php echo $currentTab === 'orders' ? 'active' : ''; ?>">
                         📦 My Orders
                     </a>
+                    <a href="?tab=addresses" class="tab-link <?php echo $currentTab === 'addresses' ? 'active' : ''; ?>">
+                        📍 My Addresses
+                    </a>
                 </div>
 
                 <a href="/app/logout.php" class="logout-btn">Sign Out</a>
@@ -716,11 +766,11 @@ include __DIR__ . '/header.php';
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 5px;">
                             <label style="font-size: 0.85rem; color: #666; font-weight: 600;">New Password</label>
-                            <input type="password" name="new_password" class="form-input" required placeholder="Minimum 8 characters">
+                            <input type="password" name="new_password" class="form-input" required minlength="12" placeholder="Minimum 12 characters">
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 5px;">
                             <label style="font-size: 0.85rem; color: #666; font-weight: 600;">Confirm New Password</label>
-                            <input type="password" name="confirm_password" class="form-input" required placeholder="Repeat new password">
+                            <input type="password" name="confirm_password" class="form-input" required minlength="12" placeholder="Repeat new password">
                         </div>
                         <button type="submit" class="btn-save-pass">
                             Save New Password
@@ -816,6 +866,72 @@ include __DIR__ . '/header.php';
                             style="display: inline-block; text-decoration: none; margin-top: 10px;">Start Shopping</a>
                     </div>
                 <?php endif; ?>
+
+            <?php elseif ($currentTab === 'addresses'): ?>
+                <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    📍 My Addresses
+                </h3>
+
+                <?php
+                $addrStmt = $conn->prepare("SELECT * FROM user_addresses WHERE user_id = ? ORDER BY is_default DESC, created_at DESC");
+                $addrStmt->bind_param("i", $userId);
+                $addrStmt->execute();
+                $addrsResult = $addrStmt->get_result();
+
+                if ($addrsResult && $addrsResult->num_rows > 0):
+                    while ($addr = $addrsResult->fetch_assoc()):
+                ?>
+                    <div style="background: #f8f9fa; border: 1px solid #eee; border-radius: 12px; padding: 20px; margin-bottom: 15px; position: relative;">
+                        <?php if ($addr['is_default']): ?>
+                            <span style="position: absolute; top: 15px; right: 20px; background: #27ae60; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;">Default</span>
+                        <?php endif; ?>
+                        
+                        <p style="margin: 0 0 10px; font-weight: 600; color: #333; line-height: 1.4;">
+                            <?php echo htmlspecialchars($addr['location_description']); ?>
+                        </p>
+                        <p style="margin: 0 0 15px; color: #666; font-size: 0.9rem;">
+                            📞 <?php echo htmlspecialchars(!empty($user['phone']) ? $user['phone'] : $addr['phone']); ?>
+                        </p>
+
+                        <div style="display: flex; gap: 10px;">
+                            <?php if (!$addr['is_default']): ?>
+                                <form method="POST" style="margin:0;">
+                                    <input type="hidden" name="action" value="set_default_address">
+                                    <input type="hidden" name="address_id" value="<?php echo $addr['id']; ?>">
+                                    <button type="submit" style="background: white; border: 1px solid #ddd; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #555;">Set as Default</button>
+                                </form>
+                            <?php endif; ?>
+                            
+                            <form method="POST" style="margin:0;" onsubmit="return confirm('Delete this address?');">
+                                <input type="hidden" name="action" value="delete_address">
+                                <input type="hidden" name="address_id" value="<?php echo $addr['id']; ?>">
+                                <button type="submit" style="background: white; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #dc3545;">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                <?php endwhile; else: ?>
+                    <p style="text-align: center; color: #888; padding: 20px; background: #f8f9fa; border-radius: 10px;">No addresses saved yet.</p>
+                <?php endif; ?>
+
+                <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #eee;">
+                    <h4 style="margin-bottom: 20px;">➕ Add New Address</h4>
+                    <form method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                        <input type="hidden" name="action" value="add_address">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Delivery Address</label>
+                            <textarea name="location_description" class="form-control" placeholder="Street, Building, Apartment, City..." required style="min-height: 80px;"></textarea>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Contact Phone</label>
+                            <input type="text" name="phone" class="form-control" placeholder="Phone number for delivery" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" name="is_default" id="is_default" value="1">
+                            <label for="is_default" style="font-size: 0.9rem; color: #444; cursor: pointer;">Set as default address</label>
+                        </div>
+                        <button type="submit" class="btn-submit" style="margin-top: 10px;">Add Address</button>
+                    </form>
+                </div>
 
             <?php endif; // End of tabs switch ?>
         </div>

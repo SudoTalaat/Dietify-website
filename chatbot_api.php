@@ -10,6 +10,9 @@ if (!isLoggedIn()) {
     exit;
 }
 
+// Ensure script doesn't time out for long AI generations
+set_time_limit(300);
+
 // ── Read JSON body ───────────────────────────────────────────────────────────
 $input = json_decode(file_get_contents('php://input'), true);
 $action = $input['action'] ?? 'message';
@@ -135,8 +138,8 @@ if ($action === 'message') {
     }
 }
 
-// ── Build Context from Database (Last 10 messages) ──────────────────────────
-$stmt = $conn->prepare("SELECT message AS content FROM messages WHERE user_id = ? ORDER BY created_at DESC LIMIT 10");
+// ── Build Context from Database (Last 5 messages) ──────────────────────────
+$stmt = $conn->prepare("SELECT message AS content FROM messages WHERE user_id = ? ORDER BY created_at DESC LIMIT 5");
 $stmt->bind_param("s", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -239,7 +242,8 @@ curl_setopt_array($ch, [
     //CURLOPT_CONNECTTIMEOUT => 30: This tells the server to wait up to 30 seconds just to "knock on the door" of the AI service. If the AI doesn't answer the door in 30 seconds, it stops trying
 
     CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4, // Use IPv4 for stability in XAMPP
-    CURLOPT_SSL_VERIFYPEER => false,        // Temporary bypass to test if it's a certificate issue
+    CURLOPT_SSL_VERIFYPEER => false,        // Temporary bypass becuse problem with https
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1, // Force HTTP/1.1 for better stability in local environments
 ]);
 
 $response = curl_exec($ch);
