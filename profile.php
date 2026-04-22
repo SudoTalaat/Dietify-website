@@ -840,7 +840,15 @@ include __DIR__ . '/header.php';
                                 style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; background: #fff; padding: 10px; border-radius: 8px;">
                                 <div>
                                     <strong>Payment:</strong>
-                                    <?php echo $paymentData ? ucfirst($paymentData['method']) . " (" . ucfirst($paymentData['status']) . ")" : "Pending"; ?>
+                                    <?php 
+                                    if ($paymentData) {
+                                        echo ucfirst($paymentData['method']) . " (" . ucfirst($paymentData['status']) . ")";
+                                    } elseif ($order['status'] === 'cancelled') {
+                                        echo "Cancelled";
+                                    } else {
+                                        echo "Pending";
+                                    }
+                                    ?>
                                 </div>
 
                                 <?php if ($order['status'] === 'pending'): ?>
