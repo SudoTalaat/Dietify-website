@@ -69,7 +69,7 @@ if ($action === 'add_address') {
         if ($is_default) {
             $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
         }
-        
+
         $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, location_description, phone, is_default) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("issi", $userId, $location, $phone, $is_default);
         if ($stmt->execute()) {
@@ -82,7 +82,7 @@ if ($action === 'add_address') {
         $stmt->close();
     }
 } elseif ($action === 'delete_address') {
-    $addrId = (int)($_POST['address_id'] ?? 0);
+    $addrId = (int) ($_POST['address_id'] ?? 0);
     $stmt = $conn->prepare("DELETE FROM user_addresses WHERE id = ? AND user_id = ?");
     $stmt->bind_param("ii", $addrId, $userId);
     if ($stmt->execute()) {
@@ -91,7 +91,7 @@ if ($action === 'add_address') {
     }
     $stmt->close();
 } elseif ($action === 'set_default_address') {
-    $addrId = (int)($_POST['address_id'] ?? 0);
+    $addrId = (int) ($_POST['address_id'] ?? 0);
     $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
     $stmt = $conn->prepare("UPDATE user_addresses SET is_default = 1 WHERE id = ? AND user_id = ?");
     $stmt->bind_param("ii", $addrId, $userId);
@@ -568,7 +568,8 @@ include __DIR__ . '/header.php';
         <!-- ── LEFT: USER INFO ── -->
         <div class="user-card">
             <?php if (!empty($user['avatar']) && $user['avatar'] !== 'assets/images/default_avatar.png'): ?>
-                <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; display: block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar"
+                    style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; display: block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <?php else: ?>
                 <div class="avatar-circle">
                     <?php echo strtoupper(substr($user['username'], 0, 1)); ?>
@@ -581,7 +582,9 @@ include __DIR__ . '/header.php';
                 <p>Member since
                     <?php echo date('Y-m-d', strtotime($user['created_at'])); ?>
                 </p>
-                <a href="edit_profile.php" class="settings-btn" style="background:#ff6b35; color:white; border:none; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px; font-size: 0.9rem;">✏️ Edit Profile</a>
+                <a href="edit_profile.php" class="settings-btn"
+                    style="background:#ff6b35; color:white; border:none; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px; font-size: 0.9rem;">✏️
+                    Edit Profile</a>
 
                 <div class="info-grid">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -652,7 +655,8 @@ include __DIR__ . '/header.php';
                     <a href="?tab=orders" class="tab-link <?php echo $currentTab === 'orders' ? 'active' : ''; ?>">
                         📦 My Orders
                     </a>
-                    <a href="?tab=addresses" class="tab-link <?php echo $currentTab === 'addresses' ? 'active' : ''; ?>">
+                    <a href="?tab=addresses"
+                        class="tab-link <?php echo $currentTab === 'addresses' ? 'active' : ''; ?>">
                         📍 My Addresses
                     </a>
                 </div>
@@ -745,7 +749,8 @@ include __DIR__ . '/header.php';
                     <?php endif; ?>
 
                     <?php if ($currentMethod !== 'none'): ?>
-                        <form method="POST" onsubmit="return confirm('Disable Two-Factor Authentication? Your account will be less secure.')">
+                        <form method="POST"
+                            onsubmit="return confirm('Disable Two-Factor Authentication? Your account will be less secure.')">
                             <input type="hidden" name="action" value="disable">
                             <button type="submit" class="settings-btn btn-disable">
                                 🔓 Disable 2FA
@@ -753,7 +758,7 @@ include __DIR__ . '/header.php';
                         </form>
                     <?php endif; ?>
                 </div>
-                
+
                 <div style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 30px;">
                     <h4 style="margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 8px;">
                         🔑 Update Your Password
@@ -762,15 +767,18 @@ include __DIR__ . '/header.php';
                         <input type="hidden" name="action" value="change_password">
                         <div style="display: flex; flex-direction: column; gap: 5px;">
                             <label style="font-size: 0.85rem; color: #666; font-weight: 600;">Current Password</label>
-                            <input type="password" name="current_password" class="form-input" required placeholder="••••••••">
+                            <input type="password" name="current_password" class="form-input" required
+                                placeholder="••••••••">
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 5px;">
                             <label style="font-size: 0.85rem; color: #666; font-weight: 600;">New Password</label>
-                            <input type="password" name="new_password" class="form-input" required minlength="12" placeholder="Minimum 12 characters">
+                            <input type="password" name="new_password" class="form-input" required minlength="12"
+                                placeholder="Minimum 12 characters">
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 5px;">
                             <label style="font-size: 0.85rem; color: #666; font-weight: 600;">Confirm New Password</label>
-                            <input type="password" name="confirm_password" class="form-input" required minlength="12" placeholder="Repeat new password">
+                            <input type="password" name="confirm_password" class="form-input" required minlength="12"
+                                placeholder="Repeat new password">
                         </div>
                         <button type="submit" class="btn-save-pass">
                             Save New Password
@@ -827,12 +835,14 @@ include __DIR__ . '/header.php';
                                     <div class="order-item">
                                         <span><?php echo $item['quantity']; ?>x
                                             <?php echo htmlspecialchars($item['product_name']); ?></span>
-                                        <span style="color: #27ae60; font-weight: 600;"><?php echo CURRENCY_SYMBOL . number_format($item['price'] * $item['quantity'], 2); ?></span>
+                                        <span
+                                            style="color: #27ae60; font-weight: 600;"><?php echo CURRENCY_SYMBOL . number_format($item['price'] * $item['quantity'], 2); ?></span>
                                     </div>
                                 <?php endwhile; ?>
                                 <div class="order-item" style="border-top: 2px solid #ddd; border-bottom: none; font-weight: bold;">
                                     <span>Total Amount:</span>
-                                    <span style="color: #27ae60;"><?php echo CURRENCY_SYMBOL . number_format($order['total_amount'], 2); ?></span>
+                                    <span
+                                        style="color: #27ae60;"><?php echo CURRENCY_SYMBOL . number_format($order['total_amount'], 2); ?></span>
                                 </div>
                             </div>
 
@@ -840,7 +850,7 @@ include __DIR__ . '/header.php';
                                 style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; background: #fff; padding: 10px; border-radius: 8px;">
                                 <div>
                                     <strong>Payment:</strong>
-                                    <?php 
+                                    <?php
                                     if ($paymentData) {
                                         echo ucfirst($paymentData['method']) . " (" . ucfirst($paymentData['status']) . ")";
                                     } elseif ($order['status'] === 'cancelled') {
@@ -863,7 +873,7 @@ include __DIR__ . '/header.php';
                                 <?php endif; ?>
                             </div>
                         </div>
-                    <?php
+                        <?php
                     endwhile;
                 else:
                     ?>
@@ -888,37 +898,43 @@ include __DIR__ . '/header.php';
 
                 if ($addrsResult && $addrsResult->num_rows > 0):
                     while ($addr = $addrsResult->fetch_assoc()):
-                ?>
-                    <div style="background: #f8f9fa; border: 1px solid #eee; border-radius: 12px; padding: 20px; margin-bottom: 15px; position: relative;">
-                        <?php if ($addr['is_default']): ?>
-                            <span style="position: absolute; top: 15px; right: 20px; background: #27ae60; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;">Default</span>
-                        <?php endif; ?>
-                        
-                        <p style="margin: 0 0 10px; font-weight: 600; color: #333; line-height: 1.4;">
-                            <?php echo htmlspecialchars($addr['location_description']); ?>
-                        </p>
-                        <p style="margin: 0 0 15px; color: #666; font-size: 0.9rem;">
-                            📞 <?php echo htmlspecialchars(!empty($user['phone']) ? $user['phone'] : $addr['phone']); ?>
-                        </p>
-
-                        <div style="display: flex; gap: 10px;">
-                            <?php if (!$addr['is_default']): ?>
-                                <form method="POST" style="margin:0;">
-                                    <input type="hidden" name="action" value="set_default_address">
-                                    <input type="hidden" name="address_id" value="<?php echo $addr['id']; ?>">
-                                    <button type="submit" style="background: white; border: 1px solid #ddd; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #555;">Set as Default</button>
-                                </form>
+                        ?>
+                        <div
+                            style="background: #f8f9fa; border: 1px solid #eee; border-radius: 12px; padding: 20px; margin-bottom: 15px; position: relative;">
+                            <?php if ($addr['is_default']): ?>
+                                <span
+                                    style="position: absolute; top: 15px; right: 20px; background: #27ae60; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;">Default</span>
                             <?php endif; ?>
-                            
-                            <form method="POST" style="margin:0;" onsubmit="return confirm('Delete this address?');">
-                                <input type="hidden" name="action" value="delete_address">
-                                <input type="hidden" name="address_id" value="<?php echo $addr['id']; ?>">
-                                <button type="submit" style="background: white; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #dc3545;">Delete</button>
-                            </form>
+
+                            <p style="margin: 0 0 10px; font-weight: 600; color: #333; line-height: 1.4;">
+                                <?php echo htmlspecialchars($addr['location_description']); ?>
+                            </p>
+                            <p style="margin: 0 0 15px; color: #666; font-size: 0.9rem;">
+                                📞 <?php echo htmlspecialchars(!empty($user['phone']) ? $user['phone'] : $addr['phone']); ?>
+                            </p>
+
+                            <div style="display: flex; gap: 10px;">
+                                <?php if (!$addr['is_default']): ?>
+                                    <form method="POST" style="margin:0;">
+                                        <input type="hidden" name="action" value="set_default_address">
+                                        <input type="hidden" name="address_id" value="<?php echo $addr['id']; ?>">
+                                        <button type="submit"
+                                            style="background: white; border: 1px solid #ddd; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #555;">Set
+                                            as Default</button>
+                                    </form>
+                                <?php endif; ?>
+
+                                <form method="POST" style="margin:0;" onsubmit="return confirm('Delete this address?');">
+                                    <input type="hidden" name="action" value="delete_address">
+                                    <input type="hidden" name="address_id" value="<?php echo $addr['id']; ?>">
+                                    <button type="submit"
+                                        style="background: white; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #dc3545;">Delete</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                <?php endwhile; else: ?>
-                    <p style="text-align: center; color: #888; padding: 20px; background: #f8f9fa; border-radius: 10px;">No addresses saved yet.</p>
+                    <?php endwhile; else: ?>
+                    <p style="text-align: center; color: #888; padding: 20px; background: #f8f9fa; border-radius: 10px;">No
+                        addresses saved yet.</p>
                 <?php endif; ?>
 
                 <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #eee;">
@@ -926,16 +942,24 @@ include __DIR__ . '/header.php';
                     <form method="POST" style="display: flex; flex-direction: column; gap: 15px;">
                         <input type="hidden" name="action" value="add_address">
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Delivery Address</label>
-                            <textarea name="location_description" class="form-control" placeholder="Street, Building, Apartment, City..." required style="min-height: 80px;"></textarea>
+                            <label
+                                style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Delivery
+                                Address</label>
+                            <textarea name="location_description" class="form-control"
+                                placeholder="Street, Building, Apartment, City..." required
+                                style="min-height: 80px;"></textarea>
                         </div>
                         <div>
-                            <label style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Contact Phone</label>
-                            <input type="text" name="phone" class="form-control" placeholder="Phone number for delivery" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required>
+                            <label
+                                style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Contact
+                                Phone</label>
+                            <input type="text" name="phone" class="form-control" placeholder="Phone number for delivery"
+                                value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" name="is_default" id="is_default" value="1">
-                            <label for="is_default" style="font-size: 0.9rem; color: #444; cursor: pointer;">Set as default address</label>
+                            <label for="is_default" style="font-size: 0.9rem; color: #444; cursor: pointer;">Set as default
+                                address</label>
                         </div>
                         <button type="submit" class="btn-submit" style="margin-top: 10px;">Add Address</button>
                     </form>
