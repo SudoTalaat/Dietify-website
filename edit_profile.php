@@ -21,6 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $height = !empty($_POST['height']) ? (float) $_POST['height'] : null;
     $gender = $_POST['gender'] ?? '';
 
+    // Server-side validation for phone number
+    // i love https://regex101.com/ (: 
+    if (!empty($phone) && !preg_match('/^01[0125][0-9]{8}$/', $phone)) {
+        $message = "Phone number must be 11 digits and start with 010, 011, 012, or 015.";
+        $msgType = 'error';
+    }
+
     // Handle avatar upload
     $avatarPath = null;
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
@@ -51,26 +58,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($message)) {
         if ($avatarPath) {
-            $updateStmt = $conn->prepare("UPDATE users SET username=?, email=?, phone=?, age=?, weight=?, height=?, gender=?, avatar=? WHERE id=?");
-            $updateStmt->bind_param('sssiddssi', $username, $email, $phone, $age, $weight, $height, $gender, $avatarPath, $userId);
+            $updateUser = $conn->prepare("UPDATE users SET username=?, email=? WHERE id=?");
+            $updateUser->bind_param('ssi', $username, $email, $userId);
+            
+            $updateProfile = $conn->prepare("INSERT INTO user_profiles (user_id, phone, age, weight, height, gender, avatar) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE phone=?, age=?, weight=?, height=?, gender=?, avatar=?");
+            $updateProfile->bind_param('isiddsssiddss', $userId, $phone, $age, $weight, $height, $gender, $avatarPath, $phone, $age, $weight, $height, $gender, $avatarPath);
         } else {
-            $updateStmt = $conn->prepare("UPDATE users SET username=?, email=?, phone=?, age=?, weight=?, height=?, gender=? WHERE id=?");
-            $updateStmt->bind_param('sssiddsi', $username, $email, $phone, $age, $weight, $height, $gender, $userId);
+            $updateUser = $conn->prepare("UPDATE users SET username=?, email=? WHERE id=?");
+            $updateUser->bind_param('ssi', $username, $email, $userId);
+            
+            $updateProfile = $conn->prepare("INSERT INTO user_profiles (user_id, phone, age, weight, height, gender) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE phone=?, age=?, weight=?, height=?, gender=?");
+            $updateProfile->bind_param('isiddssidds', $userId, $phone, $age, $weight, $height, $gender, $phone, $age, $weight, $height, $gender);
         }
 
-        if ($updateStmt->execute()) {
+        if ($updateUser->execute() && $updateProfile->execute()) {
             header("Location: profile.php?updated=1");
             exit();
         } else {
             $message = "Error updating profile. Email or username might already exist.";
             $msgType = 'error';
         }
-        $updateStmt->close();
+        $updateUser->close();
+        $updateProfile->close();
     }
 }
 
 // ── Load current user details ────────────────────────────────────────────────
-$stmt = $conn->prepare("SELECT id, username, email, avatar, age, weight, height, gender, phone FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT u.id, u.username, u.email, p.avatar, p.age, p.weight, p.height, p.gender, p.phone 
+                        FROM users u 
+                        LEFT JOIN user_profiles p ON u.id = p.user_id 
+                        WHERE u.id = ?");
 $stmt->bind_param('i', $userId);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -229,7 +246,8 @@ include __DIR__ . '/header.php';
             <div class="form-group">
                 <label for="phone">Phone Number</label>
                 <input type="text" name="phone" id="phone" class="form-control"
-                    value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>">
+                    value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" minlength="11" maxlength="11"
+                    pattern="01[0125][0-9]{8}" placeholder="01XXXXXXXXX">
             </div>
 
             <div class="row">

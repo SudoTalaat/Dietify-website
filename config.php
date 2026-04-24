@@ -97,13 +97,38 @@ function getCartCount(mysqli $conn): int
     return (int) ($result['total'] ?? 0);
 }
 
+
+
+
+/**
+ * Checks whether a given password has been found in known data breaches
+ * using the :contentReference[oaicite:0]{index=0}.
+ *
+ * How it works:
+ * - The password is hashed using :contentReference[oaicite:1]{index=1}.
+ * - The hash is converted to uppercase and split into:
+ *   - a 5-character prefix
+ *   - the remaining suffix
+ * - Only the prefix is sent to the API (k-anonymity), so the full hash
+ *   and password are never exposed.
+ * - The API returns a list of matching suffixes with breach counts.
+ * - The function checks if the suffix exists in the response:
+ *   - If found and count > 0 → password is compromised (returns true)
+ *   - Otherwise → password not found (returns false)
+ *
+ * Notes:
+ * - Communication is done over HTTPS (TLS), ensuring secure transmission.
+ * - No plaintext password is ever sent over the network.
+ */
+
+
 /** Checks if a password exists in a data breach using the HIBP Pwned Passwords API. */
 function isPasswordPwned($password): bool
 {
     $hash = strtoupper(sha1($password));
     $prefix = substr($hash, 0, 5);
     $suffix = substr($hash, 5);
-
+    //so i curl use tls by it self as docs say for ihavebeenpwnd
     $url = "https://api.pwnedpasswords.com/range/" . $prefix;
 
     $ch = curl_init();

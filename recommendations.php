@@ -9,7 +9,12 @@ if (!isLoggedIn()) {
 
 // Fetch user data from database
 $userId = $_SESSION['user_id'];
-$userData = $conn->query("SELECT * FROM users WHERE id = $userId")->fetch_assoc();
+$userData = $conn->query("
+    SELECT u.*, p.gender, p.age, p.weight, p.height 
+    FROM users u 
+    LEFT JOIN user_profiles p ON u.id = p.user_id 
+    WHERE u.id = $userId
+")->fetch_assoc();
 
 include __DIR__ . '/header.php';
 ?>

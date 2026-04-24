@@ -23,9 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Load address and user details
     $addrStmt = $conn->prepare("
-        SELECT a.*, u.phone as user_phone 
+        SELECT a.*, p.phone as user_phone 
         FROM user_addresses a 
-        JOIN users u ON a.user_id = u.id 
+        LEFT JOIN user_profiles p ON a.user_id = p.user_id 
         WHERE a.id = ? AND a.user_id = ?
     ");
     $addrStmt->bind_param("ii", $addressId, $userId);
@@ -129,7 +129,7 @@ if (empty($items)) {
     exit();
 }
 
-$userQuery = $conn->query("SELECT phone FROM users WHERE id = $userId");
+$userQuery = $conn->query("SELECT phone FROM user_profiles WHERE user_id = $userId");
 $userPhone = $userQuery->fetch_assoc()['phone'] ?? '';
 $addrs = $conn->query("SELECT * FROM user_addresses WHERE user_id = $userId ORDER BY is_default DESC");
 ?>
@@ -164,7 +164,8 @@ $addrs = $conn->query("SELECT * FROM user_addresses WHERE user_id = $userId ORDE
                                         </div>
                                         <div>
                                             <p style="margin: 0 0 5px; font-weight: 600; color: #333;">
-                                                <?php echo htmlspecialchars($addr['location_description']); ?></p>
+                                                <?php echo htmlspecialchars($addr['location_description']); ?>
+                                            </p>
                                             <p style="margin: 0; color: #888; font-size: 0.9rem;">📞
                                                 <?php echo htmlspecialchars(!empty($userPhone) ? $userPhone : $addr['phone']); ?>
                                             </p>

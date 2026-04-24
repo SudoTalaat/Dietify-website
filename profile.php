@@ -24,8 +24,11 @@ if (!in_array($currentTab, $allowedTabs)) {
 
 // ── Load user details ────────────────────────────────────────────────────────
 $stmt = $conn->prepare(
-    "SELECT u.id, u.username, u.email, u.password, u.twofa_method, u.role, u.created_at, u.avatar, u.age, u.weight, u.height, u.gender, u.phone, t.totp_secret, t.confirmed_at as totp_confirmed_at
+    "SELECT u.id, u.username, u.email, u.password, u.twofa_method, u.role, u.created_at, 
+            p.avatar, p.age, p.weight, p.height, p.gender, p.phone, 
+            t.totp_secret, t.confirmed_at as totp_confirmed_at
      FROM users u
+     LEFT JOIN user_profiles p ON u.id = p.user_id
      LEFT JOIN user_totp t ON u.id = t.user_id
      WHERE u.id = ?"
 );
@@ -66,20 +69,26 @@ if ($action === 'add_address') {
     $is_default = isset($_POST['is_default']) ? 1 : 0;
 
     if (!empty($location) && !empty($phone)) {
-        if ($is_default) {
-            $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
-        }
-
-        $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, location_description, phone, is_default) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("issi", $userId, $location, $phone, $is_default);
-        if ($stmt->execute()) {
-            $message = "Address added successfully!";
-            $msgType = 'success';
-        } else {
-            $message = "Error adding address.";
+        //010, 011, 012, or 015. this regex is to chekc it is egyption phone number 
+        if (!preg_match('/^01[0125][0-9]{8}$/', $phone)) {
+            $message = "Phone number must be 11 digits and start with 010, 011, 012, or 015.";
             $msgType = 'error';
+        } else {
+            if ($is_default) {
+                $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
+            }
+
+            $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, location_description, phone, is_default) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("issi", $userId, $location, $phone, $is_default);
+            if ($stmt->execute()) {
+                $message = "Address added successfully!";
+                $msgType = 'success';
+            } else {
+                $message = "Error adding address.";
+                $msgType = 'error';
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 } elseif ($action === 'delete_address') {
     $addrId = (int) ($_POST['address_id'] ?? 0);
@@ -953,8 +962,9 @@ include __DIR__ . '/header.php';
                             <label
                                 style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Contact
                                 Phone</label>
-                            <input type="text" name="phone" class="form-control" placeholder="Phone number for delivery"
-                                value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required>
+                            <input type="text" name="phone" class="form-control" placeholder="01XXXXXXXXX"
+                                value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required minlength="11"
+                                maxlength="11" pattern="01[0125][0-9]{8}">
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" name="is_default" id="is_default" value="1">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2026 at 10:52 PM
+-- Generation Time: Apr 23, 2026 at 04:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -54,7 +54,8 @@ CREATE TABLE `carts` (
 
 INSERT INTO `carts` (`id`, `user_id`, `created_at`, `updated_at`) VALUES
 (1, 2, '2026-02-27 22:28:12', '2026-02-27 22:28:12'),
-(2, 6, '2026-03-17 14:49:08', '2026-03-17 14:49:08');
+(2, 6, '2026-03-17 14:49:08', '2026-03-17 14:49:08'),
+(3, 8, '2026-04-23 13:52:16', '2026-04-23 13:52:16');
 
 -- --------------------------------------------------------
 
@@ -68,6 +69,15 @@ CREATE TABLE `cart_items` (
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cart_items`
+--
+
+INSERT INTO `cart_items` (`id`, `cart_id`, `product_id`, `quantity`) VALUES
+(17, 1, 5, 3),
+(18, 1, 7, 2),
+(19, 3, 8, 1);
 
 -- --------------------------------------------------------
 
@@ -146,7 +156,27 @@ INSERT INTO `messages` (`id`, `user_id`, `message`, `created_at`) VALUES
 (143, '2', 'did i ask you about your name ?', '2026-04-20 19:41:06'),
 (144, '2', 'did i ask you about your name ?', '2026-04-20 19:41:07'),
 (145, '2', 'name', '2026-04-20 19:41:26'),
-(146, '2', ' is still \'Healthy Food Assistant\'. I\'m here to help!', '2026-04-20 19:41:26');
+(146, '2', ' is still \'Healthy Food Assistant\'. I\'m here to help!', '2026-04-20 19:41:26'),
+(147, '2', 'give me dite plan for 7 days', '2026-04-21 12:46:14'),
+(148, '2', 'give me dite plan for 7 days', '2026-04-21 12:46:16'),
+(149, '2', '\n\nTo create a personalized 7-day meal plan, I need to know a few details from you. \n\nDo you want a 3-day or 7-day meal plan?', '2026-04-21 12:46:16'),
+(150, '2', '7-day', '2026-04-21 12:46:17'),
+(151, '2', ' meal plan it is!\n\nBefore I generate the plan, I just need to confirm - you want a STRUCTURED MEAL PLAN, right? 📝\n\nAlso, just to remind you, since your DIET GOAL is weight loss, I\'ll focus on low-calorie, high-fiber, and protein-rich options.\n\nHere\'s your 7-day meal plan:\n\n### Day 1\n- **Breakfast**: Oatmeal with Banana and Eggs 🍳 (300 calories, 5g protein, 5g fiber)\n  * 1 cup cooked oatmeal\n  * 1 medium banana, sliced\n  * 2 eggs, poached\n- **Lunch**: Grilled Chicken Breast with Mixed Greens Salad 🥗 (350 calories, 35g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups mixed greens\n  * 1/2 cup cherry tomatoes, halved\n  * 1 tablespoon olive oil and lemon juice dressing\n- **Dinner**: Baked Salmon with Quinoa and Steamed Broccoli 🍗 (400 calories, 30g protein, 10g fiber)\n  * 4 oz baked salmon\n  * 1/2 cup', '2026-04-21 12:46:18'),
+(152, '2', '7-day', '2026-04-21 12:46:24'),
+(153, '2', ' meal plan: Day 2-7\n\n### Day 2\n- **Breakfast**: Greek Yogurt with Berries and Granola 🍿 (250 calories, 20g protein, 4g fiber)\n  * 6 oz Greek yogurt\n  * 1/2 cup mixed berries\n  * 2 tablespoons granola\n- **Lunch**: Turkey and Avocado Wrap 🥗 (400 calories, 25g protein, 10g fiber)\n  * 1 whole wheat tortilla\n  * 2 oz sliced turkey breast\n  * 1/2 avocado, sliced\n  * 1 cup mixed greens\n- **Dinner**: Chicken and Vegetable Stir-Fry with Brown Rice 🍚 (500 calories, 35g protein, 10g fiber)\n  * 4 oz cooked chicken breast\n  * 1 cup mixed vegetables (bell peppers, carrots, snap peas)\n  * 1/2 cup cooked brown rice\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1', '2026-04-21 12:46:24'),
+(154, '2', 'the rest', '2026-04-21 12:46:32'),
+(155, '2', ' of the meal plan:\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1 scoop vanilla protein powder\n  * 1 tablespoon almond butter\n  * 1 cup mixed berries\n- **Lunch**: Chicken Caesar Salad 🥗 (350 calories, 30g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups romaine lettuce\n  * 1/4 cup Caesar dressing\n  * 1 cup croutons (whole wheat)\n- **Dinner**: Baked Chicken Thigh with Roasted Vegetables and Quinoa 🍗 (450 calories, 30g protein, 10g fiber)\n  * 4 oz baked chicken thigh\n  * 1 cup mixed roasted vegetables (Brussels sprouts, sweet potatoes, carrots)\n  * 1/2 cup cooked quinoa\n\n### Day 4\n- **Breakfast**: Avocado Toast with Poached Eggs 🥚 (300 calories, 15g protein, 7g fiber)\n  *', '2026-04-21 12:46:33'),
+(156, '2', 'give me meal plan for 3 days ', '2026-04-21 19:18:32'),
+(157, '2', 'give me meal plan for 3 days ', '2026-04-21 19:18:48'),
+(158, '2', ' 📝\n\nSince you\'re looking to lose weight, I\'ll focus on low-calorie, high-fiber, and protein-rich options. Here\'s a 3-day meal plan for you:\n\n### Day 1\n- **Breakfast**: Oatmeal with Banana and Eggs 🍳 (300 calories, 5g protein, 5g fiber)\n  * 1 cup cooked oatmeal\n  * 1 medium banana, sliced\n  * 2 eggs, poached\n- **Lunch**: Grilled Chicken Breast with Mixed Greens Salad 🥗 (350 calories, 35g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups mixed greens\n  * 1/2 cup cherry tomatoes, halved\n  * 1 tablespoon olive oil and lemon juice dressing\n- **Dinner**: Baked Salmon with Quinoa and Steamed Broccoli 🍗 (400 calories, 30g protein, 10g fiber)\n  * 4 oz baked salmon\n  * 1/2 cup cooked quinoa\n  * 1 cup steamed broccoli\n\n### Day 2\n- **Breakfast**: Greek Yogurt with Berries and Granola 🍿 (250 calories, 20g protein, 4g fiber)\n  * 6 oz Greek yogurt\n  * 1/2 cup mixed berries\n  * 2 tablespoons granola\n- **Lunch**: Turkey and Avocado Wrap 🥗 (400 calories, 25g protein, 10g fiber)\n  * 1 whole wheat tortilla\n  * 2 oz sliced turkey breast\n  * 1/2 avocado, sliced\n  * 1 cup mixed greens\n- **Dinner**: Chicken and Vegetable Stir-Fry with Brown Rice 🍚 (500 calories, 35g protein, 10g fiber)\n  * 4 oz cooked chicken breast\n  * 1 cup mixed vegetables (bell peppers, carrots, snap peas)\n  * 1/2 cup cooked brown rice\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1 scoop vanilla protein powder\n  * 1 tablespoon almond butter\n  * 1 cup mixed berries\n- **Lunch**: Chicken Caesar Salad 🥗 (350 calories, 30g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups romaine lettuce\n  * 1/4 cup Caesar dressing\n  * 1 cup croutons (whole wheat)\n- **Dinner**: Baked Chicken Thigh with Roasted Vegetables and Quinoa 🍗 (450 calories, 30g protein, 10g fiber)\n  * 4 oz baked chicken thigh\n  * 1 cup mixed roasted vegetables (Brussels sprouts, sweet potatoes, carrots)\n  * 1/2 cup cooked quinoa\n\n### Nutrition Tip: \n- Focus on whole, unprocessed foods to ensure you\'re getting the nutrients your body needs.\n- Aim to drink at least 8 cups of water per day to stay hydrated.\n- Incorporate physical activity into your daily routine, such as a 30-minute walk or jog.\n\nRemember, this meal plan is just a starting point. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs!', '2026-04-21 19:18:57'),
+(159, '2', '3-day', '2026-04-21 19:19:17'),
+(160, '2', ' meal plan complete! 🎉\n\nNow, don\'t forget to stay hydrated and get moving to support your weight loss journey! 💪\n\nIf you need any more meal plan suggestions or have questions, feel free to ask!', '2026-04-21 19:19:17'),
+(161, '8', 'i want fava beans meal for my dite', '2026-04-23 13:53:03'),
+(162, '8', 'Fava beans are a nutritious and delicious addition to a healthy diet! 🥗 Here\'s a detailed recipe to get you started:\n\n### Fava Bean and Spinach Stew with Garlic Bread\n\n#### Servings: 4-6\n\n#### Diet: General (balanced, nutritious, and varied)\n\n#### Ingredients:\n\n#### For the stew:\n- 1 cup dried fava beans (soaked overnight and drained)\n- 2 tablespoons olive oil\n- 1 onion, chopped\n- 3 cloves garlic, minced\n- 2 cups chopped fresh spinach\n- 1 teaspoon ground cumin\n- 1 teaspoon smoked paprika\n- Salt and pepper to taste\n- 4 cups vegetable broth (low-sodium)\n- 1 can (14.5 oz) diced tomatoes\n- 1/4 cup chopped fresh parsley\n\n#### For the garlic bread:\n- 1 loaf Italian bread (about 1 pound)\n- 3 cloves garlic, minced\n- 1/4 cup olive oil\n- 1/2 cup grated Parmesan cheese (optional)\n\n### Instructions\n\n1. **Prepare the fava beans**: Rinse the soaked fava beans and place them in a large pot. Cover them with water and bring to a boil. Reduce the heat and simmer for 45-60 minutes, or until the beans are tender.\n\n2. **Make the stew**: In a large skillet, heat the olive oil over medium heat. Add the chopped onion and cook until softened, about 5 minutes. Add the minced garlic and cook for another minute.\n\n3. **Add the spinach and spices**: Stir in the chopped spinach, cumin, smoked paprika, salt, and pepper. Cook until the spinach has wilted.\n\n4. **Combine the stew ingredients**: Add the cooked fava beans, vegetable broth, diced tomatoes, and chopped parsley to the skillet. Stir well to combine.\n\n5. **Simmer the stew**: Bring the stew to a boil, then reduce the heat and simmer for 20-25 minutes, or until the flavors have melded together.\n\n6. **Prepare the garlic bread**: Preheat the oven to 350°F (180°C). Slice the Italian bread into 1-inch thick slices. In a small bowl, mix together the minced garlic and olive oil. Brush the garlic mixture onto each bread slice.\n\n7. **Bake the garlic bread**: Place the bread slices on a baking sheet and bake for 10-12 minutes, or until lightly toasted. Sprinkle with Parmesan cheese (if using).\n\n8. **Serve**: Serve the fava bean stew hot, accompanied by slices of garlic bread.\n\nEnjoy your delicious and nutritious fava bean meal! 🥗', '2026-04-23 13:53:04'),
+(163, '8', 'i want MEAL PLAN FOR THIS DAY', '2026-04-23 13:53:22'),
+(164, '8', 'I\'d be happy to help you with a meal plan for the day. To make it more tailored to your needs, can you please tell me if you\'d like a:\n\n**A)** 3-day meal plan or **B)** 7-day meal plan?\n\nIf you don\'t have a specific duration in mind, I can suggest a 3-day meal plan to get you started.\n\nAlso, considering your **DIET GOAL** is **weight_loss**, I\'ll make sure to suggest meals that are low in calories, high in fiber, and rich in protein.\n\nPlease let me know your preference, and I\'ll create a personalized meal plan for you! 🥗', '2026-04-23 13:53:22'),
+(165, '8', '3-day', '2026-04-23 13:53:24'),
+(166, '8', 'Here\'s a 3-day meal plan tailored to your **weight_loss** goal. This meal plan includes low-calorie, high-fiber, and protein-rich options to help you stay on track. 🥗\n\n**Day 1**\n\n### Breakfast\n\n* **Greek Yogurt and Berries with Granola**: 250 calories, 5g fiber, 20g protein\n	+ 1 cup Greek yogurt\n	+ 1/2 cup mixed berries\n	+ 2 tablespoons granola\n\n### Lunch\n\n* **Grilled Chicken and Veggie Wrap**: 400 calories, 10g fiber, 35g protein\n	+ 1 whole wheat tortilla\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed greens\n	+ 1/2 cup sliced cucumber\n	+ 1/4 cup sliced bell peppers\n\n### Snack\n\n* **Apple Slices with Almond Butter**: 150 calories, 4g fiber, 4g protein\n	+ 1 medium apple, sliced\n	+ 2 tablespoons almond butter\n\n### Dinner\n\n* **Baked Salmon with Quinoa and Steamed Broccoli**: 500 calories, 10g fiber, 35g protein\n	+ 6 oz salmon fillet\n	+ 1/2 cup cooked quinoa\n	+ 1 cup steamed broccoli\n\n### Nutrition Tip: 💡\nIncorporate physical activity into your daily routine, such as a 30-minute brisk walk in the morning or a home workout in the evening.\n\n---\n\n**Day 2**\n\n### Breakfast\n\n* **Oatmeal with Banana and Nuts**: 300 calories, 6g fiber, 10g protein\n	+ 1 cup cooked oatmeal\n	+ 1 medium banana\n	+ 1 tablespoon chopped walnuts\n\n### Lunch\n\n* **Turkey and Avocado Salad**: 450 calories, 10g fiber, 25g protein\n	+ 2 cups mixed greens\n	+ 2 oz sliced turkey breast\n	+ 1/2 avocado, diced\n	+ 1 cup cherry tomatoes, halved\n\n### Snack\n\n* **Cottage Cheese and Cucumber Slices**: 150 calories, 5g fiber, 15g protein\n	+ 1/2 cup cottage cheese\n	+ 1/2 cup sliced cucumber\n\n### Dinner\n\n* **Grilled Chicken and Vegetable Skewers**: 400 calories, 8g fiber, 30g protein\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n	+ 1 whole wheat pita\n\n### Nutrition Tip: ⏰\nStay hydrated by drinking at least 8 cups of water throughout the day.\n\n---\n\n**Day 3**\n\n### Breakfast\n\n* **Scrambled Eggs with Spinach and Whole Wheat Toast**: 250 calories, 5g fiber, 20g protein\n	+ 2 scrambled eggs\n	+ 1 cup fresh spinach\n	+ 2 slices whole wheat toast\n\n### Lunch\n\n* **Chicken and Quinoa Bowl**: 500 calories, 10g fiber, 30g protein\n	+ 2 oz cooked chicken breast\n	+ 1 cup cooked quinoa\n	+ 1 cup steamed green beans\n\n### Snack\n\n* **Carrot Sticks with Hummus**: 100 calories, 6g fiber, 5g protein\n	+ 4 carrot sticks\n	+ 2 tablespoons hummus\n\n### Dinner\n\n* **Baked Chicken Breast with Roasted Vegetables**: 400 calories, 10g fiber, 35g protein\n	+ 6 oz baked chicken breast\n	+ 1 cup roasted mixed vegetables (Brussels sprouts, sweet potatoes, carrots)\n\n### Nutrition Tip: 🌞\nGet enough sleep each night to help your body recover from the day\'s activities and support weight loss.\n\nThis meal plan provides approximately 1500-1700 calories per day, with a balance of protein, healthy fats, and complex carbohydrates to support weight loss. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs.', '2026-04-23 13:53:26');
 
 -- --------------------------------------------------------
 
@@ -308,25 +338,17 @@ CREATE TABLE `users` (
   `twofa_method` enum('none','totp','email') NOT NULL DEFAULT 'none',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `is_verified` tinyint(1) DEFAULT 0,
-  `avatar` varchar(255) DEFAULT NULL,
-  `age` int(11) DEFAULT NULL,
-  `weight` decimal(5,2) DEFAULT NULL,
-  `height` decimal(5,2) DEFAULT NULL,
-  `gender` varchar(20) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL
+  `is_verified` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`, `avatar`, `age`, `weight`, `height`, `gender`, `phone`) VALUES
-(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1, 'assets/images/avatar_2_1776340436.jpg', 21, 90.00, 170.00, 'male', '0106634324234'),
-(4, 'testuser2', 'cicalopy@denipl.com', '$2y$10$sfZ4eiqZIa1WuaqyVYNhHeXCxFd8My.xNf1FSzWD6KZju9xaJBON6', 'customer', 'none', '2026-03-17 14:22:50', '2026-03-17 14:22:50', 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 'korzegelti@necub.com', 'korzegelti@necub.com', '$2y$10$EyYD.pTAZJL3fk3wXIL.5ej/DWb76/A0DUKjqrnyqs6mZ7eO74.zi', 'customer', 'none', '2026-03-17 14:25:41', '2026-03-17 14:25:41', 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 'wyyig29694@minitts.net', 'wyyig29694@minitts.net', '$2y$10$4NokIwkRtvluBiLkIKp8l.WlFfbFBO674xRrdVKJcN2g7ljKLvoxi', 'customer', 'none', '2026-03-17 14:34:21', '2026-03-17 14:34:21', 1, NULL, NULL, NULL, NULL, NULL, NULL),
-(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', '2026-04-12 09:29:56', 1, 'assets/images/default_avatar.png', 27, 60.00, 185.00, 'male', '01056988987');
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`) VALUES
+(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1),
+(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', '2026-04-12 09:29:56', 1),
+(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', '2026-04-23 13:44:46', 1);
 
 -- --------------------------------------------------------
 
@@ -343,6 +365,38 @@ CREATE TABLE `user_addresses` (
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_addresses`
+--
+
+INSERT INTO `user_addresses` (`id`, `user_id`, `location_description`, `phone`, `is_default`, `created_at`, `updated_at`) VALUES
+(1, 2, 'madinity b100 street 10 buidling 111 apartment 20', '01066452325', 1, '2026-04-22 20:45:20', '2026-04-22 20:45:20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_profiles`
+--
+
+CREATE TABLE `user_profiles` (
+  `user_id` int(11) NOT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `weight` decimal(5,2) DEFAULT NULL,
+  `height` decimal(5,2) DEFAULT NULL,
+  `gender` varchar(20) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_profiles`
+--
+
+INSERT INTO `user_profiles` (`user_id`, `avatar`, `age`, `weight`, `height`, `gender`, `phone`) VALUES
+(2, 'assets/images/avatar_2_1776340436.jpg', 21, 90.00, 170.00, 'male', '01066452322'),
+(7, 'assets/images/default_avatar.png', 27, 60.00, 185.00, 'male', '01056988987'),
+(8, NULL, 21, 111.00, 170.00, 'male', '01066458610');
 
 -- --------------------------------------------------------
 
@@ -448,6 +502,12 @@ ALTER TABLE `user_addresses`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `user_profiles`
+--
+ALTER TABLE `user_profiles`
+  ADD PRIMARY KEY (`user_id`);
+
+--
 -- Indexes for table `user_totp`
 --
 ALTER TABLE `user_totp`
@@ -467,13 +527,13 @@ ALTER TABLE `backup_codes`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `email_otps`
@@ -485,7 +545,7 @@ ALTER TABLE `email_otps`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -521,13 +581,23 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `user_addresses`
 --
 ALTER TABLE `user_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `user_profiles`
+--
+ALTER TABLE `user_profiles`
+  ADD CONSTRAINT `user_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
