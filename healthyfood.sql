@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2026 at 04:09 PM
+-- Generation Time: Apr 24, 2026 at 01:53 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -54,7 +54,6 @@ CREATE TABLE `carts` (
 
 INSERT INTO `carts` (`id`, `user_id`, `created_at`, `updated_at`) VALUES
 (1, 2, '2026-02-27 22:28:12', '2026-02-27 22:28:12'),
-(2, 6, '2026-03-17 14:49:08', '2026-03-17 14:49:08'),
 (3, 8, '2026-04-23 13:52:16', '2026-04-23 13:52:16');
 
 -- --------------------------------------------------------
@@ -106,7 +105,6 @@ INSERT INTO `email_otps` (`id`, `user_id`, `otp_hash`, `purpose`, `expires_at`, 
 (10, 2, '$2y$10$Z1y5x0oANalXRRJMKab8au3jVYEm7kgdT1afUCG5wI4rJkqVWuMR6', 'password_reset', '2026-03-04 15:52:30', '2026-03-04 15:43:03', '2026-03-04 15:42:30'),
 (11, 2, '$2y$10$sGmvQf6rZKQIHohOxpYqx.qUY1D2ycUT0e0xab8tD5zDAPbWTvdr.', 'password_reset', '2026-03-04 17:37:28', '2026-03-04 17:28:05', '2026-03-04 17:27:28'),
 (12, 2, '$2y$10$lioz.0Decdofj2itWuKZSOQYsAGnHJNu3DLaG04CHQqBe2/si1qbO', 'twofa', '2026-03-04 17:38:34', '2026-03-04 17:28:46', '2026-03-04 17:28:34'),
-(13, 4, '$2y$10$J3pr15tTnn1hcwyCM7Zrz.WE3X.sAqwtYNKs5oeHktiYesEFg4PKy', 'password_reset', '2026-03-17 14:34:43', NULL, '2026-03-17 14:24:43'),
 (15, 2, '$2y$10$C3UH4ufa/XSmjEY2NwnAEOdiKW.PHdnRwgKQ3hfm2Bl7U9p6Eyt3e', 'twofa', '2026-04-15 05:13:24', NULL, '2026-04-15 05:03:24');
 
 -- --------------------------------------------------------
@@ -117,7 +115,7 @@ INSERT INTO `email_otps` (`id`, `user_id`, `otp_hash`, `purpose`, `expires_at`, 
 
 CREATE TABLE `messages` (
   `id` int(11) NOT NULL,
-  `user_id` varchar(50) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `message` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -127,56 +125,56 @@ CREATE TABLE `messages` (
 --
 
 INSERT INTO `messages` (`id`, `user_id`, `message`, `created_at`) VALUES
-(117, '2', 'sup man', '2026-04-16 20:54:08'),
-(118, '2', 'What\'s up? 😊 You\'re looking to eat healthier in general, right? I\'d be happy to help you with some balanced meal ideas. How about some grilled chicken with roasted veggies and quinoa? Or a hearty bowl of lentil soup with whole grain bread? Which one sounds good to you?', '2026-04-16 20:54:09'),
-(119, '2', 'make dite plan for me ', '2026-04-16 20:54:39'),
-(120, '2', 'You want a structured meal plan, huh? Before I can do that, I need to know how many days you\'d like the plan to cover. Do you want a 3-day meal plan or a 7-day meal plan?\n\nAlso, let me know if you have any dietary restrictions or preferences (e.g. vegetarian, gluten-free, etc.) that I should keep in mind while creating the plan.', '2026-04-16 20:54:39'),
-(121, '2', '3-day', '2026-04-16 20:54:50'),
-(122, '2', 'I\'ll create a 3-day structured meal plan for you. Before I begin, I just need to confirm a few details.\n\nSince you didn\'t mention any dietary restrictions, I\'ll assume you\'re looking for a general meal plan. If you\'re vegetarian, gluten-free, or have any other specific needs, please let me know.\n\nAlso, would you like your meals to be relatively light and easy to prepare, or can you spend a bit more time in the kitchen cooking?\n\n### Meal Plan Options:\n\nA) Quick & Easy\nB) Cooking Time Doesn\'t Matter\n\nPlease respond with the letter of your preferred meal plan option!', '2026-04-16 20:54:50'),
-(123, '2', '3-day', '2026-04-16 20:54:53'),
-(124, '2', 'You didn\'t answer the question. Please respond with \"A)\" for Quick & Easy or \"B)\" for Cooking Time Doesn\'t Matter.', '2026-04-16 20:54:53'),
-(125, '2', 'A', '2026-04-16 20:55:12'),
-(126, '2', 'You\'ve chosen the Quick & Easy option.\n\nHere\'s a 3-day structured meal plan for you:\n\n**Day 1**\n\n* Breakfast: Overnight oats with banana and almond milk 🥗\n	+ 1/2 cup rolled oats, 1/2 cup almond milk, 1 mashed banana, 1 tablespoon honey\n* Lunch: Grilled chicken breast with mixed greens salad 🥦\n	+ 4 oz grilled chicken, 2 cups mixed greens, 1 cup cherry tomatoes, 1 tablespoon vinaigrette\n* Dinner: One-pot pasta with marinara sauce and vegetables 🍝\n	+ 1 cup pasta, 1 cup marinara sauce, 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n\n**Day 2**\n\n* Breakfast: Scrambled eggs with whole wheat toast and avocado 🥚\n	+ 2 scrambled eggs, 1 slice whole wheat toast, 1/2 avocado\n* Lunch: Turkey and cheese sandwich on whole wheat bread with carrot sticks 🥗\n	+ 2 slices whole wheat bread, 2 oz turkey breast, 1 oz cheese, 1 cup carrot sticks\n* Dinner: Baked salmon with roasted broccoli and quinoa 🍗', '2026-04-16 20:55:13'),
-(127, '2', '3-day', '2026-04-16 20:55:16'),
-(128, '2', ' Meal Plan (Continued)\n\n**Day 3**\n\n* Breakfast: Yogurt parfait with granola and mixed berries 🍓\n	+ 6 oz yogurt, 2 tablespoons granola, 1 cup mixed berries\n* Lunch: Chicken Caesar salad 🥗\n	+ 4 oz grilled chicken, 2 cups romaine lettuce, 1 cup croutons, 1 tablespoon Caesar dressing\n* Dinner: Black bean and corn tacos with whole wheat tortillas 🌯\n	+ 1 cup cooked black beans, 1 cup frozen corn, 2 whole wheat tortillas, 1 cup shredded cheese\n\n### Nutrition Tip\nRemember to stay hydrated by drinking plenty of water throughout the day. Aim for at least 8 cups (64 oz) of water daily.\n\nPlease let me know if you have any questions or if you\'d like to make any changes to this meal plan!', '2026-04-16 20:55:17'),
-(129, '2', 'what is your name', '2026-04-16 20:58:41'),
-(130, '2', '?', '2026-04-16 20:58:41'),
-(131, '2', 'you namme ?', '2026-04-16 20:58:47'),
-(132, '2', ' I\'m Mr. Hamboula, your personalized food guru! I\'m here to help you with all your culinary needs and make healthy eating a breeze.', '2026-04-16 20:58:47'),
-(133, '2', 'your name', '2026-04-20 19:40:17'),
-(134, '2', ' is not Mr. Hamboula', '2026-04-20 19:40:18'),
-(135, '2', 'did i ask you about your name ?', '2026-04-20 19:40:47'),
-(136, '2', 'did i ask you about your name ?', '2026-04-20 19:40:50'),
-(137, '2', 'name ?', '2026-04-20 19:40:54'),
-(138, '2', 'hi', '2026-04-20 19:40:57'),
-(139, '2', ', i\'m your friendly Healthy Food Assistant! 👋', '2026-04-20 19:40:57'),
-(140, '2', 'name ?', '2026-04-20 19:41:00'),
-(141, '2', 'name ?', '2026-04-20 19:41:03'),
-(142, '2', ' it\'s a pleasure to meet you, but I don\'t have a personal name. I\'m here to help you with healthy food suggestions!', '2026-04-20 19:41:04'),
-(143, '2', 'did i ask you about your name ?', '2026-04-20 19:41:06'),
-(144, '2', 'did i ask you about your name ?', '2026-04-20 19:41:07'),
-(145, '2', 'name', '2026-04-20 19:41:26'),
-(146, '2', ' is still \'Healthy Food Assistant\'. I\'m here to help!', '2026-04-20 19:41:26'),
-(147, '2', 'give me dite plan for 7 days', '2026-04-21 12:46:14'),
-(148, '2', 'give me dite plan for 7 days', '2026-04-21 12:46:16'),
-(149, '2', '\n\nTo create a personalized 7-day meal plan, I need to know a few details from you. \n\nDo you want a 3-day or 7-day meal plan?', '2026-04-21 12:46:16'),
-(150, '2', '7-day', '2026-04-21 12:46:17'),
-(151, '2', ' meal plan it is!\n\nBefore I generate the plan, I just need to confirm - you want a STRUCTURED MEAL PLAN, right? 📝\n\nAlso, just to remind you, since your DIET GOAL is weight loss, I\'ll focus on low-calorie, high-fiber, and protein-rich options.\n\nHere\'s your 7-day meal plan:\n\n### Day 1\n- **Breakfast**: Oatmeal with Banana and Eggs 🍳 (300 calories, 5g protein, 5g fiber)\n  * 1 cup cooked oatmeal\n  * 1 medium banana, sliced\n  * 2 eggs, poached\n- **Lunch**: Grilled Chicken Breast with Mixed Greens Salad 🥗 (350 calories, 35g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups mixed greens\n  * 1/2 cup cherry tomatoes, halved\n  * 1 tablespoon olive oil and lemon juice dressing\n- **Dinner**: Baked Salmon with Quinoa and Steamed Broccoli 🍗 (400 calories, 30g protein, 10g fiber)\n  * 4 oz baked salmon\n  * 1/2 cup', '2026-04-21 12:46:18'),
-(152, '2', '7-day', '2026-04-21 12:46:24'),
-(153, '2', ' meal plan: Day 2-7\n\n### Day 2\n- **Breakfast**: Greek Yogurt with Berries and Granola 🍿 (250 calories, 20g protein, 4g fiber)\n  * 6 oz Greek yogurt\n  * 1/2 cup mixed berries\n  * 2 tablespoons granola\n- **Lunch**: Turkey and Avocado Wrap 🥗 (400 calories, 25g protein, 10g fiber)\n  * 1 whole wheat tortilla\n  * 2 oz sliced turkey breast\n  * 1/2 avocado, sliced\n  * 1 cup mixed greens\n- **Dinner**: Chicken and Vegetable Stir-Fry with Brown Rice 🍚 (500 calories, 35g protein, 10g fiber)\n  * 4 oz cooked chicken breast\n  * 1 cup mixed vegetables (bell peppers, carrots, snap peas)\n  * 1/2 cup cooked brown rice\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1', '2026-04-21 12:46:24'),
-(154, '2', 'the rest', '2026-04-21 12:46:32'),
-(155, '2', ' of the meal plan:\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1 scoop vanilla protein powder\n  * 1 tablespoon almond butter\n  * 1 cup mixed berries\n- **Lunch**: Chicken Caesar Salad 🥗 (350 calories, 30g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups romaine lettuce\n  * 1/4 cup Caesar dressing\n  * 1 cup croutons (whole wheat)\n- **Dinner**: Baked Chicken Thigh with Roasted Vegetables and Quinoa 🍗 (450 calories, 30g protein, 10g fiber)\n  * 4 oz baked chicken thigh\n  * 1 cup mixed roasted vegetables (Brussels sprouts, sweet potatoes, carrots)\n  * 1/2 cup cooked quinoa\n\n### Day 4\n- **Breakfast**: Avocado Toast with Poached Eggs 🥚 (300 calories, 15g protein, 7g fiber)\n  *', '2026-04-21 12:46:33'),
-(156, '2', 'give me meal plan for 3 days ', '2026-04-21 19:18:32'),
-(157, '2', 'give me meal plan for 3 days ', '2026-04-21 19:18:48'),
-(158, '2', ' 📝\n\nSince you\'re looking to lose weight, I\'ll focus on low-calorie, high-fiber, and protein-rich options. Here\'s a 3-day meal plan for you:\n\n### Day 1\n- **Breakfast**: Oatmeal with Banana and Eggs 🍳 (300 calories, 5g protein, 5g fiber)\n  * 1 cup cooked oatmeal\n  * 1 medium banana, sliced\n  * 2 eggs, poached\n- **Lunch**: Grilled Chicken Breast with Mixed Greens Salad 🥗 (350 calories, 35g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups mixed greens\n  * 1/2 cup cherry tomatoes, halved\n  * 1 tablespoon olive oil and lemon juice dressing\n- **Dinner**: Baked Salmon with Quinoa and Steamed Broccoli 🍗 (400 calories, 30g protein, 10g fiber)\n  * 4 oz baked salmon\n  * 1/2 cup cooked quinoa\n  * 1 cup steamed broccoli\n\n### Day 2\n- **Breakfast**: Greek Yogurt with Berries and Granola 🍿 (250 calories, 20g protein, 4g fiber)\n  * 6 oz Greek yogurt\n  * 1/2 cup mixed berries\n  * 2 tablespoons granola\n- **Lunch**: Turkey and Avocado Wrap 🥗 (400 calories, 25g protein, 10g fiber)\n  * 1 whole wheat tortilla\n  * 2 oz sliced turkey breast\n  * 1/2 avocado, sliced\n  * 1 cup mixed greens\n- **Dinner**: Chicken and Vegetable Stir-Fry with Brown Rice 🍚 (500 calories, 35g protein, 10g fiber)\n  * 4 oz cooked chicken breast\n  * 1 cup mixed vegetables (bell peppers, carrots, snap peas)\n  * 1/2 cup cooked brown rice\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1 scoop vanilla protein powder\n  * 1 tablespoon almond butter\n  * 1 cup mixed berries\n- **Lunch**: Chicken Caesar Salad 🥗 (350 calories, 30g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups romaine lettuce\n  * 1/4 cup Caesar dressing\n  * 1 cup croutons (whole wheat)\n- **Dinner**: Baked Chicken Thigh with Roasted Vegetables and Quinoa 🍗 (450 calories, 30g protein, 10g fiber)\n  * 4 oz baked chicken thigh\n  * 1 cup mixed roasted vegetables (Brussels sprouts, sweet potatoes, carrots)\n  * 1/2 cup cooked quinoa\n\n### Nutrition Tip: \n- Focus on whole, unprocessed foods to ensure you\'re getting the nutrients your body needs.\n- Aim to drink at least 8 cups of water per day to stay hydrated.\n- Incorporate physical activity into your daily routine, such as a 30-minute walk or jog.\n\nRemember, this meal plan is just a starting point. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs!', '2026-04-21 19:18:57'),
-(159, '2', '3-day', '2026-04-21 19:19:17'),
-(160, '2', ' meal plan complete! 🎉\n\nNow, don\'t forget to stay hydrated and get moving to support your weight loss journey! 💪\n\nIf you need any more meal plan suggestions or have questions, feel free to ask!', '2026-04-21 19:19:17'),
-(161, '8', 'i want fava beans meal for my dite', '2026-04-23 13:53:03'),
-(162, '8', 'Fava beans are a nutritious and delicious addition to a healthy diet! 🥗 Here\'s a detailed recipe to get you started:\n\n### Fava Bean and Spinach Stew with Garlic Bread\n\n#### Servings: 4-6\n\n#### Diet: General (balanced, nutritious, and varied)\n\n#### Ingredients:\n\n#### For the stew:\n- 1 cup dried fava beans (soaked overnight and drained)\n- 2 tablespoons olive oil\n- 1 onion, chopped\n- 3 cloves garlic, minced\n- 2 cups chopped fresh spinach\n- 1 teaspoon ground cumin\n- 1 teaspoon smoked paprika\n- Salt and pepper to taste\n- 4 cups vegetable broth (low-sodium)\n- 1 can (14.5 oz) diced tomatoes\n- 1/4 cup chopped fresh parsley\n\n#### For the garlic bread:\n- 1 loaf Italian bread (about 1 pound)\n- 3 cloves garlic, minced\n- 1/4 cup olive oil\n- 1/2 cup grated Parmesan cheese (optional)\n\n### Instructions\n\n1. **Prepare the fava beans**: Rinse the soaked fava beans and place them in a large pot. Cover them with water and bring to a boil. Reduce the heat and simmer for 45-60 minutes, or until the beans are tender.\n\n2. **Make the stew**: In a large skillet, heat the olive oil over medium heat. Add the chopped onion and cook until softened, about 5 minutes. Add the minced garlic and cook for another minute.\n\n3. **Add the spinach and spices**: Stir in the chopped spinach, cumin, smoked paprika, salt, and pepper. Cook until the spinach has wilted.\n\n4. **Combine the stew ingredients**: Add the cooked fava beans, vegetable broth, diced tomatoes, and chopped parsley to the skillet. Stir well to combine.\n\n5. **Simmer the stew**: Bring the stew to a boil, then reduce the heat and simmer for 20-25 minutes, or until the flavors have melded together.\n\n6. **Prepare the garlic bread**: Preheat the oven to 350°F (180°C). Slice the Italian bread into 1-inch thick slices. In a small bowl, mix together the minced garlic and olive oil. Brush the garlic mixture onto each bread slice.\n\n7. **Bake the garlic bread**: Place the bread slices on a baking sheet and bake for 10-12 minutes, or until lightly toasted. Sprinkle with Parmesan cheese (if using).\n\n8. **Serve**: Serve the fava bean stew hot, accompanied by slices of garlic bread.\n\nEnjoy your delicious and nutritious fava bean meal! 🥗', '2026-04-23 13:53:04'),
-(163, '8', 'i want MEAL PLAN FOR THIS DAY', '2026-04-23 13:53:22'),
-(164, '8', 'I\'d be happy to help you with a meal plan for the day. To make it more tailored to your needs, can you please tell me if you\'d like a:\n\n**A)** 3-day meal plan or **B)** 7-day meal plan?\n\nIf you don\'t have a specific duration in mind, I can suggest a 3-day meal plan to get you started.\n\nAlso, considering your **DIET GOAL** is **weight_loss**, I\'ll make sure to suggest meals that are low in calories, high in fiber, and rich in protein.\n\nPlease let me know your preference, and I\'ll create a personalized meal plan for you! 🥗', '2026-04-23 13:53:22'),
-(165, '8', '3-day', '2026-04-23 13:53:24'),
-(166, '8', 'Here\'s a 3-day meal plan tailored to your **weight_loss** goal. This meal plan includes low-calorie, high-fiber, and protein-rich options to help you stay on track. 🥗\n\n**Day 1**\n\n### Breakfast\n\n* **Greek Yogurt and Berries with Granola**: 250 calories, 5g fiber, 20g protein\n	+ 1 cup Greek yogurt\n	+ 1/2 cup mixed berries\n	+ 2 tablespoons granola\n\n### Lunch\n\n* **Grilled Chicken and Veggie Wrap**: 400 calories, 10g fiber, 35g protein\n	+ 1 whole wheat tortilla\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed greens\n	+ 1/2 cup sliced cucumber\n	+ 1/4 cup sliced bell peppers\n\n### Snack\n\n* **Apple Slices with Almond Butter**: 150 calories, 4g fiber, 4g protein\n	+ 1 medium apple, sliced\n	+ 2 tablespoons almond butter\n\n### Dinner\n\n* **Baked Salmon with Quinoa and Steamed Broccoli**: 500 calories, 10g fiber, 35g protein\n	+ 6 oz salmon fillet\n	+ 1/2 cup cooked quinoa\n	+ 1 cup steamed broccoli\n\n### Nutrition Tip: 💡\nIncorporate physical activity into your daily routine, such as a 30-minute brisk walk in the morning or a home workout in the evening.\n\n---\n\n**Day 2**\n\n### Breakfast\n\n* **Oatmeal with Banana and Nuts**: 300 calories, 6g fiber, 10g protein\n	+ 1 cup cooked oatmeal\n	+ 1 medium banana\n	+ 1 tablespoon chopped walnuts\n\n### Lunch\n\n* **Turkey and Avocado Salad**: 450 calories, 10g fiber, 25g protein\n	+ 2 cups mixed greens\n	+ 2 oz sliced turkey breast\n	+ 1/2 avocado, diced\n	+ 1 cup cherry tomatoes, halved\n\n### Snack\n\n* **Cottage Cheese and Cucumber Slices**: 150 calories, 5g fiber, 15g protein\n	+ 1/2 cup cottage cheese\n	+ 1/2 cup sliced cucumber\n\n### Dinner\n\n* **Grilled Chicken and Vegetable Skewers**: 400 calories, 8g fiber, 30g protein\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n	+ 1 whole wheat pita\n\n### Nutrition Tip: ⏰\nStay hydrated by drinking at least 8 cups of water throughout the day.\n\n---\n\n**Day 3**\n\n### Breakfast\n\n* **Scrambled Eggs with Spinach and Whole Wheat Toast**: 250 calories, 5g fiber, 20g protein\n	+ 2 scrambled eggs\n	+ 1 cup fresh spinach\n	+ 2 slices whole wheat toast\n\n### Lunch\n\n* **Chicken and Quinoa Bowl**: 500 calories, 10g fiber, 30g protein\n	+ 2 oz cooked chicken breast\n	+ 1 cup cooked quinoa\n	+ 1 cup steamed green beans\n\n### Snack\n\n* **Carrot Sticks with Hummus**: 100 calories, 6g fiber, 5g protein\n	+ 4 carrot sticks\n	+ 2 tablespoons hummus\n\n### Dinner\n\n* **Baked Chicken Breast with Roasted Vegetables**: 400 calories, 10g fiber, 35g protein\n	+ 6 oz baked chicken breast\n	+ 1 cup roasted mixed vegetables (Brussels sprouts, sweet potatoes, carrots)\n\n### Nutrition Tip: 🌞\nGet enough sleep each night to help your body recover from the day\'s activities and support weight loss.\n\nThis meal plan provides approximately 1500-1700 calories per day, with a balance of protein, healthy fats, and complex carbohydrates to support weight loss. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs.', '2026-04-23 13:53:26');
+(117, 2, 'sup man', '2026-04-16 20:54:08'),
+(118, 2, 'What\'s up? 😊 You\'re looking to eat healthier in general, right? I\'d be happy to help you with some balanced meal ideas. How about some grilled chicken with roasted veggies and quinoa? Or a hearty bowl of lentil soup with whole grain bread? Which one sounds good to you?', '2026-04-16 20:54:09'),
+(119, 2, 'make dite plan for me ', '2026-04-16 20:54:39'),
+(120, 2, 'You want a structured meal plan, huh? Before I can do that, I need to know how many days you\'d like the plan to cover. Do you want a 3-day meal plan or a 7-day meal plan?\n\nAlso, let me know if you have any dietary restrictions or preferences (e.g. vegetarian, gluten-free, etc.) that I should keep in mind while creating the plan.', '2026-04-16 20:54:39'),
+(121, 2, '3-day', '2026-04-16 20:54:50'),
+(122, 2, 'I\'ll create a 3-day structured meal plan for you. Before I begin, I just need to confirm a few details.\n\nSince you didn\'t mention any dietary restrictions, I\'ll assume you\'re looking for a general meal plan. If you\'re vegetarian, gluten-free, or have any other specific needs, please let me know.\n\nAlso, would you like your meals to be relatively light and easy to prepare, or can you spend a bit more time in the kitchen cooking?\n\n### Meal Plan Options:\n\nA) Quick & Easy\nB) Cooking Time Doesn\'t Matter\n\nPlease respond with the letter of your preferred meal plan option!', '2026-04-16 20:54:50'),
+(123, 2, '3-day', '2026-04-16 20:54:53'),
+(124, 2, 'You didn\'t answer the question. Please respond with \"A)\" for Quick & Easy or \"B)\" for Cooking Time Doesn\'t Matter.', '2026-04-16 20:54:53'),
+(125, 2, 'A', '2026-04-16 20:55:12'),
+(126, 2, 'You\'ve chosen the Quick & Easy option.\n\nHere\'s a 3-day structured meal plan for you:\n\n**Day 1**\n\n* Breakfast: Overnight oats with banana and almond milk 🥗\n	+ 1/2 cup rolled oats, 1/2 cup almond milk, 1 mashed banana, 1 tablespoon honey\n* Lunch: Grilled chicken breast with mixed greens salad 🥦\n	+ 4 oz grilled chicken, 2 cups mixed greens, 1 cup cherry tomatoes, 1 tablespoon vinaigrette\n* Dinner: One-pot pasta with marinara sauce and vegetables 🍝\n	+ 1 cup pasta, 1 cup marinara sauce, 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n\n**Day 2**\n\n* Breakfast: Scrambled eggs with whole wheat toast and avocado 🥚\n	+ 2 scrambled eggs, 1 slice whole wheat toast, 1/2 avocado\n* Lunch: Turkey and cheese sandwich on whole wheat bread with carrot sticks 🥗\n	+ 2 slices whole wheat bread, 2 oz turkey breast, 1 oz cheese, 1 cup carrot sticks\n* Dinner: Baked salmon with roasted broccoli and quinoa 🍗', '2026-04-16 20:55:13'),
+(127, 2, '3-day', '2026-04-16 20:55:16'),
+(128, 2, ' Meal Plan (Continued)\n\n**Day 3**\n\n* Breakfast: Yogurt parfait with granola and mixed berries 🍓\n	+ 6 oz yogurt, 2 tablespoons granola, 1 cup mixed berries\n* Lunch: Chicken Caesar salad 🥗\n	+ 4 oz grilled chicken, 2 cups romaine lettuce, 1 cup croutons, 1 tablespoon Caesar dressing\n* Dinner: Black bean and corn tacos with whole wheat tortillas 🌯\n	+ 1 cup cooked black beans, 1 cup frozen corn, 2 whole wheat tortillas, 1 cup shredded cheese\n\n### Nutrition Tip\nRemember to stay hydrated by drinking plenty of water throughout the day. Aim for at least 8 cups (64 oz) of water daily.\n\nPlease let me know if you have any questions or if you\'d like to make any changes to this meal plan!', '2026-04-16 20:55:17'),
+(129, 2, 'what is your name', '2026-04-16 20:58:41'),
+(130, 2, '?', '2026-04-16 20:58:41'),
+(131, 2, 'you namme ?', '2026-04-16 20:58:47'),
+(132, 2, ' I\'m Mr. Hamboula, your personalized food guru! I\'m here to help you with all your culinary needs and make healthy eating a breeze.', '2026-04-16 20:58:47'),
+(133, 2, 'your name', '2026-04-20 19:40:17'),
+(134, 2, ' is not Mr. Hamboula', '2026-04-20 19:40:18'),
+(135, 2, 'did i ask you about your name ?', '2026-04-20 19:40:47'),
+(136, 2, 'did i ask you about your name ?', '2026-04-20 19:40:50'),
+(137, 2, 'name ?', '2026-04-20 19:40:54'),
+(138, 2, 'hi', '2026-04-20 19:40:57'),
+(139, 2, ', i\'m your friendly Healthy Food Assistant! 👋', '2026-04-20 19:40:57'),
+(140, 2, 'name ?', '2026-04-20 19:41:00'),
+(141, 2, 'name ?', '2026-04-20 19:41:03'),
+(142, 2, ' it\'s a pleasure to meet you, but I don\'t have a personal name. I\'m here to help you with healthy food suggestions!', '2026-04-20 19:41:04'),
+(143, 2, 'did i ask you about your name ?', '2026-04-20 19:41:06'),
+(144, 2, 'did i ask you about your name ?', '2026-04-20 19:41:07'),
+(145, 2, 'name', '2026-04-20 19:41:26'),
+(146, 2, ' is still \'Healthy Food Assistant\'. I\'m here to help!', '2026-04-20 19:41:26'),
+(147, 2, 'give me dite plan for 7 days', '2026-04-21 12:46:14'),
+(148, 2, 'give me dite plan for 7 days', '2026-04-21 12:46:16'),
+(149, 2, '\n\nTo create a personalized 7-day meal plan, I need to know a few details from you. \n\nDo you want a 3-day or 7-day meal plan?', '2026-04-21 12:46:16'),
+(150, 2, '7-day', '2026-04-21 12:46:17'),
+(151, 2, ' meal plan it is!\n\nBefore I generate the plan, I just need to confirm - you want a STRUCTURED MEAL PLAN, right? 📝\n\nAlso, just to remind you, since your DIET GOAL is weight loss, I\'ll focus on low-calorie, high-fiber, and protein-rich options.\n\nHere\'s your 7-day meal plan:\n\n### Day 1\n- **Breakfast**: Oatmeal with Banana and Eggs 🍳 (300 calories, 5g protein, 5g fiber)\n  * 1 cup cooked oatmeal\n  * 1 medium banana, sliced\n  * 2 eggs, poached\n- **Lunch**: Grilled Chicken Breast with Mixed Greens Salad 🥗 (350 calories, 35g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups mixed greens\n  * 1/2 cup cherry tomatoes, halved\n  * 1 tablespoon olive oil and lemon juice dressing\n- **Dinner**: Baked Salmon with Quinoa and Steamed Broccoli 🍗 (400 calories, 30g protein, 10g fiber)\n  * 4 oz baked salmon\n  * 1/2 cup', '2026-04-21 12:46:18'),
+(152, 2, '7-day', '2026-04-21 12:46:24'),
+(153, 2, ' meal plan: Day 2-7\n\n### Day 2\n- **Breakfast**: Greek Yogurt with Berries and Granola 🍿 (250 calories, 20g protein, 4g fiber)\n  * 6 oz Greek yogurt\n  * 1/2 cup mixed berries\n  * 2 tablespoons granola\n- **Lunch**: Turkey and Avocado Wrap 🥗 (400 calories, 25g protein, 10g fiber)\n  * 1 whole wheat tortilla\n  * 2 oz sliced turkey breast\n  * 1/2 avocado, sliced\n  * 1 cup mixed greens\n- **Dinner**: Chicken and Vegetable Stir-Fry with Brown Rice 🍚 (500 calories, 35g protein, 10g fiber)\n  * 4 oz cooked chicken breast\n  * 1 cup mixed vegetables (bell peppers, carrots, snap peas)\n  * 1/2 cup cooked brown rice\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1', '2026-04-21 12:46:24'),
+(154, 2, 'the rest', '2026-04-21 12:46:32'),
+(155, 2, ' of the meal plan:\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1 scoop vanilla protein powder\n  * 1 tablespoon almond butter\n  * 1 cup mixed berries\n- **Lunch**: Chicken Caesar Salad 🥗 (350 calories, 30g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups romaine lettuce\n  * 1/4 cup Caesar dressing\n  * 1 cup croutons (whole wheat)\n- **Dinner**: Baked Chicken Thigh with Roasted Vegetables and Quinoa 🍗 (450 calories, 30g protein, 10g fiber)\n  * 4 oz baked chicken thigh\n  * 1 cup mixed roasted vegetables (Brussels sprouts, sweet potatoes, carrots)\n  * 1/2 cup cooked quinoa\n\n### Day 4\n- **Breakfast**: Avocado Toast with Poached Eggs 🥚 (300 calories, 15g protein, 7g fiber)\n  *', '2026-04-21 12:46:33'),
+(156, 2, 'give me meal plan for 3 days ', '2026-04-21 19:18:32'),
+(157, 2, 'give me meal plan for 3 days ', '2026-04-21 19:18:48'),
+(158, 2, ' 📝\n\nSince you\'re looking to lose weight, I\'ll focus on low-calorie, high-fiber, and protein-rich options. Here\'s a 3-day meal plan for you:\n\n### Day 1\n- **Breakfast**: Oatmeal with Banana and Eggs 🍳 (300 calories, 5g protein, 5g fiber)\n  * 1 cup cooked oatmeal\n  * 1 medium banana, sliced\n  * 2 eggs, poached\n- **Lunch**: Grilled Chicken Breast with Mixed Greens Salad 🥗 (350 calories, 35g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups mixed greens\n  * 1/2 cup cherry tomatoes, halved\n  * 1 tablespoon olive oil and lemon juice dressing\n- **Dinner**: Baked Salmon with Quinoa and Steamed Broccoli 🍗 (400 calories, 30g protein, 10g fiber)\n  * 4 oz baked salmon\n  * 1/2 cup cooked quinoa\n  * 1 cup steamed broccoli\n\n### Day 2\n- **Breakfast**: Greek Yogurt with Berries and Granola 🍿 (250 calories, 20g protein, 4g fiber)\n  * 6 oz Greek yogurt\n  * 1/2 cup mixed berries\n  * 2 tablespoons granola\n- **Lunch**: Turkey and Avocado Wrap 🥗 (400 calories, 25g protein, 10g fiber)\n  * 1 whole wheat tortilla\n  * 2 oz sliced turkey breast\n  * 1/2 avocado, sliced\n  * 1 cup mixed greens\n- **Dinner**: Chicken and Vegetable Stir-Fry with Brown Rice 🍚 (500 calories, 35g protein, 10g fiber)\n  * 4 oz cooked chicken breast\n  * 1 cup mixed vegetables (bell peppers, carrots, snap peas)\n  * 1/2 cup cooked brown rice\n\n### Day 3\n- **Breakfast**: Smoothie Bowl with Banana and Almond Milk 🍌 (300 calories, 15g protein, 6g fiber)\n  * 1 medium banana\n  * 1 cup almond milk\n  * 1 scoop vanilla protein powder\n  * 1 tablespoon almond butter\n  * 1 cup mixed berries\n- **Lunch**: Chicken Caesar Salad 🥗 (350 calories, 30g protein, 5g fiber)\n  * 4 oz grilled chicken breast\n  * 2 cups romaine lettuce\n  * 1/4 cup Caesar dressing\n  * 1 cup croutons (whole wheat)\n- **Dinner**: Baked Chicken Thigh with Roasted Vegetables and Quinoa 🍗 (450 calories, 30g protein, 10g fiber)\n  * 4 oz baked chicken thigh\n  * 1 cup mixed roasted vegetables (Brussels sprouts, sweet potatoes, carrots)\n  * 1/2 cup cooked quinoa\n\n### Nutrition Tip: \n- Focus on whole, unprocessed foods to ensure you\'re getting the nutrients your body needs.\n- Aim to drink at least 8 cups of water per day to stay hydrated.\n- Incorporate physical activity into your daily routine, such as a 30-minute walk or jog.\n\nRemember, this meal plan is just a starting point. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs!', '2026-04-21 19:18:57'),
+(159, 2, '3-day', '2026-04-21 19:19:17'),
+(160, 2, ' meal plan complete! 🎉\n\nNow, don\'t forget to stay hydrated and get moving to support your weight loss journey! 💪\n\nIf you need any more meal plan suggestions or have questions, feel free to ask!', '2026-04-21 19:19:17'),
+(161, 8, 'i want fava beans meal for my dite', '2026-04-23 13:53:03'),
+(162, 8, 'Fava beans are a nutritious and delicious addition to a healthy diet! 🥗 Here\'s a detailed recipe to get you started:\n\n### Fava Bean and Spinach Stew with Garlic Bread\n\n#### Servings: 4-6\n\n#### Diet: General (balanced, nutritious, and varied)\n\n#### Ingredients:\n\n#### For the stew:\n- 1 cup dried fava beans (soaked overnight and drained)\n- 2 tablespoons olive oil\n- 1 onion, chopped\n- 3 cloves garlic, minced\n- 2 cups chopped fresh spinach\n- 1 teaspoon ground cumin\n- 1 teaspoon smoked paprika\n- Salt and pepper to taste\n- 4 cups vegetable broth (low-sodium)\n- 1 can (14.5 oz) diced tomatoes\n- 1/4 cup chopped fresh parsley\n\n#### For the garlic bread:\n- 1 loaf Italian bread (about 1 pound)\n- 3 cloves garlic, minced\n- 1/4 cup olive oil\n- 1/2 cup grated Parmesan cheese (optional)\n\n### Instructions\n\n1. **Prepare the fava beans**: Rinse the soaked fava beans and place them in a large pot. Cover them with water and bring to a boil. Reduce the heat and simmer for 45-60 minutes, or until the beans are tender.\n\n2. **Make the stew**: In a large skillet, heat the olive oil over medium heat. Add the chopped onion and cook until softened, about 5 minutes. Add the minced garlic and cook for another minute.\n\n3. **Add the spinach and spices**: Stir in the chopped spinach, cumin, smoked paprika, salt, and pepper. Cook until the spinach has wilted.\n\n4. **Combine the stew ingredients**: Add the cooked fava beans, vegetable broth, diced tomatoes, and chopped parsley to the skillet. Stir well to combine.\n\n5. **Simmer the stew**: Bring the stew to a boil, then reduce the heat and simmer for 20-25 minutes, or until the flavors have melded together.\n\n6. **Prepare the garlic bread**: Preheat the oven to 350°F (180°C). Slice the Italian bread into 1-inch thick slices. In a small bowl, mix together the minced garlic and olive oil. Brush the garlic mixture onto each bread slice.\n\n7. **Bake the garlic bread**: Place the bread slices on a baking sheet and bake for 10-12 minutes, or until lightly toasted. Sprinkle with Parmesan cheese (if using).\n\n8. **Serve**: Serve the fava bean stew hot, accompanied by slices of garlic bread.\n\nEnjoy your delicious and nutritious fava bean meal! 🥗', '2026-04-23 13:53:04'),
+(163, 8, 'i want MEAL PLAN FOR THIS DAY', '2026-04-23 13:53:22'),
+(164, 8, 'I\'d be happy to help you with a meal plan for the day. To make it more tailored to your needs, can you please tell me if you\'d like a:\n\n**A)** 3-day meal plan or **B)** 7-day meal plan?\n\nIf you don\'t have a specific duration in mind, I can suggest a 3-day meal plan to get you started.\n\nAlso, considering your **DIET GOAL** is **weight_loss**, I\'ll make sure to suggest meals that are low in calories, high in fiber, and rich in protein.\n\nPlease let me know your preference, and I\'ll create a personalized meal plan for you! 🥗', '2026-04-23 13:53:22'),
+(165, 8, '3-day', '2026-04-23 13:53:24'),
+(166, 8, 'Here\'s a 3-day meal plan tailored to your **weight_loss** goal. This meal plan includes low-calorie, high-fiber, and protein-rich options to help you stay on track. 🥗\n\n**Day 1**\n\n### Breakfast\n\n* **Greek Yogurt and Berries with Granola**: 250 calories, 5g fiber, 20g protein\n	+ 1 cup Greek yogurt\n	+ 1/2 cup mixed berries\n	+ 2 tablespoons granola\n\n### Lunch\n\n* **Grilled Chicken and Veggie Wrap**: 400 calories, 10g fiber, 35g protein\n	+ 1 whole wheat tortilla\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed greens\n	+ 1/2 cup sliced cucumber\n	+ 1/4 cup sliced bell peppers\n\n### Snack\n\n* **Apple Slices with Almond Butter**: 150 calories, 4g fiber, 4g protein\n	+ 1 medium apple, sliced\n	+ 2 tablespoons almond butter\n\n### Dinner\n\n* **Baked Salmon with Quinoa and Steamed Broccoli**: 500 calories, 10g fiber, 35g protein\n	+ 6 oz salmon fillet\n	+ 1/2 cup cooked quinoa\n	+ 1 cup steamed broccoli\n\n### Nutrition Tip: 💡\nIncorporate physical activity into your daily routine, such as a 30-minute brisk walk in the morning or a home workout in the evening.\n\n---\n\n**Day 2**\n\n### Breakfast\n\n* **Oatmeal with Banana and Nuts**: 300 calories, 6g fiber, 10g protein\n	+ 1 cup cooked oatmeal\n	+ 1 medium banana\n	+ 1 tablespoon chopped walnuts\n\n### Lunch\n\n* **Turkey and Avocado Salad**: 450 calories, 10g fiber, 25g protein\n	+ 2 cups mixed greens\n	+ 2 oz sliced turkey breast\n	+ 1/2 avocado, diced\n	+ 1 cup cherry tomatoes, halved\n\n### Snack\n\n* **Cottage Cheese and Cucumber Slices**: 150 calories, 5g fiber, 15g protein\n	+ 1/2 cup cottage cheese\n	+ 1/2 cup sliced cucumber\n\n### Dinner\n\n* **Grilled Chicken and Vegetable Skewers**: 400 calories, 8g fiber, 30g protein\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n	+ 1 whole wheat pita\n\n### Nutrition Tip: ⏰\nStay hydrated by drinking at least 8 cups of water throughout the day.\n\n---\n\n**Day 3**\n\n### Breakfast\n\n* **Scrambled Eggs with Spinach and Whole Wheat Toast**: 250 calories, 5g fiber, 20g protein\n	+ 2 scrambled eggs\n	+ 1 cup fresh spinach\n	+ 2 slices whole wheat toast\n\n### Lunch\n\n* **Chicken and Quinoa Bowl**: 500 calories, 10g fiber, 30g protein\n	+ 2 oz cooked chicken breast\n	+ 1 cup cooked quinoa\n	+ 1 cup steamed green beans\n\n### Snack\n\n* **Carrot Sticks with Hummus**: 100 calories, 6g fiber, 5g protein\n	+ 4 carrot sticks\n	+ 2 tablespoons hummus\n\n### Dinner\n\n* **Baked Chicken Breast with Roasted Vegetables**: 400 calories, 10g fiber, 35g protein\n	+ 6 oz baked chicken breast\n	+ 1 cup roasted mixed vegetables (Brussels sprouts, sweet potatoes, carrots)\n\n### Nutrition Tip: 🌞\nGet enough sleep each night to help your body recover from the day\'s activities and support weight loss.\n\nThis meal plan provides approximately 1500-1700 calories per day, with a balance of protein, healthy fats, and complex carbohydrates to support weight loss. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs.', '2026-04-23 13:53:26');
 
 -- --------------------------------------------------------
 
@@ -448,7 +446,8 @@ ALTER TABLE `email_otps`
 -- Indexes for table `messages`
 --
 ALTER TABLE `messages`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `messages_user_fk` (`user_id`);
 
 --
 -- Indexes for table `orders`
@@ -594,10 +593,79 @@ ALTER TABLE `user_addresses`
 --
 
 --
+-- Constraints for table `backup_codes`
+--
+ALTER TABLE `backup_codes`
+  ADD CONSTRAINT `backup_codes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `carts`
+--
+ALTER TABLE `carts`
+  ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `cart_items`
+--
+ALTER TABLE `cart_items`
+  ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `carts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `email_otps`
+--
+ALTER TABLE `email_otps`
+  ADD CONSTRAINT `email_otps_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `order_items_order_fk` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_items_product_fk` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_order_fk` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_product_fk` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reviews_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `user_addresses`
+--
+ALTER TABLE `user_addresses`
+  ADD CONSTRAINT `user_addresses_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `user_profiles`
 --
 ALTER TABLE `user_profiles`
   ADD CONSTRAINT `user_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `user_totp`
+--
+ALTER TABLE `user_totp`
+  ADD CONSTRAINT `user_totp_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
