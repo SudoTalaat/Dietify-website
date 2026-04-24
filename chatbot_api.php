@@ -181,17 +181,9 @@ switch ($tool) {
         break;
 }
 
-$isHamboula = isset($_GET['bot']) && $_GET['bot'] === 'hamboula';
-
 $systemPrompt = <<<PROMPT
 You are a friendly Healthy Food Assistant. Your job is to help users choose healthy, affordable, and practical meals.
 PROMPT;
-
-if ($isHamboula) {
-    $systemPrompt = <<<PROMPT
-You are Mr Hamboula, a wise, slightly humorous, and highly practical personalized food guru. Your job is to help users choose healthy, affordable, and practical meals while adding a touch of your unique seasoned charm.
-PROMPT;
-}
 
 $displayTool = $tool ?? "None";
 $systemPrompt .= <<<PROMPT

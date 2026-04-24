@@ -27,20 +27,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } else {
-        // hCaptcha Verification
+        // Cloudflare Turnstile Verification
+        $turnstile_secret = $_ENV['TURNSTILE_SECRET_KEY'] ?? '';
+        $turnstile_response = $_POST['cf-turnstile-response'] ?? '';
+        
         $data = array(
-            'secret' => "ES_1e91e23039e44bab814cb1ed58a8b022",
-            'response' => $_POST['h-captcha-response']
+            'secret' => $turnstile_secret,
+            'response' => $turnstile_response
         );
         $verify = curl_init();
-        curl_setopt($verify, CURLOPT_URL, "https://hcaptcha.com/siteverify");
+        curl_setopt($verify, CURLOPT_URL, "https://challenges.cloudflare.com/turnstile/v0/siteverify");
         curl_setopt($verify, CURLOPT_POST, true);
         curl_setopt($verify, CURLOPT_POSTFIELDS, http_build_query($data));
         curl_setopt($verify, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($verify);
         $response_data = json_decode($response);
 
-        if (!$response_data->success) {
+        if (empty($turnstile_response) || !$response_data->success || ($response_data->action ?? '') !== 'register') {
             $error = "Please complete the captcha.";
         } else {
             // Check if email or username already exists using Prepared Statement
@@ -105,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: block;
         }
     </style>
-    <script src='https://js.hcaptcha.com/1/api.js' async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <body>
@@ -168,7 +171,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-                    <div class="h-captcha" data-sitekey="c5bca084-e8b0-45cc-afc2-b42e11e2e1c4"></div>
+                    <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars($_ENV['TURNSTILE_SITE_KEY'] ?? ''); ?>" data-action="register"></div>
 
 
                     <button type="submit" class="register-btn"><span>Create Account</span></button>

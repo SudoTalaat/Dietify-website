@@ -80,17 +80,17 @@ INTERVAL 10 MINUTE))");
 
   $mail->Body = "
 <div style='font-family:Inter,sans-serif;max-width:420px;margin:auto;
-                     background:#0f172a;color:#e2e8f0;border-radius:12px;overflow:hidden'>
-  <div style='background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:28px 32px'>
+                     background:#ffffff;color:#333333;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.05);border:1px solid #eee;'>
+  <div style='background:linear-gradient(135deg,#ff8a5c,#ff6b35);padding:28px 32px;color:white;'>
     <h2 style='margin:0;font-size:1.4rem'>$title</h2>
   </div>
   <div style='padding:28px 32px'>
     <p>Hi <strong>" . htmlspecialchars($toName) . "</strong>,</p>
     <p>$leadText</p>
     <div style='font-size:2.4rem;font-weight:700;letter-spacing:10px;
-                        text-align:center;background:#1e293b;border-radius:8px;
-                        padding:18px;margin:20px 0;color:#818cf8'>$otp</div>
-    <p style='font-size:.85rem;color:#94a3b8'>
+                        text-align:center;background:#fff9f6;border-radius:8px;
+                        padding:18px;margin:20px 0;color:#ff6b35;border:2px dashed #ff6b35;'>$otp</div>
+    <p style='font-size:.85rem;color:#888'>
       This code expires in <strong>10 minutes</strong>.<br>
       If you did not request this, please ignore this email.
     </p>
@@ -107,17 +107,17 @@ function sendSecurityAlertEmail(string $toEmail, string $toName): bool
 
   $mail->Body = "
 <div style='font-family:Inter,sans-serif;max-width:420px;margin:auto;
-                     background:#450a0a;color:#fecaca;border-radius:12px;overflow:hidden;border:1px solid #7f1d1d'>
-  <div style='background:#7f1d1d;padding:28px 32px;text-align:center'>
+                     background:#ffffff;color:#333333;border-radius:12px;overflow:hidden;border:1px solid #fecaca;box-shadow:0 4px 15px rgba(0,0,0,0.05);'>
+  <div style='background:#ef4444;padding:28px 32px;text-align:center;color:white;'>
     <h2 style='margin:0;font-size:1.4rem'>⚠️ Security Alert</h2>
   </div>
   <div style='padding:28px 32px'>
     <p>Hi <strong>" . htmlspecialchars($toName) . "</strong>,</p>
     <p>We noticed over <strong>25 failed login attempts</strong> for your account in the last hour.</p>
-    <div style='background:#991b1b;border-radius:8px;padding:15px;margin:20px 0;text-align:center'>
+    <div style='background:#fef2f2;border-radius:8px;padding:15px;margin:20px 0;text-align:center;color:#b91c1c;border:1px solid #fecaca;'>
       If this wasn't you, your account might be under a brute-force attack.
     </div>
-    <p style='font-size:.85rem;color:#fca5a5'>
+    <p style='font-size:.85rem;color:#888'>
       Your account is still safe, but we recommend ensuring you have 2FA enabled and using a strong, unique password.
     </p>
   </div>
@@ -143,13 +143,22 @@ function sendBackupCodesEmail(string $toEmail, string $toName, array $codes): bo
   }
 
   $mail->Body = "
-<p>Hi <strong>" . htmlspecialchars($toName) . "</strong>,</p>
-<p>Here are your backup recovery codes for <strong>2FA TOTP</strong>:</p>
-<ul>
-  $codesList
-</ul>
-<p><strong>Each code can only be used once.</strong></p>
-";
+<div style='font-family:Inter,sans-serif;max-width:420px;margin:auto;
+                     background:#ffffff;color:#333333;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.05);border:1px solid #eee;'>
+  <div style='background:linear-gradient(135deg,#ff8a5c,#ff6b35);padding:28px 32px;color:white;'>
+    <h2 style='margin:0;font-size:1.4rem'>🛡️ Backup Codes</h2>
+  </div>
+  <div style='padding:28px 32px'>
+    <p>Hi <strong>" . htmlspecialchars($toName) . "</strong>,</p>
+    <p>Here are your backup recovery codes for <strong>2FA TOTP</strong>:</p>
+    <div style='background:#fff9f6;border-radius:8px;padding:20px;margin:20px 0;color:#ff6b35;font-weight:600;font-size:1.1rem;'>
+      <ul style='margin:0;padding-left:20px;'>
+        $codesList
+      </ul>
+    </div>
+    <p style='font-size:.85rem;color:#888'><strong>Note:</strong> Each code can only be used once.</p>
+  </div>
+</div>";
 
   $mail->AltBody = "Your backup codes: " . implode(', ', $codes);
 
@@ -165,19 +174,19 @@ function sendVerificationEmail(string $toEmail, string $toName, string $token): 
 
   $mail->Body = "
 <div style='font-family:Inter,sans-serif;max-width:420px;margin:auto;
-                     background:#0f172a;color:#e2e8f0;border-radius:12px;overflow:hidden'>
-  <div style='background:linear-gradient(135deg,#10b981,#34d399);padding:28px 32px'>
+                     background:#ffffff;color:#333333;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.05);border:1px solid #eee;'>
+  <div style='background:linear-gradient(135deg,#27ae60,#2ecc71);padding:28px 32px;color:white;'>
     <h2 style='margin:0;font-size:1.4rem'>📧 Verify Email</h2>
   </div>
   <div style='padding:28px 32px'>
     <p>Hi <strong>" . htmlspecialchars($toName) . "</strong>,</p>
-    <p>Welcome to Healthy Food! Please verify your email address to activate your account.</p>
+    <p>Welcome to <strong>Healthy Food!</strong> Please verify your email address to activate your account.</p>
     <div style='text-align:center;margin:30px 0;'>
-      <a href='$verificationLink' style='background:#10b981;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;font-weight:bold;display:inline-block;'>Verify Email Address</a>
+      <a href='$verificationLink' style='background:#ff6b35;color:white;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:bold;display:inline-block;box-shadow:0 4px 10px rgba(255,107,53,0.3);'>Verify Email Address</a>
     </div>
-    <p style='font-size:.85rem;color:#94a3b8'>
+    <p style='font-size:.85rem;color:#888'>
       This link expires in <strong>1 hour</strong>.<br>
-      Or copy this link: <br><a href='$verificationLink' style='color:#34d399;word-break:break-all;'>$verificationLink</a>
+      Or copy this link: <br><a href='$verificationLink' style='color:#ff6b35;word-break:break-all;'>$verificationLink</a>
     </p>
   </div>
 </div>";

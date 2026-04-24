@@ -27,12 +27,29 @@ if (isset($_GET['reset']) && $_GET['reset'] == 1) {
 }
 //if server get post from login form it will be sent to server to process it
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //TRIM remove white space
     $identity = trim($_POST['identity'] ?? '');
     $password = $_POST['password'] ?? '';
 
+    // Cloudflare Turnstile Verification
+    $turnstile_response = $_POST['cf-turnstile-response'] ?? '';
+    $turnstile_secret = $_ENV['TURNSTILE_SECRET_KEY'] ?? '';
+
+    $data = array(
+        'secret' => $turnstile_secret,
+        'response' => $turnstile_response
+    );
+    $verify = curl_init();
+    curl_setopt($verify, CURLOPT_URL, "https://challenges.cloudflare.com/turnstile/v0/siteverify");
+    curl_setopt($verify, CURLOPT_POST, true);
+    curl_setopt($verify, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($verify, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($verify);
+    $response_data = json_decode($response);
+
     if (empty($identity) || empty($password)) {
         $error = "Please fill in all fields.";
+    } elseif (empty($turnstile_response) || !$response_data->success || ($response_data->action ?? '') !== 'login') {
+        $error = "Please complete the security check.";
     } else {
         //prepare statment to prevent sql injection (: i will test with sqlmap later on 
         //TO DO prepared sql stmt you have The query must consist of a single SQL statement
@@ -136,6 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: block;
         }
     </style>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <body>
@@ -184,6 +202,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </label>
                         -->
                         <a href="forgot_password.php" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars($_ENV['TURNSTILE_SITE_KEY'] ?? ''); ?>" data-action="login"></div>
                     </div>
 
                     <button type="submit" class="login-btn"><span>Sign In</span></button>

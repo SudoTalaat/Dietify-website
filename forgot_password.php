@@ -4,15 +4,30 @@ require_once __DIR__ . '/includes/send_otp_email.php';
 
 $error = '';
 $success = '';
-//trim remove white spaces 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email'] ?? '');
 
+    // Cloudflare Turnstile Verification
+    $turnstile_response = $_POST['cf-turnstile-response'] ?? '';
+    $turnstile_secret = $_ENV['TURNSTILE_SECRET_KEY'] ?? '';
+
+    $data = array(
+        'secret' => $turnstile_secret,
+        'response' => $turnstile_response
+    );
+    $verify = curl_init();
+    curl_setopt($verify, CURLOPT_URL, "https://challenges.cloudflare.com/turnstile/v0/siteverify");
+    curl_setopt($verify, CURLOPT_POST, true);
+    curl_setopt($verify, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($verify, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($verify);
+    $response_data = json_decode($response);
+
     if (empty($email)) {
         $error = "Please enter your email address.";
-    }
-    //filter_var funcation used to validate email address easliy you have to just set the filter here i use FILTER_VALIDATE_EMAIL 
-    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    } elseif (empty($turnstile_response) || !$response_data->success || ($response_data->action ?? '') !== 'forgot_password') {
+        $error = "Please complete the security check.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } else {
         $stmt = $conn->prepare("SELECT id, username FROM users WHERE email = ?");
@@ -51,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password - Healthy Food</title>
     <link rel="stylesheet" href="/app/assets/css/styles.css">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <body>
@@ -87,6 +103,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <?php echo htmlspecialchars($error); ?>
                         </span>
                     <?php endif; ?>
+
+                    <div style="margin-bottom: 20px;">
+                        <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars($_ENV['TURNSTILE_SITE_KEY'] ?? ''); ?>" data-action="forgot_password"></div>
+                    </div>
 
                     <button type="submit" class="login-btn"><span>Send Reset Code</span></button>
 
