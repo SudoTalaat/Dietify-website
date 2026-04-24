@@ -203,9 +203,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         -->
                         <a href="forgot_password.php" class="forgot-password">Forgot password?</a>
                     </div>
-                    
+
                     <div style="margin-bottom: 20px;">
-                        <div class="cf-turnstile" data-sitekey="<?php echo htmlspecialchars($_ENV['TURNSTILE_SITE_KEY'] ?? ''); ?>" data-action="login"></div>
+                        <div class="cf-turnstile"
+                            data-sitekey="<?php echo htmlspecialchars($_ENV['TURNSTILE_SITE_KEY'] ?? ''); ?>"
+                            data-action="login"></div>
                     </div>
 
                     <button type="submit" class="login-btn"><span>Sign In</span></button>
