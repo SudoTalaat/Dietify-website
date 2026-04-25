@@ -174,7 +174,7 @@ if (isset($_POST['update']) && isset($_GET['edit'])) {
             <li><a href="../shop.php"
                     style="background-color: #27ae60; color: white; margin-bottom: 20px; font-weight: bold;">← Back to
                     Shop</a></li>
-            <li><a href="Dashboard.php">Dashboard</a></li>
+            <li><a href="AdminPanel.php">Admin Panel</a></li>
             <li><a href="useradmin.php">Users</a></li>
             <li><a href="addproduct.php" class="<?php echo !isset($_GET['edit']) ? 'active' : ''; ?>">Add Products</a>
             </li>

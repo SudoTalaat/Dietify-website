@@ -11,7 +11,7 @@ if (!isLoggedIn() || !isAdmin()) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Healthy Food</title>
+    <title>Admin Panel - Healthy Food</title>
     <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 
@@ -21,7 +21,7 @@ if (!isLoggedIn() || !isAdmin()) {
             <li><a href="../shop.php"
                     style="background-color: #27ae60; color: white; margin-bottom: 20px; font-weight: bold;">← Back to
                     Shop</a></li>
-            <li><a href="Dashboard.php" class="active">Dashboard</a></li>
+            <li><a href="AdminPanel.php" class="active">Admin Panel</a></li>
             <li><a href="useradmin.php">Users</a></li>
             <li><a href="products.php">Products</a></li>
             <li><a href="Inventory.php">Inventory Management</a></li>
@@ -31,7 +31,7 @@ if (!isLoggedIn() || !isAdmin()) {
         </ul>
     </nav>
 
-    <h1>📊 Admin Dashboard</h1>
+    <h1>📊 Admin Panel</h1>
 
     <div class="dashboard-stats"
         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">

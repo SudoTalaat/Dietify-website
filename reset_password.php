@@ -102,12 +102,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <div class="form-group">
                         <label for="new_password">New Password</label>
-                        <input type="password" id="new_password" name="new_password" minlength="12" required>
+                        <div style="position: relative;">
+                            <input type="password" id="new_password" name="new_password" minlength="12" required style="padding-right: 60px;">
+                            <button type="button" onclick="togglePassword('new_password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #ff6b35; font-weight: 600; font-size: 0.85rem;">Show</button>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="confirm_password">Confirm New Password</label>
-                        <input type="password" id="confirm_password" name="confirm_password" minlength="12" required>
+                        <div style="position: relative;">
+                            <input type="password" id="confirm_password" name="confirm_password" minlength="12" required style="padding-right: 60px;">
+                            <button type="button" onclick="togglePassword('confirm_password', this)" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #ff6b35; font-weight: 600; font-size: 0.85rem;">Show</button>
+                        </div>
                     </div>
 
                     <?php if ($error): ?>
@@ -126,6 +132,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
+
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = 'Hide';
+            } else {
+                input.type = 'password';
+                btn.textContent = 'Show';
+            }
+        }
+    </script>
 </body>
 
 </html>

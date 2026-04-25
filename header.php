@@ -37,7 +37,7 @@
                     <a href="/app/chat.php">Chatbot</a>
 
                     <?php if (isAdmin()): ?>
-                        <a href="/app/admin/Dashboard.php" class="btn-admin">Admin</a>
+                        <a href="/app/admin/AdminPanel.php" class="btn-admin">Admin</a>
                     <?php endif; ?>
                     <a href="/app/logout.php">Logout</a>
                 <?php else: ?>

@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($_SESSION['2fa_user_id']);
             
             if ($user['role'] === 'admin') {
-                header("Location: admin/Dashboard.php");
+                header("Location: admin/AdminPanel.php");
             } else {
                 header("Location: profile.php");
             }
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($_SESSION['2fa_user_id']);
             
             if ($user['role'] === 'admin') {
-                header("Location: admin/Dashboard.php");
+                header("Location: admin/AdminPanel.php");
             } else {
                 header("Location: profile.php");
             }
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     unset($_SESSION['2fa_user_id']);
                     
                     if ($user['role'] === 'admin') {
-                        header("Location: admin/Dashboard.php");
+                        header("Location: admin/AdminPanel.php");
                     } else {
                         header("Location: profile.php");
                     }
