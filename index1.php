@@ -162,6 +162,11 @@ include __DIR__ . '/header.php';
             <a href="#" style="color: inherit;"><i class="fab fa-instagram"></i></a>
             <a href="#" style="color: inherit;"><i class="fab fa-twitter"></i></a>
         </div>
+        <div style="margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; font-size: 0.85rem;">
+            <a href="tos.php" style="color: #ff6b35; text-decoration: none;">Terms of Service</a>
+            <span style="color: #333;">|</span>
+            <a href="privacy.php" style="color: #ff6b35; text-decoration: none;">Privacy Policy</a>
+        </div>
         <p style="font-size: 0.9rem;">Copyrights &copy; 2026 <?php echo SITE_NAME; ?>. All rights reserved.</p>
     </div>
 </footer>
