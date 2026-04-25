@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 24, 2026 at 01:53 PM
+-- Generation Time: Apr 25, 2026 at 05:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -74,8 +74,6 @@ CREATE TABLE `cart_items` (
 --
 
 INSERT INTO `cart_items` (`id`, `cart_id`, `product_id`, `quantity`) VALUES
-(17, 1, 5, 3),
-(18, 1, 7, 2),
 (19, 3, 8, 1);
 
 -- --------------------------------------------------------
@@ -105,7 +103,7 @@ INSERT INTO `email_otps` (`id`, `user_id`, `otp_hash`, `purpose`, `expires_at`, 
 (10, 2, '$2y$10$Z1y5x0oANalXRRJMKab8au3jVYEm7kgdT1afUCG5wI4rJkqVWuMR6', 'password_reset', '2026-03-04 15:52:30', '2026-03-04 15:43:03', '2026-03-04 15:42:30'),
 (11, 2, '$2y$10$sGmvQf6rZKQIHohOxpYqx.qUY1D2ycUT0e0xab8tD5zDAPbWTvdr.', 'password_reset', '2026-03-04 17:37:28', '2026-03-04 17:28:05', '2026-03-04 17:27:28'),
 (12, 2, '$2y$10$lioz.0Decdofj2itWuKZSOQYsAGnHJNu3DLaG04CHQqBe2/si1qbO', 'twofa', '2026-03-04 17:38:34', '2026-03-04 17:28:46', '2026-03-04 17:28:34'),
-(15, 2, '$2y$10$C3UH4ufa/XSmjEY2NwnAEOdiKW.PHdnRwgKQ3hfm2Bl7U9p6Eyt3e', 'twofa', '2026-04-15 05:13:24', NULL, '2026-04-15 05:03:24');
+(19, 2, '$2y$10$M9LuAJ7rVSfil3qA4v7peutm3XbaiVYAMVDqf7UkMfgjhKuCXpKgy', 'twofa', '2026-04-25 08:45:24', '2026-04-25 08:35:34', '2026-04-25 08:35:24');
 
 -- --------------------------------------------------------
 
@@ -174,7 +172,9 @@ INSERT INTO `messages` (`id`, `user_id`, `message`, `created_at`) VALUES
 (163, 8, 'i want MEAL PLAN FOR THIS DAY', '2026-04-23 13:53:22'),
 (164, 8, 'I\'d be happy to help you with a meal plan for the day. To make it more tailored to your needs, can you please tell me if you\'d like a:\n\n**A)** 3-day meal plan or **B)** 7-day meal plan?\n\nIf you don\'t have a specific duration in mind, I can suggest a 3-day meal plan to get you started.\n\nAlso, considering your **DIET GOAL** is **weight_loss**, I\'ll make sure to suggest meals that are low in calories, high in fiber, and rich in protein.\n\nPlease let me know your preference, and I\'ll create a personalized meal plan for you! 🥗', '2026-04-23 13:53:22'),
 (165, 8, '3-day', '2026-04-23 13:53:24'),
-(166, 8, 'Here\'s a 3-day meal plan tailored to your **weight_loss** goal. This meal plan includes low-calorie, high-fiber, and protein-rich options to help you stay on track. 🥗\n\n**Day 1**\n\n### Breakfast\n\n* **Greek Yogurt and Berries with Granola**: 250 calories, 5g fiber, 20g protein\n	+ 1 cup Greek yogurt\n	+ 1/2 cup mixed berries\n	+ 2 tablespoons granola\n\n### Lunch\n\n* **Grilled Chicken and Veggie Wrap**: 400 calories, 10g fiber, 35g protein\n	+ 1 whole wheat tortilla\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed greens\n	+ 1/2 cup sliced cucumber\n	+ 1/4 cup sliced bell peppers\n\n### Snack\n\n* **Apple Slices with Almond Butter**: 150 calories, 4g fiber, 4g protein\n	+ 1 medium apple, sliced\n	+ 2 tablespoons almond butter\n\n### Dinner\n\n* **Baked Salmon with Quinoa and Steamed Broccoli**: 500 calories, 10g fiber, 35g protein\n	+ 6 oz salmon fillet\n	+ 1/2 cup cooked quinoa\n	+ 1 cup steamed broccoli\n\n### Nutrition Tip: 💡\nIncorporate physical activity into your daily routine, such as a 30-minute brisk walk in the morning or a home workout in the evening.\n\n---\n\n**Day 2**\n\n### Breakfast\n\n* **Oatmeal with Banana and Nuts**: 300 calories, 6g fiber, 10g protein\n	+ 1 cup cooked oatmeal\n	+ 1 medium banana\n	+ 1 tablespoon chopped walnuts\n\n### Lunch\n\n* **Turkey and Avocado Salad**: 450 calories, 10g fiber, 25g protein\n	+ 2 cups mixed greens\n	+ 2 oz sliced turkey breast\n	+ 1/2 avocado, diced\n	+ 1 cup cherry tomatoes, halved\n\n### Snack\n\n* **Cottage Cheese and Cucumber Slices**: 150 calories, 5g fiber, 15g protein\n	+ 1/2 cup cottage cheese\n	+ 1/2 cup sliced cucumber\n\n### Dinner\n\n* **Grilled Chicken and Vegetable Skewers**: 400 calories, 8g fiber, 30g protein\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n	+ 1 whole wheat pita\n\n### Nutrition Tip: ⏰\nStay hydrated by drinking at least 8 cups of water throughout the day.\n\n---\n\n**Day 3**\n\n### Breakfast\n\n* **Scrambled Eggs with Spinach and Whole Wheat Toast**: 250 calories, 5g fiber, 20g protein\n	+ 2 scrambled eggs\n	+ 1 cup fresh spinach\n	+ 2 slices whole wheat toast\n\n### Lunch\n\n* **Chicken and Quinoa Bowl**: 500 calories, 10g fiber, 30g protein\n	+ 2 oz cooked chicken breast\n	+ 1 cup cooked quinoa\n	+ 1 cup steamed green beans\n\n### Snack\n\n* **Carrot Sticks with Hummus**: 100 calories, 6g fiber, 5g protein\n	+ 4 carrot sticks\n	+ 2 tablespoons hummus\n\n### Dinner\n\n* **Baked Chicken Breast with Roasted Vegetables**: 400 calories, 10g fiber, 35g protein\n	+ 6 oz baked chicken breast\n	+ 1 cup roasted mixed vegetables (Brussels sprouts, sweet potatoes, carrots)\n\n### Nutrition Tip: 🌞\nGet enough sleep each night to help your body recover from the day\'s activities and support weight loss.\n\nThis meal plan provides approximately 1500-1700 calories per day, with a balance of protein, healthy fats, and complex carbohydrates to support weight loss. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs.', '2026-04-23 13:53:26');
+(166, 8, 'Here\'s a 3-day meal plan tailored to your **weight_loss** goal. This meal plan includes low-calorie, high-fiber, and protein-rich options to help you stay on track. 🥗\n\n**Day 1**\n\n### Breakfast\n\n* **Greek Yogurt and Berries with Granola**: 250 calories, 5g fiber, 20g protein\n	+ 1 cup Greek yogurt\n	+ 1/2 cup mixed berries\n	+ 2 tablespoons granola\n\n### Lunch\n\n* **Grilled Chicken and Veggie Wrap**: 400 calories, 10g fiber, 35g protein\n	+ 1 whole wheat tortilla\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed greens\n	+ 1/2 cup sliced cucumber\n	+ 1/4 cup sliced bell peppers\n\n### Snack\n\n* **Apple Slices with Almond Butter**: 150 calories, 4g fiber, 4g protein\n	+ 1 medium apple, sliced\n	+ 2 tablespoons almond butter\n\n### Dinner\n\n* **Baked Salmon with Quinoa and Steamed Broccoli**: 500 calories, 10g fiber, 35g protein\n	+ 6 oz salmon fillet\n	+ 1/2 cup cooked quinoa\n	+ 1 cup steamed broccoli\n\n### Nutrition Tip: 💡\nIncorporate physical activity into your daily routine, such as a 30-minute brisk walk in the morning or a home workout in the evening.\n\n---\n\n**Day 2**\n\n### Breakfast\n\n* **Oatmeal with Banana and Nuts**: 300 calories, 6g fiber, 10g protein\n	+ 1 cup cooked oatmeal\n	+ 1 medium banana\n	+ 1 tablespoon chopped walnuts\n\n### Lunch\n\n* **Turkey and Avocado Salad**: 450 calories, 10g fiber, 25g protein\n	+ 2 cups mixed greens\n	+ 2 oz sliced turkey breast\n	+ 1/2 avocado, diced\n	+ 1 cup cherry tomatoes, halved\n\n### Snack\n\n* **Cottage Cheese and Cucumber Slices**: 150 calories, 5g fiber, 15g protein\n	+ 1/2 cup cottage cheese\n	+ 1/2 cup sliced cucumber\n\n### Dinner\n\n* **Grilled Chicken and Vegetable Skewers**: 400 calories, 8g fiber, 30g protein\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n	+ 1 whole wheat pita\n\n### Nutrition Tip: ⏰\nStay hydrated by drinking at least 8 cups of water throughout the day.\n\n---\n\n**Day 3**\n\n### Breakfast\n\n* **Scrambled Eggs with Spinach and Whole Wheat Toast**: 250 calories, 5g fiber, 20g protein\n	+ 2 scrambled eggs\n	+ 1 cup fresh spinach\n	+ 2 slices whole wheat toast\n\n### Lunch\n\n* **Chicken and Quinoa Bowl**: 500 calories, 10g fiber, 30g protein\n	+ 2 oz cooked chicken breast\n	+ 1 cup cooked quinoa\n	+ 1 cup steamed green beans\n\n### Snack\n\n* **Carrot Sticks with Hummus**: 100 calories, 6g fiber, 5g protein\n	+ 4 carrot sticks\n	+ 2 tablespoons hummus\n\n### Dinner\n\n* **Baked Chicken Breast with Roasted Vegetables**: 400 calories, 10g fiber, 35g protein\n	+ 6 oz baked chicken breast\n	+ 1 cup roasted mixed vegetables (Brussels sprouts, sweet potatoes, carrots)\n\n### Nutrition Tip: 🌞\nGet enough sleep each night to help your body recover from the day\'s activities and support weight loss.\n\nThis meal plan provides approximately 1500-1700 calories per day, with a balance of protein, healthy fats, and complex carbohydrates to support weight loss. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs.', '2026-04-23 13:53:26'),
+(167, 2, 'hi', '2026-04-25 08:43:09'),
+(168, 2, 'Hello! How can I help you with healthy food suggestions or a meal plan today? 🥗', '2026-04-25 08:43:09');
 
 -- --------------------------------------------------------
 
@@ -346,7 +346,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`) VALUES
 (2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1),
 (7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', '2026-04-12 09:29:56', 1),
-(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', '2026-04-23 13:44:46', 1);
+(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', '2026-04-23 13:44:46', 1),
+(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', '2026-04-25 08:24:30', '2026-04-25 08:24:30', 1);
 
 -- --------------------------------------------------------
 
@@ -520,7 +521,7 @@ ALTER TABLE `user_totp`
 -- AUTO_INCREMENT for table `backup_codes`
 --
 ALTER TABLE `backup_codes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `carts`
@@ -538,13 +539,13 @@ ALTER TABLE `cart_items`
 -- AUTO_INCREMENT for table `email_otps`
 --
 ALTER TABLE `email_otps`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -580,7 +581,7 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user_addresses`
