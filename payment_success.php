@@ -31,7 +31,7 @@ try {
         $checkStmt->execute();
         $order = $checkStmt->get_result()->fetch_assoc();
 
-        if ($order && $order['status'] === 'pending') {
+        if ($order && ($order['status'] === 'pending' || $order['status'] === 'cancelled')) {
             // 1. Update Order to 'paid'
             $orderStmt = $conn->prepare("UPDATE orders SET status = 'paid' WHERE id = ? AND user_id = ?");
             $orderStmt->bind_param("ii", $orderId, $userId);

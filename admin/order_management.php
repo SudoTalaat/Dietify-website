@@ -5,6 +5,26 @@ if (!isLoggedIn() || !isAdmin()) {
     header("Location: /app/login.php");
     exit();
 }
+
+// Handle Status Update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_status') {
+    $orderId = (int) $_POST['order_id'];
+    $newStatus = $_POST['status'];
+    $allowedStatuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded'];
+
+    if (in_array($newStatus, $allowedStatuses)) {
+        $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $newStatus, $orderId);
+        if ($stmt->execute()) {
+            $msg = "Order #$orderId updated to " . ucfirst($newStatus);
+            $msgType = "success";
+        } else {
+            $msg = "Error updating order.";
+            $msgType = "error";
+        }
+        $stmt->close();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -113,6 +133,13 @@ if (!isLoggedIn() || !isAdmin()) {
     <main style="padding: 20px; margin-left: 270px; width: calc(100% - 270px);">
         <h1>🛒 Order Management</h1>
 
+        <?php if (isset($msg)): ?>
+            <div
+                style="padding: 15px; margin-bottom: 20px; border-radius: 4px; background: <?php echo $msgType === 'success' ? '#d4edda' : '#f8d7da'; ?>; color: <?php echo $msgType === 'success' ? '#155724' : '#721c24'; ?>;">
+                <?php echo htmlspecialchars($msg); ?>
+            </div>
+        <?php endif; ?>
+
         <?php
         $search_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : '';
         $search_customer_id = isset($_GET['customer_id']) ? intval($_GET['customer_id']) : '';
@@ -190,31 +217,40 @@ if (!isLoggedIn() || !isAdmin()) {
         <form action="" method="GET" class="search-form">
             <div class="form-group">
                 <label for="order_id">Order ID</label>
-                <input type="number" name="order_id" id="order_id" value="<?php echo htmlspecialchars($search_id); ?>" placeholder="e.g. 123">
+                <input type="number" name="order_id" id="order_id" value="<?php echo htmlspecialchars($search_id); ?>"
+                    placeholder="e.g. 123">
             </div>
             <div class="form-group">
                 <label for="customer_id">Customer ID</label>
-                <input type="number" name="customer_id" id="customer_id" value="<?php echo htmlspecialchars($search_customer_id); ?>" placeholder="e.g. 45">
+                <input type="number" name="customer_id" id="customer_id"
+                    value="<?php echo htmlspecialchars($search_customer_id); ?>" placeholder="e.g. 45">
             </div>
             <div class="form-group">
                 <label for="query">Customer (Name/Email)</label>
-                <input type="text" name="query" id="query" value="<?php echo htmlspecialchars($search_query); ?>" placeholder="Search name or email...">
+                <input type="text" name="query" id="query" value="<?php echo htmlspecialchars($search_query); ?>"
+                    placeholder="Search name or email...">
             </div>
             <div class="form-group">
                 <label for="status">Status</label>
                 <select name="status" id="status">
                     <option value="">All Statuses</option>
-                    <option value="paid" <?php echo $search_status == 'paid' ? 'selected' : ''; ?>>Paid</option>
                     <option value="pending" <?php echo $search_status == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                    <option value="paid" <?php echo $search_status == 'paid' ? 'selected' : ''; ?>>Paid</option>
+                    <option value="shipped" <?php echo $search_status == 'shipped' ? 'selected' : ''; ?>>Shipped</option>
+                    <option value="delivered" <?php echo $search_status == 'delivered' ? 'selected' : ''; ?>>Delivered</option>
+                    <option value="cancelled" <?php echo $search_status == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                    <option value="refunded" <?php echo $search_status == 'refunded' ? 'selected' : ''; ?>>Refunded</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="start_date">From Date</label>
-                <input type="text" name="start_date" id="start_date" class="datepicker" value="<?php echo htmlspecialchars($search_start_date); ?>" placeholder="YYYY-MM-DD">
+                <input type="text" name="start_date" id="start_date" class="datepicker"
+                    value="<?php echo htmlspecialchars($search_start_date); ?>" placeholder="YYYY-MM-DD">
             </div>
             <div class="form-group">
                 <label for="end_date">To Date</label>
-                <input type="text" name="end_date" id="end_date" class="datepicker" value="<?php echo htmlspecialchars($search_end_date); ?>" placeholder="YYYY-MM-DD">
+                <input type="text" name="end_date" id="end_date" class="datepicker"
+                    value="<?php echo htmlspecialchars($search_end_date); ?>" placeholder="YYYY-MM-DD">
             </div>
             <button type="submit" class="btn-search">🔍 Search</button>
             <a href="order_management.php" class="btn-reset">↺ Reset</a>
@@ -246,17 +282,45 @@ if (!isLoggedIn() || !isAdmin()) {
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td><?php echo htmlspecialchars($row['location_description']); ?></td>
                                 <td><?php echo number_format($row['total_amount'], 2); ?> $</td>
-                                <td><span class='<?php echo $statusClass; ?>'><?php echo ucfirst($row['status']); ?></span></td>
-                                <td><?php echo date('Y-m-d', strtotime($row['created_at'])); ?></td>
+                                <td>
+                                    <form method="POST" style="margin:0; display:flex; gap:5px;">
+                                        <input type="hidden" name="action" value="update_status">
+                                        <input type="hidden" name="order_id" value="<?php echo $row['id']; ?>">
+                                        <select name="status" onchange="this.form.submit()" style="padding: 4px; font-size: 0.8rem;">
+                                            <?php if ($row['status'] === 'pending'): ?>
+                                                <option value="pending" selected>Pending</option>
+                                                <option value="paid">Paid (Manual)</option>
+                                                <option value="cancelled">Cancelled</option>
+                                            <?php elseif ($row['status'] === 'paid'): ?>
+                                                <option value="paid" selected>Paid</option>
+                                                <option value="shipped">Shipped</option>
+                                                <option value="delivered">Delivered</option>
+                                                <option value="refunded">Refunded (Triggers Stripe Refund)</option>
+                                            <?php elseif ($row['status'] === 'shipped'): ?>
+                                                <option value="shipped" selected>Shipped</option>
+                                                <option value="delivered">Delivered</option>
+                                                <option value="refunded">Refunded (Triggers Stripe Refund)</option>
+                                            <?php elseif ($row['status'] === 'delivered'): ?>
+                                                <option value="delivered" selected>Delivered</option>
+                                                <option value="refunded">Refunded (Triggers Stripe Refund)</option>
+                                            <?php else: ?>
+                                                <option value="<?php echo $row['status']; ?>" selected><?php echo ucfirst($row['status']); ?></option>
+                                            <?php endif; ?>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td><?php echo date('Y-m-d H:i', strtotime($row['created_at'])); ?></td>
                             </tr>
                         <?php endwhile; ?>
                     </tbody>
                 </table>
             </div>
         <?php else: ?>
-            <div style="background: white; padding: 40px; text-align: center; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <div
+                style="background: white; padding: 40px; text-align: center; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                 <p style="color: #666; font-size: 1.1rem;">No orders found matching your search criteria.</p>
-                <a href="order_management.php" style="color: #3498db; text-decoration: none; font-weight: 600;">Show all orders</a>
+                <a href="order_management.php" style="color: #3498db; text-decoration: none; font-weight: 600;">Show all
+                    orders</a>
             </div>
         <?php endif; ?>
     </main>
@@ -268,7 +332,7 @@ if (!isLoggedIn() || !isAdmin()) {
             dateFormat: "Y-m-d",
             allowInput: true,
             altInput: false, // Ensure the actual value is what the user sees
-            onReady: function(selectedDates, dateStr, instance) {
+            onReady: function (selectedDates, dateStr, instance) {
                 instance.element.placeholder = "YYYY-MM-DD";
             }
         });

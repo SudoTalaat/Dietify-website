@@ -49,17 +49,105 @@ $action = $_POST['action'] ?? '';
 // 0. CANCEL ORDER
 if ($action === 'cancel_order') {
     $orderIdToCancel = (int) ($_POST['order_id'] ?? 0);
-    $cancelStmt = $conn->prepare("UPDATE orders SET status = 'cancelled' WHERE id = ? AND user_id = ? AND status = 'pending'");
-    $cancelStmt->bind_param('ii', $orderIdToCancel, $userId);
 
-    if ($cancelStmt->execute() && $cancelStmt->affected_rows > 0) {
-        $message = "Order #$orderIdToCancel has been successfully cancelled.";
-        $msgType = 'success';
+    // Fetch order details first to check timing and status
+    $stmt = $conn->prepare("SELECT status, created_at FROM orders WHERE id = ? AND user_id = ?");
+    $stmt->bind_param('ii', $orderIdToCancel, $userId);
+    $stmt->execute();
+    $orderToCancel = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if ($orderToCancel) {
+        $createdAt = strtotime($orderToCancel['created_at']);
+        $now = time();
+        $isCancellable = false;
+        $timeMsg = "10 minutes";
+
+        if ($orderToCancel['status'] === 'pending') {
+            if (($now - $createdAt) <= 600) {
+                $isCancellable = true;
+            }
+        } elseif ($orderToCancel['status'] === 'paid') {
+            // Check payment time specifically for paid orders
+            $timeMsg = "20 minutes from payment";
+            $pStmt = $conn->prepare("SELECT paid_at FROM payments WHERE order_id = ? AND status = 'completed'");
+            $pStmt->bind_param('i', $orderIdToCancel);
+            $pStmt->execute();
+            $payData = $pStmt->get_result()->fetch_assoc();
+            $pStmt->close();
+
+            if ($payData && ($now - strtotime($payData['paid_at'])) <= 1200) {
+                $isCancellable = true;
+            }
+        }
+        // Shipped orders CANNOT be cancelled
+
+        if ($isCancellable) {
+            $conn->begin_transaction();
+            try {
+                $newStatus = 'cancelled';
+
+                if ($orderToCancel['status'] === 'paid') {
+                    // Check payment method
+                    $pStmt = $conn->prepare("SELECT method, transaction_id FROM payments WHERE order_id = ? AND status = 'completed'");
+                    $pStmt->bind_param('i', $orderIdToCancel);
+                    $pStmt->execute();
+                    $paymentInfo = $pStmt->get_result()->fetch_assoc();
+                    $pStmt->close();
+
+                    if ($paymentInfo && $paymentInfo['method'] === 'stripe') {
+                        \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
+                        try {
+                            $session = \Stripe\Checkout\Session::retrieve($paymentInfo['transaction_id']);
+                            if ($session->payment_intent) {
+                                \Stripe\Refund::create(['payment_intent' => $session->payment_intent]);
+
+                                // Update payment record
+                                $updPay = $conn->prepare("UPDATE payments SET status = 'refunded' WHERE order_id = ? AND transaction_id = ?");
+                                $updPay->bind_param('is', $orderIdToCancel, $paymentInfo['transaction_id']);
+                                $updPay->execute();
+                                $updPay->close();
+
+                                $newStatus = 'cancelled'; // Or 'refunded' if you prefer
+                            }
+                        } catch (Exception $e) {
+                            throw new Exception("Stripe Refund Failed: " . $e->getMessage());
+                        }
+                    }
+
+                    // Restore Stock
+                    $itemsResult = $conn->query("SELECT product_id, quantity FROM order_items WHERE order_id = $orderIdToCancel");
+                    while ($item = $itemsResult->fetch_assoc()) {
+                        $conn->query("UPDATE products SET stock = stock + {$item['quantity']} WHERE id = {$item['product_id']}");
+                    }
+                }
+
+                // Update Order Status
+                $cancelStmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ? AND user_id = ?");
+                $cancelStmt->bind_param('sii', $newStatus, $orderIdToCancel, $userId);
+                $cancelStmt->execute();
+
+                if ($cancelStmt->affected_rows > 0) {
+                    $conn->commit();
+                    $message = "Order #$orderIdToCancel has been successfully cancelled" . ($orderToCancel['status'] === 'paid' ? " and refunded" : "") . ".";
+                    $msgType = 'success';
+                } else {
+                    throw new Exception("Order update failed.");
+                }
+                $cancelStmt->close();
+            } catch (Exception $e) {
+                $conn->rollback();
+                $message = "Could not cancel order: " . $e->getMessage();
+                $msgType = 'error';
+            }
+        } else {
+            $message = "Cancellation period ($timeMsg) has expired for this order.";
+            $msgType = 'error';
+        }
     } else {
-        $message = "Could not cancel order. It may have already been processed.";
+        $message = "Order not found.";
         $msgType = 'error';
     }
-    $cancelStmt->close();
 }
 
 // ── ADDRESS MANAGEMENT ────────────────────────────────────────────────────────
@@ -527,6 +615,13 @@ include __DIR__ . '/header.php';
         color: #721c24;
     }
 
+    .cancel-timer {
+        font-size: 0.8rem;
+        color: #dc3545;
+        font-weight: 600;
+        margin-top: 5px;
+    }
+
     @media (max-width: 768px) {
         .profile-container {
             grid-template-columns: 1fr;
@@ -816,7 +911,7 @@ include __DIR__ . '/header.php';
                         $itemsResult = $itemsStmt->get_result();
 
                         // Fetch payment details
-                        $paymentStmt = $conn->prepare("SELECT method, status FROM payments WHERE order_id = ? LIMIT 1");
+                        $paymentStmt = $conn->prepare("SELECT method, status, paid_at FROM payments WHERE order_id = ? LIMIT 1");
                         $paymentStmt->bind_param("i", $order['id']);
                         $paymentStmt->execute();
                         $paymentData = $paymentStmt->get_result()->fetch_assoc();
@@ -870,15 +965,39 @@ include __DIR__ . '/header.php';
                                     ?>
                                 </div>
 
-                                <?php if ($order['status'] === 'pending'): ?>
-                                    <form method="POST" style="margin:0;"
-                                        onsubmit="return confirm('Are you sure you want to cancel this order?');">
-                                        <input type="hidden" name="action" value="cancel_order">
-                                        <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
-                                        <button type="submit"
-                                            style="background:#dc3545; color:white; border:none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">Cancel
-                                            Order</button>
-                                    </form>
+                                <?php
+                                $createdAt = strtotime($order['created_at']);
+                                $now = time();
+                                $isCancellable = false;
+                                $timeLeft = 0;
+
+                                if ($order['status'] === 'pending') {
+                                    $timeLeft = 600 - ($now - $createdAt);
+                                    if ($timeLeft > 0)
+                                        $isCancellable = true;
+                                } elseif ($order['status'] === 'paid' && !empty($paymentData['paid_at'])) {
+                                    $paidAt = strtotime($paymentData['paid_at']);
+                                    $timeLeft = 1200 - ($now - $paidAt); // 20 minutes = 1200 seconds
+                                    if ($timeLeft > 0)
+                                        $isCancellable = true;
+                                }
+                                ?>
+
+                                <?php if ($isCancellable): ?>
+                                    <div style="text-align: right;">
+                                        <form method="POST" style="margin:0;"
+                                            onsubmit="return confirm('Are you sure you want to cancel this order? A refund will be issued automatically.');">
+                                            <input type="hidden" name="action" value="cancel_order">
+                                            <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                                            <button type="submit"
+                                                style="background:#dc3545; color:white; border:none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancel
+                                                Order</button>
+                                        </form>
+                                        <div class="cancel-timer" data-time-left="<?php echo $timeLeft; ?>"
+                                            id="timer-<?php echo $order['id']; ?>">
+                                            Time left to cancel: <?php echo floor($timeLeft / 60); ?>m <?php echo ($timeLeft % 60); ?>s
+                                        </div>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -980,6 +1099,26 @@ include __DIR__ . '/header.php';
     </div>
 </div>
 </main>
+<script>
+    function updateTimers() {
+        document.querySelectorAll('.cancel-timer').forEach(timer => {
+            let timeLeft = parseInt(timer.getAttribute('data-time-left'));
+            if (timeLeft > 0) {
+                timeLeft--;
+                timer.setAttribute('data-time-left', timeLeft);
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timer.textContent = `Time left to cancel: ${minutes}m ${seconds}s`;
+            } else {
+                const container = timer.closest('div');
+                if (container && container.style.textAlign === 'right') {
+                    container.style.display = 'none';
+                }
+            }
+        });
+    }
+    setInterval(updateTimers, 1000);
+</script>
 </body>
 
 </html>

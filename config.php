@@ -25,6 +25,30 @@ if ($conn->connect_error) {
 date_default_timezone_set('UTC');
 $conn->query("SET time_zone = '+00:00'");
 
+// ── Automatic Order Status Transitions ───────────────────────────────────────
+// 1. Auto-cancel pending orders after 10 minutes
+$conn->query("UPDATE orders SET status = 'cancelled' WHERE status = 'pending' AND created_at < NOW() - INTERVAL 10 MINUTE");
+
+// 2. Auto-transition paid orders to 'shipped' after 20 minutes (Locks cancellation)
+$conn->query("
+    UPDATE orders o
+    JOIN payments p ON o.id = p.order_id
+    SET o.status = 'shipped'
+    WHERE o.status = 'paid' 
+    AND p.status = 'completed'
+    AND p.paid_at < NOW() - INTERVAL 20 MINUTE
+");
+
+// 3. Auto-complete shipped orders after 30 minutes (marked as 'delivered')
+$conn->query("
+    UPDATE orders o
+    JOIN payments p ON o.id = p.order_id
+    SET o.status = 'delivered'
+    WHERE o.status = 'shipped' 
+    AND p.status = 'completed'
+    AND p.paid_at < NOW() - INTERVAL 30 MINUTE
+");
+
 // ── Session ───────────────────────────────────────────────────────────────────
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([

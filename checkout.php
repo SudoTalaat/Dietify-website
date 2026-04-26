@@ -74,8 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Cleanup: Delete any existing "pending" orders for this user
-    $conn->query("DELETE FROM orders WHERE user_id = $userId AND status = 'pending'");
+    // Cleanup: Mark any existing "pending" orders for this user as cancelled
+    $conn->query("UPDATE orders SET status = 'cancelled' WHERE user_id = $userId AND status = 'pending'");
 
     // Create Pending Order
     $orderStmt = $conn->prepare("INSERT INTO orders (user_id, total_amount, status, location_description, phone) VALUES (?, ?, 'pending', ?, ?)");
