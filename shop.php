@@ -47,7 +47,7 @@ include __DIR__ . '/header.php';
                     </div>
                     <div style="margin: 10px 0 5px 0; color: #f1c40f; font-size: 0.85rem;">
                         <?php if ($product['review_count'] > 0): ?>
-                            <?php 
+                            <?php
                             $rating = round($product['avg_rating']);
                             for ($i = 1; $i <= 5; $i++) {
                                 echo $i <= $rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
@@ -75,7 +75,8 @@ include __DIR__ . '/header.php';
                         </form>
                     </div>
                     <a href="product.php?id=<?php echo $product['id']; ?>" class="login-btn"
-                        style="display: block; text-align: center; margin-top: 15px; text-decoration: none; background: transparent; color: #ff6b35; border: 1px solid #ff6b35;">View Details</a>
+                        style="display: block; text-align: center; margin-top: 15px; text-decoration: none; background: transparent; color: #ff6b35; border: 1px solid #ff6b35;">View
+                        Details</a>
                 </div>
 
                 <style>
@@ -84,6 +85,7 @@ include __DIR__ . '/header.php';
                         background: #e85a24 !important;
                         box-shadow: 0 6px 15px rgba(255, 107, 53, 0.5) !important;
                     }
+
                     .feature-card:hover {
                         transform: translateY(-5px);
                     }
