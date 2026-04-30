@@ -1038,7 +1038,7 @@ include __DIR__ . '/header.php';
                                 <?php echo htmlspecialchars($addr['location_description']); ?>
                             </p>
                             <p style="margin: 0 0 15px; color: #666; font-size: 0.9rem;">
-                                📞 <?php echo htmlspecialchars(!empty($user['phone']) ? $user['phone'] : $addr['phone']); ?>
+                                <?php echo htmlspecialchars(!empty($addr['phone']) ? $addr['phone'] : ($user['phone'] ?? '')); ?>
                             </p>
 
                             <div style="display: flex; gap: 10px;">
