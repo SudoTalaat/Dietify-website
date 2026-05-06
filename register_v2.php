@@ -25,6 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "This password has been found in a data breach. Please choose a more secure password.";
     } elseif (!$terms) {
         $error = "You must agree to the terms and conditions.";
+    } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+        $error = "Username can only contain letters, numbers, and underscores (no @ allowed).";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } else {

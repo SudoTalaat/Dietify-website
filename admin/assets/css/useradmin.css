@@ -153,62 +153,10 @@ main {
     background-color: #2980b9;
 }
 
-@media (max-width: 768px) {
-    nav {
-        width: 200px;
-    }
-
-    main {
-        margin-left: 200px;
-        width: calc(100% - 200px);
-    }
-
-    .table thead th,
-    .table tbody td {
-        font-size: 14px;
-        padding: 12px;
-    }
-}
-
-@media (max-width: 576px) {
-    .container {
-        flex-direction: column;
-    }
-
-    nav {
-        width: 100%;
-        height: auto;
-        position: static;
-    }
-
-    main {
-        margin-left: 0;
-        width: 100%;
-        padding: 15px;
-    }
-
-    .table {
-        font-size: 13px;
-    }
-
-    .table thead th,
-    .table tbody td {
-        padding: 10px;
-    }
-
-    .table tbody td img {
-        width: 30px;
-        height: 30px;
-    }
-
-    .table tbody td a {
-        padding: 6px 10px;
-        font-size: 13px;
-    }
-}
 .main-content {
     margin-left: 250px;
     padding: 30px;
+    min-height: 100vh;
 }
 
 /* Page title */

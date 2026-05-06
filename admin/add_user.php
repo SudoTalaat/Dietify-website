@@ -20,6 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "All fields are required.";
     } elseif (strlen($password) < 8) {
         $error = "Password must be at least 8 characters long.";
+    } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+        $error = "Username can only contain letters, numbers, and underscores (no @ allowed).";
     } else {
         // Check if username or email already exists
         $check = $conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");

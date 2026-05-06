@@ -19,17 +19,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_quantity'])) {
 }
 
 // Fetch products with filters
-$search_id = isset($_GET['product_id']) ? intval($_GET['product_id']) : '';
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $search_type = isset($_GET['type']) ? $_GET['type'] : '';
 
 $select = "SELECT id, name, price, image_path, description, type, stock FROM `products` WHERE 1=1";
 $params = [];
 $types = "";
 
-if ($search_id) {
-    $select .= " AND id = ?";
-    $params[] = $search_id;
-    $types .= "i";
+if ($search !== '') {
+    if (is_numeric($search)) {
+        $searchInt = intval($search);
+        $select .= " AND (id = ? OR name LIKE ?)";
+        $params[] = $searchInt;
+        $likeSearch = "%$search%";
+        $params[] = $likeSearch;
+        $types .= "is";
+    } else {
+        $select .= " AND name LIKE ?";
+        $likeSearch = "%$search%";
+        $params[] = $likeSearch;
+        $types .= "s";
+    }
 }
 
 if ($search_type) {
@@ -153,14 +163,14 @@ $run_select = $stmt->get_result();
         </ul>
     </nav>
     <main>
-        <h2>Inventory Management</h2>
+        <h1> Inventory Management</h1>
 
         <!-- Search Form -->
         <form action="" method="GET" class="search-form">
-            <div class="form-group">
-                <label for="product_id">Product ID</label>
-                <input type="number" name="product_id" id="product_id"
-                    value="<?php echo htmlspecialchars($search_id); ?>" placeholder="e.g. 1">
+            <div class="form-group" style="flex: 1; min-width: 250px;">
+                <label for="search">Product Search</label>
+                <input type="text" name="search" id="search"
+                    value="<?php echo htmlspecialchars($search); ?>" placeholder="Search by ID or Name...">
             </div>
             <div class="form-group">
                 <label for="type">Category</label>

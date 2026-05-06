@@ -13,16 +13,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $allowedStatuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded'];
 
     if (in_array($newStatus, $allowedStatuses)) {
-        $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
-        $stmt->bind_param("si", $newStatus, $orderId);
-        if ($stmt->execute()) {
-            $msg = "Order #$orderId updated to " . ucfirst($newStatus);
+        $conn->begin_transaction();
+        try {
+            // 1. Update order status
+            $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
+            $stmt->bind_param("si", $newStatus, $orderId);
+            $stmt->execute();
+
+            // 2. If status is cancelled or refunded, trigger Stripe refund
+            if ($newStatus === 'cancelled' || $newStatus === 'refunded') {
+                $stmt_pay = $conn->prepare("SELECT transaction_id, method, status FROM payments WHERE order_id = ? AND status = 'completed'");
+                $stmt_pay->bind_param("i", $orderId);
+                $stmt_pay->execute();
+                $payment = $stmt_pay->get_result()->fetch_assoc();
+
+                if ($payment && $payment['method'] === 'stripe' && !empty($payment['transaction_id'])) {
+                    \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
+                    \Stripe\Refund::create([
+                        'payment_intent' => $payment['transaction_id'],
+                    ]);
+
+                    // Update payment status in our DB
+                    $conn->query("UPDATE payments SET status = 'refunded' WHERE order_id = $orderId");
+                }
+            }
+
+            $conn->commit();
+            $msg = "Order #$orderId updated to " . ucfirst($newStatus) . " and processed successfully.";
             $msgType = "success";
-        } else {
-            $msg = "Error updating order.";
+        } catch (Exception $e) {
+            $conn->rollback();
+            $msg = "Error: " . $e->getMessage();
             $msgType = "error";
         }
-        $stmt->close();
     }
 }
 ?>
@@ -130,8 +153,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <li><a href="/app/logout.php">Logout</a></li>
         </ul>
     </nav>
-    <main style="padding: 20px; margin-left: 270px; width: calc(100% - 270px);">
-        <h1>🛒 Order Management</h1>
+    <main>
+        <h1> Order Management</h1>
 
         <?php if (isset($msg)): ?>
             <div

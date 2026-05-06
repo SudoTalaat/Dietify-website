@@ -51,9 +51,24 @@ if (isset($_GET['msg'])) {
 }
 
 // 4. Fetch Users
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 $query = "SELECT id, username, email, role FROM users";
+if ($search !== '') {
+    if (is_numeric($search)) {
+        $searchInt = intval($search);
+        $query .= " WHERE id = $searchInt OR username LIKE '%$search%' OR email LIKE '%$search%'";
+    } else {
+        $safeSearch = $conn->real_escape_string($search);
+        $query .= " WHERE username LIKE '%$safeSearch%' OR email LIKE '%$safeSearch%'";
+    }
+}
 $result = $conn->query($query);
 $users = $result->fetch_all(MYSQLI_ASSOC);
+
+// Get actual total users for the stat card
+$total_users_query = "SELECT COUNT(*) as total FROM users";
+$total_users = $conn->query($total_users_query)->fetch_assoc()['total'];
 ?>
 
 <!DOCTYPE html>
@@ -99,6 +114,22 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
             </div>
         <?php endif; ?>
 
+        <div class="search-container" style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;">
+            <form action="" method="GET" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px; position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search by ID, Username or Email..." 
+                        style="width: 100%; padding: 12px 15px 12px 45px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; outline: none; transition: all 0.2s;">
+                </div>
+                <button type="submit" style="padding: 12px 30px; background: #3498db; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+                    Search
+                </button>
+                <?php if ($search !== ''): ?>
+                    <a href="useradmin.php" style="padding: 12px 20px; background: #f1f5f9; color: #64748b; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.9rem;">Reset</a>
+                <?php endif; ?>
+            </form>
+        </div>
+
         <div class="dashboard-cards">
             <div class="card">
                 <div class="card-header">
@@ -107,7 +138,7 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
                     </div>
                     <div>
                         <p class="card-title">TOTAL USERS</p>
-                        <p class="card-value"><?php echo count($users); ?></p>
+                        <p class="card-value"><?php echo $total_users; ?></p>
                     </div>
                 </div>
             </div>

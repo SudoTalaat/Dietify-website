@@ -2,13 +2,21 @@
 require_once __DIR__ . '/init.php';
 
 $type = $_GET['type'] ?? '';
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 $query = "SELECT p.*, AVG(r.rating) as avg_rating, COUNT(r.id) as review_count 
           FROM products p 
           LEFT JOIN reviews r ON p.id = r.product_id 
           WHERE p.status = 'active'";
+
 if ($type) {
     $query .= " AND p.type = '" . $conn->real_escape_string($type) . "'";
 }
+
+if ($search) {
+    $query .= " AND p.name LIKE '%" . $conn->real_escape_string($search) . "%'";
+}
+
 $query .= " GROUP BY p.id ORDER BY p.created_at DESC";
 $result = $conn->query($query);
 
@@ -20,12 +28,27 @@ include __DIR__ . '/header.php';
         <h1>The Healthy Shop</h1>
         <p>Browse our selection of nutritious food and drinks.</p>
 
-        <div style="margin-top: 20px;">
-            <a href="shop.php" class="<?php echo !$type ? 'btn-login' : 'btn-secondary'; ?>"
+        <!-- Search Bar -->
+        <div style="max-width: 500px; margin: 25px auto 0; position: relative;">
+            <form action="shop.php" method="GET">
+                <?php if ($type): ?>
+                    <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
+                <?php endif; ?>
+                <input type="text" name="search" placeholder="Search for healthy meals..." 
+                    value="<?php echo htmlspecialchars($search); ?>"
+                    style="width: 100%; padding: 12px 50px 12px 20px; border-radius: 25px; border: 2px solid #ffe6dc; font-size: 0.95rem; outline: none; transition: border-color 0.2s;">
+                <button type="submit" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: #ff6b35; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <div style="margin-top: 25px;">
+            <a href="shop.php<?php echo $search ? '?search='.urlencode($search) : ''; ?>" class="<?php echo !$type ? 'btn-login' : 'btn-secondary'; ?>"
                 style="padding: 8px 15px; text-decoration: none; margin-right: 10px; border-radius: 20px; border-color: #ff6b35; <?php echo !$type ? '' : 'color: #ff6b35;'; ?>">All</a>
-            <a href="shop.php?type=food" class="<?php echo $type === 'food' ? 'btn-login' : 'btn-secondary'; ?>"
+            <a href="shop.php?type=food<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="<?php echo $type === 'food' ? 'btn-login' : 'btn-secondary'; ?>"
                 style="padding: 8px 15px; text-decoration: none; margin-right: 10px; border-radius: 20px; border-color: #ff6b35; <?php echo $type === 'food' ? '' : 'color: #ff6b35;'; ?>">Food</a>
-            <a href="shop.php?type=drink" class="<?php echo $type === 'drink' ? 'btn-login' : 'btn-secondary'; ?>"
+            <a href="shop.php?type=drink<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="<?php echo $type === 'drink' ? 'btn-login' : 'btn-secondary'; ?>"
                 style="padding: 8px 15px; text-decoration: none; border-radius: 20px; border-color: #ff6b35; <?php echo $type === 'drink' ? '' : 'color: #ff6b35;'; ?>">Drinks</a>
         </div>
     </div>

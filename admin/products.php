@@ -302,46 +302,62 @@ $view = isset($_GET['form']) || isset($_GET['edit']) ? 'form' : 'list';
                 </tbody>
             </table>
         <?php else: ?>
-            <form method="POST" enctype="multipart/form-data">
-                <h2>
-                    <?php echo $edit_id ? 'Edit' : 'Add New'; ?> Product
+            <form method="POST" enctype="multipart/form-data" style="margin-top: 10px;">
+                <h2 style="margin-bottom: 20px;">
+                    <?php echo $edit_id ? '✏️ Edit' : '➕ Add New'; ?> Product
                 </h2>
 
-                <label for="name">Product Name</label>
-                <input value="<?php echo htmlspecialchars($name); ?>" id="name" type="text" name="name" required><br><br>
+                <div class="form-group">
+                    <label for="name">Product Name</label>
+                    <input value="<?php echo htmlspecialchars($name); ?>" id="name" type="text" name="name" required placeholder="Enter product name">
+                </div>
 
-                <label for="price">Product Price ($)</label>
-                <input value="<?php echo $price; ?>" id="price" type="number" step="0.01" name="price" required><br><br>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Price (<?php echo CURRENCY_CODE; ?>)</label>
+                        <input value="<?php echo $price; ?>" id="price" type="number" step="0.01" name="price" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="stock">Stock Quantity</label>
+                        <input value="<?php echo $stock; ?>" id="stock" type="number" name="stock" required placeholder="0">
+                    </div>
+                </div>
 
-                <label for="stock">Stock Quantity</label>
-                <input value="<?php echo $stock; ?>" id="stock" type="number" name="stock" required><br><br>
+                <div class="form-group">
+                    <label for="description">Product Description</label>
+                    <textarea id="description" name="description" placeholder="Write a short description..."
+                        style="min-height: 60px;"><?php echo htmlspecialchars($description); ?></textarea>
+                </div>
 
-                <label for="description">Product Description</label>
-                <textarea id="description" name="description"
-                    rows="4"><?php echo htmlspecialchars($description); ?></textarea><br><br>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="type">Product Category</label>
+                        <select id="type" name="type">
+                            <option value="food" <?php echo $type === 'food' ? 'selected' : ''; ?>>🍎 Food</option>
+                            <option value="drink" <?php echo $type === 'drink' ? 'selected' : ''; ?>>🥤 Drink</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Product Image</label>
+                        <input id="image" type="file" name="image">
+                    </div>
+                </div>
 
-                <label for="type">Product Type</label>
-                <select id="type" name="type">
-                    <option value="food" <?php echo $type === 'food' ? 'selected' : ''; ?>>Food</option>
-                    <option value="drink" <?php echo $type === 'drink' ? 'selected' : ''; ?>>Drink</option>
-                </select><br><br>
-
-                <label for="image">Product Image</label>
                 <?php if (!empty($image)): ?>
-                    <div style="margin-bottom: 10px;">
+                    <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 10px; border-radius: 8px;">
                         <img src="<?php $imgUrl = getImageUrl($image);
                         echo (str_starts_with($imgUrl, 'http') ? $imgUrl : '../' . ($imgUrl ?: 'assets/images/placeholder-300x300.png')); ?>"
-                            alt="Current Image" width="100">
+                            alt="Current Image" width="60" height="60" style="object-fit: cover; border-radius: 4px;">
+                        <span style="font-size: 0.85rem; color: #666;">Current image preview</span>
                     </div>
                 <?php endif; ?>
-                <input id="image" type="file" name="image"><br><br>
 
-                <div class="f-btn">
+                <div class="f-btn" style="display: flex; gap: 15px; align-items: center; margin-top: 10px;">
                     <?php if ($edit_id): ?>
-                        <button type="submit" name="update">Update Product</button>
-                        <a href="products.php" style="padding: 10px; color: #666;">Cancel</a>
+                        <button type="submit" name="update" style="background: #27ae60;">Save Changes</button>
+                        <a href="products.php" style="color: #666; text-decoration: none; font-weight: 600;">Cancel</a>
                     <?php else: ?>
-                        <button type="submit" name="add">Add Product</button>
+                        <button type="submit" name="add" style="background: #27ae60;">Add Product</button>
                     <?php endif; ?>
                 </div>
             </form>

@@ -188,8 +188,8 @@ $reviews = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             <li><a href="/app/logout.php">Logout</a></li>
         </ul>
     </nav>
-    <main style="padding: 20px; margin-left: 270px; width: calc(100% - 270px);">
-        <h1>💬 Product Reviews</h1>
+    <main>
+        <h1> Product Reviews</h1>
 
         <?php if (isset($_GET['msg']) && $_GET['msg'] == 'deleted'): ?>
             <p style="color: #27ae60; background: #d4edda; padding: 10px; border-radius: 5px;">Review deleted successfully.</p>

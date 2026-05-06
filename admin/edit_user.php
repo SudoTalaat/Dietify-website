@@ -30,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($username) || empty($email)) {
         $error = "Username and Email are required.";
+    } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+        $error = "Username can only contain letters, numbers, and underscores (no @ allowed).";
     } else {
         // Start building the update query
         $sql = "UPDATE users SET username = ?, email = ?, is_verified = ?";
