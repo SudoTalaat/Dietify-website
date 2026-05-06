@@ -34,21 +34,25 @@ include __DIR__ . '/header.php';
                 <?php if ($type): ?>
                     <input type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">
                 <?php endif; ?>
-                <input type="text" name="search" placeholder="Search for healthy meals..." 
+                <input type="text" name="search" placeholder="Search for healthy meals..."
                     value="<?php echo htmlspecialchars($search); ?>"
                     style="width: 100%; padding: 12px 50px 12px 20px; border-radius: 25px; border: 2px solid #ffe6dc; font-size: 0.95rem; outline: none; transition: border-color 0.2s;">
-                <button type="submit" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: #ff6b35; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;">
+                <button type="submit"
+                    style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: #ff6b35; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;">
                     <i class="fas fa-search"></i>
                 </button>
             </form>
         </div>
 
         <div style="margin-top: 25px;">
-            <a href="shop.php<?php echo $search ? '?search='.urlencode($search) : ''; ?>" class="<?php echo !$type ? 'btn-login' : 'btn-secondary'; ?>"
+            <a href="shop.php<?php echo $search ? '?search=' . urlencode($search) : ''; ?>"
+                class="<?php echo !$type ? 'btn-login' : 'btn-secondary'; ?>"
                 style="padding: 8px 15px; text-decoration: none; margin-right: 10px; border-radius: 20px; border-color: #ff6b35; <?php echo !$type ? '' : 'color: #ff6b35;'; ?>">All</a>
-            <a href="shop.php?type=food<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="<?php echo $type === 'food' ? 'btn-login' : 'btn-secondary'; ?>"
+            <a href="shop.php?type=food<?php echo $search ? '&search=' . urlencode($search) : ''; ?>"
+                class="<?php echo $type === 'food' ? 'btn-login' : 'btn-secondary'; ?>"
                 style="padding: 8px 15px; text-decoration: none; margin-right: 10px; border-radius: 20px; border-color: #ff6b35; <?php echo $type === 'food' ? '' : 'color: #ff6b35;'; ?>">Food</a>
-            <a href="shop.php?type=drink<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="<?php echo $type === 'drink' ? 'btn-login' : 'btn-secondary'; ?>"
+            <a href="shop.php?type=drink<?php echo $search ? '&search=' . urlencode($search) : ''; ?>"
+                class="<?php echo $type === 'drink' ? 'btn-login' : 'btn-secondary'; ?>"
                 style="padding: 8px 15px; text-decoration: none; border-radius: 20px; border-color: #ff6b35; <?php echo $type === 'drink' ? '' : 'color: #ff6b35;'; ?>">Drinks</a>
         </div>
     </div>
@@ -86,7 +90,7 @@ include __DIR__ . '/header.php';
                     </h3>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                         <div style="font-weight: 700; color: #27ae60; font-size: 1.25rem;">
-                            <?php echo CURRENCY_SYMBOL; ?> <?php echo number_format($product['price'], 2); ?>
+                            <?php echo CURRENCY_SYMBOL; ?>         <?php echo number_format($product['price'], 2); ?>
                         </div>
                         <form action="actions/cart_action.php" method="POST" style="margin: 0;">
                             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
