@@ -62,7 +62,7 @@ include __DIR__ . '/header.php';
 
 <div class="dashboard-container">
     <div
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; align-items: start;">
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px; align-items: start;">
         <div class="product-image">
             <img src="<?php echo getImageUrl($product['image_path']) ?: 'assets/images/placeholder-300x300.png'; ?>"
                 alt="<?php echo htmlspecialchars($product['name']); ?>"

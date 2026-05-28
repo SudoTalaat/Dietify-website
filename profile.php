@@ -156,9 +156,9 @@ if ($action === 'add_address') {
     $phone = trim($_POST['phone'] ?? '');
     $is_default = isset($_POST['is_default']) ? 1 : 0;
 
-    if (!empty($location) && !empty($phone)) {
-        //010, 011, 012, or 015. this regex is to chekc it is egyption phone number 
-        if (!preg_match('/^01[0125][0-9]{8}$/', $phone)) {
+    if (!empty($location)) {
+        // If phone is provided, validate it. If not, it will be NULL in DB.
+        if (!empty($phone) && !preg_match('/^01[0125][0-9]{8}$/', $phone)) {
             $message = "Phone number must be 11 digits and start with 010, 011, 012, or 015.";
             $msgType = 'error';
         } else {
@@ -166,8 +166,9 @@ if ($action === 'add_address') {
                 $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
             }
 
+            $dbPhone = !empty($phone) ? $phone : null;
             $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, location_description, phone, is_default) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("issi", $userId, $location, $phone, $is_default);
+            $stmt->bind_param("issi", $userId, $location, $dbPhone, $is_default);
             if ($stmt->execute()) {
                 $message = "Address added successfully!";
                 $msgType = 'success';
@@ -1080,10 +1081,10 @@ include __DIR__ . '/header.php';
                         <div>
                             <label
                                 style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Contact
-                                Phone</label>
-                            <input type="text" name="phone" class="form-control" placeholder="01XXXXXXXXX"
-                                value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required minlength="11"
-                                maxlength="11" pattern="01[0125][0-9]{8}">
+                                Phone <span style="font-weight: normal; color: #aaa;">(Optional: Defaults to profile
+                                    phone)</span></label>
+                            <input type="text" name="phone" class="form-control" placeholder="01XXXXXXXXX" value=""
+                                minlength="11" maxlength="11" pattern="01[0125][0-9]{8}">
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" name="is_default" id="is_default" value="1">

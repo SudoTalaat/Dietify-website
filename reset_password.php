@@ -26,43 +26,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "This password has been found in a data breach. Please choose a more secure password.";
     } else {
         // Verify OTP
-        $stmt = $conn->prepare(
-            "SELECT id, otp_hash FROM email_otps 
-             WHERE user_id = ? AND purpose = 'password_reset' AND used_at IS NULL AND expires_at > NOW()
-             ORDER BY created_at DESC LIMIT 1"
-        );
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $redis = new Predis\Client();
+        $otpHash = $redis->get("otp:$userId:password_reset");
 
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            if (password_verify($code, $row['otp_hash'])) {
-                // Update Password
-                $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-                $upd = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
-                $upd->bind_param("si", $hashedPassword, $userId);
+        if ($otpHash && password_verify($code, $otpHash)) {
+            // Update Password
+            $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+            $upd = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+            $upd->bind_param("si", $hashedPassword, $userId);
 
-                if ($upd->execute()) {
-                    // Mark OTP as used
-                    $otpId = $row['id'];
-                    $conn->query("UPDATE email_otps SET used_at = NOW() WHERE id = $otpId");
+            if ($upd->execute()) {
+                // Delete OTP from Redis
+                $redis->del("otp:$userId:password_reset");
 
-                    // Clear session and redirect
-                    session_destroy();
-                    header("Location: login.php?reset=1");
-                    exit();
-                } else {
-                    $error = "Failed to update password. Please try again.";
-                }
-                $upd->close();
+                // Clear session and redirect
+                session_destroy();
+                header("Location: login.php?reset=1");
+                exit();
             } else {
-                $error = "Invalid or expired code.";
+                $error = "Failed to update password. Please try again.";
             }
+            $upd->close();
         } else {
             $error = "Invalid or expired code.";
         }
-        $stmt->close();
     }
     $conn->close();
 }

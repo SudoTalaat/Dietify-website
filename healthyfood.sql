@@ -359,7 +359,7 @@ CREATE TABLE `user_addresses` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `location_description` varchar(255) NOT NULL,
-  `phone` varchar(30) NOT NULL,
+  `phone` varchar(30) DEFAULT NULL,
   `is_default` tinyint(1) DEFAULT 1,
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp()

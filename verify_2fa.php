@@ -34,25 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $code = trim($_POST['code'] ?? '');
 
     if ($method === 'email') {
-        $otpStmt = $conn->prepare(
-            "SELECT id, otp_hash FROM email_otps
-             WHERE user_id = ?
-                AND purpose  = 'twofa'
-               AND used_at  IS NULL
-               AND expires_at > NOW()
-             ORDER BY created_at DESC
-             LIMIT 1"
-        );
-        $otpStmt->bind_param('i', $userId);
-        $otpStmt->execute();
-        $otpRow = $otpStmt->get_result()->fetch_assoc();
-        $otpStmt->close();
+        $redis = new Predis\Client();
+        $otpHash = $redis->get("otp:$userId:twofa");
 
-        if ($otpRow && password_verify($code, $otpRow['otp_hash'])) {
-            $upd = $conn->prepare("UPDATE email_otps SET used_at = NOW() WHERE id = ?");
-            $upd->bind_param('i', $otpRow['id']);
-            $upd->execute();
-            $upd->close();
+        if ($otpHash && password_verify($code, $otpHash)) {
+            $redis->del("otp:$userId:twofa");
 
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];

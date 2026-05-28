@@ -48,20 +48,8 @@ function sendOtpEmail(mysqli $conn, int $userId, string $toEmail, string $toName
   $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
   $otpHash = password_hash($otp, PASSWORD_BCRYPT);
 
-  $del = $conn->prepare("DELETE FROM email_otps WHERE user_id = ? AND purpose = ? AND used_at IS NULL");
-  $del->bind_param('is', $userId, $purpose);
-  $del->execute();
-  $del->close();
-
-  $ins = $conn->prepare("INSERT INTO email_otps (user_id, otp_hash, purpose, expires_at) VALUES (?, ?, ?, DATE_ADD(NOW(),
-INTERVAL 10 MINUTE))");
-  $ins->bind_param('iss', $userId, $otpHash, $purpose);
-  if (!$ins->execute()) {
-    //
-    throw new Exception("DB error storing OTP: " . $ins->error);
-  }
-  //THAT should show in the logs
-  $ins->close();
+  $redis = new Predis\Client();
+  $redis->setex("otp:$userId:$purpose", 600, $otpHash);
 
   // Customize content based on purpose
   $title = '🔐 Verification Code';
