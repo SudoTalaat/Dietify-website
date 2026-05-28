@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Apr 25, 2026 at 05:44 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: localhost
+-- Generation Time: May 28, 2026 at 12:31 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -75,35 +75,6 @@ CREATE TABLE `cart_items` (
 
 INSERT INTO `cart_items` (`id`, `cart_id`, `product_id`, `quantity`) VALUES
 (19, 3, 8, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `email_otps`
---
-
-CREATE TABLE `email_otps` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `otp_hash` varchar(255) NOT NULL,
-  `purpose` enum('twofa','password_reset','email_verify') NOT NULL,
-  `expires_at` datetime NOT NULL,
-  `used_at` datetime DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `email_otps`
---
-
-INSERT INTO `email_otps` (`id`, `user_id`, `otp_hash`, `purpose`, `expires_at`, `used_at`, `created_at`) VALUES
-(4, 2, '$2y$10$uPCD95rAbzevvOnL7VRS5O9TcU61oHZJkV14.mFCBaX5B9GRSyrgu', 'password_reset', '2026-03-04 15:33:41', '2026-03-04 15:24:31', '2026-03-04 15:23:41'),
-(8, 2, '$2y$10$N4QgTYwvWVQtx4kvR71GV.Eu6crMvSbkNyybeK0.7vmic6RovYYHq', 'twofa', '2026-03-04 15:46:53', '2026-03-04 15:37:03', '2026-03-04 15:36:53'),
-(9, 2, '$2y$10$LV9DaMpYdQfEdp70DnrgguNpQHDm.cdTGj/HpREl/6SFSjtTwNsA6', 'twofa', '2026-03-04 15:50:07', '2026-03-04 15:40:30', '2026-03-04 15:40:07'),
-(10, 2, '$2y$10$Z1y5x0oANalXRRJMKab8au3jVYEm7kgdT1afUCG5wI4rJkqVWuMR6', 'password_reset', '2026-03-04 15:52:30', '2026-03-04 15:43:03', '2026-03-04 15:42:30'),
-(11, 2, '$2y$10$sGmvQf6rZKQIHohOxpYqx.qUY1D2ycUT0e0xab8tD5zDAPbWTvdr.', 'password_reset', '2026-03-04 17:37:28', '2026-03-04 17:28:05', '2026-03-04 17:27:28'),
-(12, 2, '$2y$10$lioz.0Decdofj2itWuKZSOQYsAGnHJNu3DLaG04CHQqBe2/si1qbO', 'twofa', '2026-03-04 17:38:34', '2026-03-04 17:28:46', '2026-03-04 17:28:34'),
-(19, 2, '$2y$10$M9LuAJ7rVSfil3qA4v7peutm3XbaiVYAMVDqf7UkMfgjhKuCXpKgy', 'twofa', '2026-04-25 08:45:24', '2026-04-25 08:35:34', '2026-04-25 08:35:24');
 
 -- --------------------------------------------------------
 
@@ -197,13 +168,13 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `location_description`, `phone`, `created_at`) VALUES
-(1, 2, 30.00, 'paid', 'No Address Provided', '0000000000', '2026-02-28 09:24:56'),
+(1, 2, 30.00, 'delivered', 'No Address Provided', '0000000000', '2026-02-28 09:24:56'),
 (2, 2, 60.00, 'cancelled', 'No Address Provided', '0000000000', '2026-02-28 10:01:24'),
-(12, 2, 210.00, 'paid', 'No Address Provided', '0000000000', '2026-03-04 17:08:58'),
-(13, 2, 300.00, 'paid', 'No Address Provided', '0000000000', '2026-03-04 17:32:29'),
-(16, 2, 200.00, 'paid', 'No Address Provided', '0000000000', '2026-03-06 09:02:40'),
-(17, 2, 200.00, 'paid', 'No Address Provided', '0000000000', '2026-03-06 09:07:02'),
-(18, 2, 200.00, 'paid', 'No Address Provided', '0000000000', '2026-03-07 20:18:14'),
+(12, 2, 210.00, 'delivered', 'No Address Provided', '0000000000', '2026-03-04 17:08:58'),
+(13, 2, 300.00, 'delivered', 'No Address Provided', '0000000000', '2026-03-04 17:32:29'),
+(16, 2, 200.00, 'delivered', 'No Address Provided', '0000000000', '2026-03-06 09:02:40'),
+(17, 2, 200.00, 'delivered', 'No Address Provided', '0000000000', '2026-03-06 09:07:02'),
+(18, 2, 200.00, 'delivered', 'No Address Provided', '0000000000', '2026-03-07 20:18:14'),
 (20, 2, 200.00, 'cancelled', 'No Address Provided', '0000000000', '2026-03-10 11:25:12'),
 (21, 2, 340.00, 'cancelled', 'No Address Provided', '0000000000', '2026-04-16 18:51:20');
 
@@ -344,7 +315,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`) VALUES
-(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1),
+(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'email', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1),
 (7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', '2026-04-12 09:29:56', 1),
 (8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', '2026-04-23 13:44:46', 1),
 (9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', '2026-04-25 08:24:30', '2026-04-25 08:24:30', 1);
@@ -435,13 +406,6 @@ ALTER TABLE `cart_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cart_id` (`cart_id`),
   ADD KEY `product_id` (`product_id`);
-
---
--- Indexes for table `email_otps`
---
-ALTER TABLE `email_otps`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `messages`
@@ -536,12 +500,6 @@ ALTER TABLE `cart_items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `email_otps`
---
-ALTER TABLE `email_otps`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-
---
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
@@ -611,12 +569,6 @@ ALTER TABLE `carts`
 ALTER TABLE `cart_items`
   ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `carts` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `email_otps`
---
-ALTER TABLE `email_otps`
-  ADD CONSTRAINT `email_otps_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `messages`
