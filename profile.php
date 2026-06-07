@@ -153,31 +153,23 @@ if ($action === 'cancel_order') {
 // ── ADDRESS MANAGEMENT ────────────────────────────────────────────────────────
 if ($action === 'add_address') {
     $location = trim($_POST['location_description'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
     $is_default = isset($_POST['is_default']) ? 1 : 0;
 
     if (!empty($location)) {
-        // If phone is provided, validate it. If not, it will be NULL in DB.
-        if (!empty($phone) && !preg_match('/^01[0125][0-9]{8}$/', $phone)) {
-            $message = "Phone number must be 11 digits and start with 010, 011, 012, or 015.";
-            $msgType = 'error';
-        } else {
-            if ($is_default) {
-                $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
-            }
-
-            $dbPhone = !empty($phone) ? $phone : null;
-            $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, location_description, phone, is_default) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("issi", $userId, $location, $dbPhone, $is_default);
-            if ($stmt->execute()) {
-                $message = "Address added successfully!";
-                $msgType = 'success';
-            } else {
-                $message = "Error adding address.";
-                $msgType = 'error';
-            }
-            $stmt->close();
+        if ($is_default) {
+            $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
         }
+
+        $stmt = $conn->prepare("INSERT INTO user_addresses (user_id, location_description, is_default) VALUES (?, ?, ?)");
+        $stmt->bind_param("isi", $userId, $location, $is_default);
+        if ($stmt->execute()) {
+            $message = "Address added successfully!";
+            $msgType = 'success';
+        } else {
+            $message = "Error adding address.";
+            $msgType = 'error';
+        }
+        $stmt->close();
     }
 } elseif ($action === 'delete_address') {
     $addrId = (int) ($_POST['address_id'] ?? 0);
@@ -1039,7 +1031,7 @@ include __DIR__ . '/header.php';
                                 <?php echo htmlspecialchars($addr['location_description']); ?>
                             </p>
                             <p style="margin: 0 0 15px; color: #666; font-size: 0.9rem;">
-                                <?php echo htmlspecialchars(!empty($addr['phone']) ? $addr['phone'] : ($user['phone'] ?? '')); ?>
+                                <?php echo htmlspecialchars($user['phone'] ?? ''); ?>
                             </p>
 
                             <div style="display: flex; gap: 10px;">
@@ -1078,14 +1070,7 @@ include __DIR__ . '/header.php';
                                 placeholder="Street, Building, Apartment, City..." required
                                 style="min-height: 80px;"></textarea>
                         </div>
-                        <div>
-                            <label
-                                style="display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600;">Contact
-                                Phone <span style="font-weight: normal; color: #aaa;">(Optional: Defaults to profile
-                                    phone)</span></label>
-                            <input type="text" name="phone" class="form-control" placeholder="01XXXXXXXXX" value=""
-                                minlength="11" maxlength="11" pattern="01[0125][0-9]{8}">
-                        </div>
+
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <input type="checkbox" name="is_default" id="is_default" value="1">
                             <label for="is_default" style="font-size: 0.9rem; color: #444; cursor: pointer;">Set as default

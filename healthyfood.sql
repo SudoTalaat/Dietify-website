@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 28, 2026 at 12:31 PM
+-- Generation Time: Jun 07, 2026 at 06:18 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -44,17 +44,17 @@ CREATE TABLE `backup_codes` (
 CREATE TABLE `carts` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp()
+  `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `carts`
 --
 
-INSERT INTO `carts` (`id`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 2, '2026-02-27 22:28:12', '2026-02-27 22:28:12'),
-(3, 8, '2026-04-23 13:52:16', '2026-04-23 13:52:16');
+INSERT INTO `carts` (`id`, `user_id`, `created_at`) VALUES
+(1, 2, '2026-02-27 22:28:12'),
+(3, 8, '2026-04-23 13:52:16'),
+(4, 10, '2026-06-03 17:50:30');
 
 -- --------------------------------------------------------
 
@@ -176,7 +176,8 @@ INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `location_descr
 (17, 2, 200.00, 'delivered', 'No Address Provided', '0000000000', '2026-03-06 09:07:02'),
 (18, 2, 200.00, 'delivered', 'No Address Provided', '0000000000', '2026-03-07 20:18:14'),
 (20, 2, 200.00, 'cancelled', 'No Address Provided', '0000000000', '2026-03-10 11:25:12'),
-(21, 2, 340.00, 'cancelled', 'No Address Provided', '0000000000', '2026-04-16 18:51:20');
+(21, 2, 340.00, 'cancelled', 'No Address Provided', '0000000000', '2026-04-16 18:51:20'),
+(22, 10, 85.00, 'delivered', 'test', '01066458690', '2026-06-03 17:51:06');
 
 -- --------------------------------------------------------
 
@@ -206,7 +207,8 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `pric
 (17, 17, 3, 'Crazy Chicken Sandwich', 200.00, 1),
 (18, 18, 3, 'Crazy Chicken Sandwich', 200.00, 1),
 (20, 20, 3, 'Crazy Chicken Sandwich', 200.00, 1),
-(21, 21, 5, 'Tikka Masala Chicken', 340.00, 1);
+(21, 21, 5, 'Tikka Masala Chicken', 340.00, 1),
+(22, 22, 9, 'Banana with Milk', 85.00, 1);
 
 -- --------------------------------------------------------
 
@@ -235,7 +237,8 @@ INSERT INTO `payments` (`id`, `order_id`, `method`, `status`, `transaction_id`, 
 (4, 13, 'stripe', 'completed', 'cs_test_a1KQk7cwK2sAaLHtqig5YAB0aSovLSPkvUSD8VZQ3kJBTzMjru26X16XG7', '2026-03-04 17:32:57', '2026-03-04 17:32:57'),
 (5, 16, 'stripe', 'completed', 'cs_test_a19ZrtPKIQujE6BAfo8bt8wlscLA0s0olNdk0ItHGT0XPDW1kpEaoiTEJE', '2026-03-06 09:04:22', '2026-03-06 09:04:22'),
 (6, 17, 'stripe', 'completed', 'cs_test_a12OEn8IbHlTM8J7NxLiTbZQ2L2nIM4WmsEFnguStIAj2GEhlXrtAm74EN', '2026-03-06 09:07:26', '2026-03-06 09:07:26'),
-(7, 18, 'stripe', 'completed', 'cs_test_a1gJLlly2xP247NCU1ALSd4WR46Z8sM9aXMIB6mcVvNsvn85mHMFQkmjJm', '2026-03-07 20:18:49', '2026-03-07 20:18:49');
+(7, 18, 'stripe', 'completed', 'cs_test_a1gJLlly2xP247NCU1ALSd4WR46Z8sM9aXMIB6mcVvNsvn85mHMFQkmjJm', '2026-03-07 20:18:49', '2026-03-07 20:18:49'),
+(8, 22, 'stripe', 'completed', 'cs_test_a1hnKzLmIsswr8AO3v4FB1TawWGk7fi3X9MY3qaeW1Ns4X3GIPlibJdTgg', '2026-06-03 17:51:51', '2026-06-03 17:51:51');
 
 -- --------------------------------------------------------
 
@@ -267,7 +270,7 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image_pa
 (6, 'Chicken Curry sauce', 'Chicken with Curry Sauce Calories 167, Fat 4, Protein 25, Carb 7 -100 g', 225.00, 55, 'assets/images/1776365214_75275a266146e67c.webp', 'food', 'active', '2026-04-16 18:46:54', '2026-04-16 18:46:54'),
 (7, 'Chicken with Buffalo sauce Burger', 'Breaded Chicken, Buffalo Sauce, Pickled and Cheese Calories 429, Protein 49.5, Fat 19.9 and Carb 13.7', 150.00, 69, 'assets/images/1776368179_787ab29e9e7497da.webp', 'food', 'active', '2026-04-16 19:36:19', '2026-04-16 19:36:19'),
 (8, 'Banana walnut power shake', 'Calories: 625 kcal\r\nProtein: 29 g\r\nCarbohydrates: 63 g\r\nSugars: 37 g\r\n Fibers: 7g \r\nFat: 31 g', 100.00, 33, 'assets/images/1776714402_5102915060da6432.webp', 'drink', 'active', '2026-04-20 19:46:42', '2026-04-20 19:46:42'),
-(9, 'Banana with Milk', '327 cal, with non dairy almond milk.', 85.00, 222, 'assets/images/1776717664_5a44a2d1361b5609.webp', 'drink', 'active', '2026-04-20 20:41:04', '2026-04-20 20:41:04');
+(9, 'Banana with Milk', '327 cal, with non dairy almond milk.', 85.00, 221, 'assets/images/1776717664_5a44a2d1361b5609.webp', 'drink', 'active', '2026-04-20 20:41:04', '2026-04-20 20:41:04');
 
 -- --------------------------------------------------------
 
@@ -315,10 +318,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`) VALUES
-(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'email', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1),
+(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1),
 (7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', '2026-04-12 09:29:56', 1),
 (8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', '2026-04-23 13:44:46', 1),
-(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', '2026-04-25 08:24:30', '2026-04-25 08:24:30', 1);
+(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', '2026-04-25 08:24:30', '2026-04-25 08:24:30', 1),
+(10, 'nitig63660', 'nitig63660@bncinema.com', '$2y$10$vuc.iGlTW1QI7iLDcQSAKOGsAT6p4CHXK8kxznlI.a5.hMbVLL3SO', 'customer', 'none', '2026-06-03 17:45:50', '2026-06-03 17:45:50', 1);
 
 -- --------------------------------------------------------
 
@@ -330,18 +334,17 @@ CREATE TABLE `user_addresses` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `location_description` varchar(255) NOT NULL,
-  `phone` varchar(30) DEFAULT NULL,
   `is_default` tinyint(1) DEFAULT 1,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp()
+  `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_addresses`
 --
 
-INSERT INTO `user_addresses` (`id`, `user_id`, `location_description`, `phone`, `is_default`, `created_at`, `updated_at`) VALUES
-(1, 2, 'madinity b100 street 10 buidling 111 apartment 20', '01066452325', 1, '2026-04-22 20:45:20', '2026-04-22 20:45:20');
+INSERT INTO `user_addresses` (`id`, `user_id`, `location_description`, `is_default`, `created_at`) VALUES
+(1, 2, 'madinity b100 street 10 buidling 111 apartment 20', 1, '2026-04-22 20:45:20'),
+(3, 10, 'test', 1, '2026-06-03 17:50:51');
 
 -- --------------------------------------------------------
 
@@ -491,13 +494,13 @@ ALTER TABLE `backup_codes`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -509,19 +512,19 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -539,13 +542,13 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `user_addresses`
 --
 ALTER TABLE `user_addresses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

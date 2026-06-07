@@ -38,8 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $location = $address['location_description'];
-    // Use address-specific phone if it exists, otherwise fall back to user's primary phone
-    $phone = !empty($address['phone']) ? $address['phone'] : ($address['user_phone'] ?? '');
+    $phone = $address['user_phone'] ?? '';
 
     // Load Cart Items
     $cartQuery = "SELECT ci.*, p.name, p.price, p.image_path 
@@ -167,7 +166,7 @@ $addrs = $conn->query("SELECT * FROM user_addresses WHERE user_id = $userId ORDE
                                                 <?php echo htmlspecialchars($addr['location_description']); ?>
                                             </p>
                                             <p style="margin: 0; color: #888; font-size: 0.9rem;">📞
-                                                <?php echo htmlspecialchars(!empty($addr['phone']) ? $addr['phone'] : $userPhone); ?>
+                                                <?php echo htmlspecialchars($userPhone); ?>
                                             </p>
                                         </div>
                                     </div>
