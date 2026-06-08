@@ -255,22 +255,21 @@ CREATE TABLE `products` (
   `image_path` varchar(255) DEFAULT NULL,
   `type` enum('food','drink') NOT NULL,
   `status` enum('active','archived') NOT NULL DEFAULT 'active',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp()
+  `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image_path`, `type`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'salad ', 'salad low kcal', 35.00, 55, 'assets/images/841d05fa5ee60b73637cccdc1373760a.jpg', 'food', 'active', '2026-02-27 22:25:49', '2026-02-27 22:25:49'),
-(3, 'Crazy Chicken Sandwich', '4 pieces, cream cheese, chicken, jalapeno, crushed bread, tortilla, eggs and black. Calories 316, fat 6, protein 40, carbs 22.4', 200.00, 97, 'assets/images/1772645704_e5045101d028d974.webp', 'food', 'active', '2026-03-04 17:35:04', '2026-03-04 17:35:04'),
-(5, 'Tikka Masala Chicken', 'Grilled chicken breasts with Healthy tikka masala sauce. Served With White Rice & Veggies Kcals : 575 protein 62 carb 60. Fat 10', 340.00, 10, 'assets/images/1776364889_2f0e6c94a2c46e82.webp', 'food', 'active', '2026-04-16 18:41:29', '2026-04-16 18:41:29'),
-(6, 'Chicken Curry sauce', 'Chicken with Curry Sauce Calories 167, Fat 4, Protein 25, Carb 7 -100 g', 225.00, 55, 'assets/images/1776365214_75275a266146e67c.webp', 'food', 'active', '2026-04-16 18:46:54', '2026-04-16 18:46:54'),
-(7, 'Chicken with Buffalo sauce Burger', 'Breaded Chicken, Buffalo Sauce, Pickled and Cheese Calories 429, Protein 49.5, Fat 19.9 and Carb 13.7', 150.00, 69, 'assets/images/1776368179_787ab29e9e7497da.webp', 'food', 'active', '2026-04-16 19:36:19', '2026-04-16 19:36:19'),
-(8, 'Banana walnut power shake', 'Calories: 625 kcal\r\nProtein: 29 g\r\nCarbohydrates: 63 g\r\nSugars: 37 g\r\n Fibers: 7g \r\nFat: 31 g', 100.00, 33, 'assets/images/1776714402_5102915060da6432.webp', 'drink', 'active', '2026-04-20 19:46:42', '2026-04-20 19:46:42'),
-(9, 'Banana with Milk', '327 cal, with non dairy almond milk.', 85.00, 221, 'assets/images/1776717664_5a44a2d1361b5609.webp', 'drink', 'active', '2026-04-20 20:41:04', '2026-04-20 20:41:04');
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image_path`, `type`, `status`, `created_at`) VALUES
+(1, 'salad ', 'salad low kcal', 35.00, 55, 'assets/images/841d05fa5ee60b73637cccdc1373760a.jpg', 'food', 'active', '2026-02-27 22:25:49'),
+(3, 'Crazy Chicken Sandwich', '4 pieces, cream cheese, chicken, jalapeno, crushed bread, tortilla, eggs and black. Calories 316, fat 6, protein 40, carbs 22.4', 200.00, 97, 'assets/images/1772645704_e5045101d028d974.webp', 'food', 'active', '2026-03-04 17:35:04'),
+(5, 'Tikka Masala Chicken', 'Grilled chicken breasts with Healthy tikka masala sauce. Served With White Rice & Veggies Kcals : 575 protein 62 carb 60. Fat 10', 340.00, 10, 'assets/images/1776364889_2f0e6c94a2c46e82.webp', 'food', 'active', '2026-04-16 18:41:29'),
+(6, 'Chicken Curry sauce', 'Chicken with Curry Sauce Calories 167, Fat 4, Protein 25, Carb 7 -100 g', 225.00, 55, 'assets/images/1776365214_75275a266146e67c.webp', 'food', 'active', '2026-04-16 18:46:54'),
+(7, 'Chicken with Buffalo sauce Burger', 'Breaded Chicken, Buffalo Sauce, Pickled and Cheese Calories 429, Protein 49.5, Fat 19.9 and Carb 13.7', 150.00, 69, 'assets/images/1776368179_787ab29e9e7497da.webp', 'food', 'active', '2026-04-16 19:36:19'),
+(8, 'Banana walnut power shake', 'Calories: 625 kcal\r\nProtein: 29 g\r\nCarbohydrates: 63 g\r\nSugars: 37 g\r\n Fibers: 7g \r\nFat: 31 g', 100.00, 33, 'assets/images/1776714402_5102915060da6432.webp', 'drink', 'active', '2026-04-20 19:46:42'),
+(9, 'Banana with Milk', '327 cal, with non dairy almond milk.', 85.00, 221, 'assets/images/1776717664_5a44a2d1361b5609.webp', 'drink', 'active', '2026-04-20 20:41:04');
 
 -- --------------------------------------------------------
 
@@ -309,7 +308,6 @@ CREATE TABLE `users` (
   `role` enum('customer','admin') NOT NULL DEFAULT 'customer',
   `twofa_method` enum('none','totp','email') NOT NULL DEFAULT 'none',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
   `is_verified` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -317,12 +315,12 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `updated_at`, `is_verified`) VALUES
-(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', '2026-02-27 18:05:06', 1),
-(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', '2026-04-12 09:29:56', 1),
-(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', '2026-04-23 13:44:46', 1),
-(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', '2026-04-25 08:24:30', '2026-04-25 08:24:30', 1),
-(10, 'nitig63660', 'nitig63660@bncinema.com', '$2y$10$vuc.iGlTW1QI7iLDcQSAKOGsAT6p4CHXK8kxznlI.a5.hMbVLL3SO', 'customer', 'none', '2026-06-03 17:45:50', '2026-06-03 17:45:50', 1);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `is_verified`) VALUES
+(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', 1),
+(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', 1),
+(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', 1),
+(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', '2026-04-25 08:24:30', 1),
+(10, 'nitig63660', 'nitig63660@bncinema.com', '$2y$10$vuc.iGlTW1QI7iLDcQSAKOGsAT6p4CHXK8kxznlI.a5.hMbVLL3SO', 'customer', 'none', '2026-06-03 17:45:50', 1);
 
 -- --------------------------------------------------------
 

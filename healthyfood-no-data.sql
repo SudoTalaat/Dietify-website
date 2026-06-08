@@ -135,8 +135,7 @@ CREATE TABLE `products` (
   `image_path` varchar(255) DEFAULT NULL,
   `type` enum('food','drink') NOT NULL,
   `status` enum('active','archived') NOT NULL DEFAULT 'active',
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp()
+  `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -168,7 +167,6 @@ CREATE TABLE `users` (
   `role` enum('customer','admin') NOT NULL DEFAULT 'customer',
   `twofa_method` enum('none','totp','email') NOT NULL DEFAULT 'none',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
   `is_verified` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
