@@ -166,6 +166,7 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `role` enum('customer','admin') NOT NULL DEFAULT 'customer',
   `twofa_method` enum('none','totp','email') NOT NULL DEFAULT 'none',
+  `phone` varchar(30) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `is_verified` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -196,8 +197,7 @@ CREATE TABLE `user_profiles` (
   `age` int(11) DEFAULT NULL,
   `weight` decimal(5,2) DEFAULT NULL,
   `height` decimal(5,2) DEFAULT NULL,
-  `gender` varchar(20) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL
+  `gender` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

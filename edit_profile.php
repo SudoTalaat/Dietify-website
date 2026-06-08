@@ -58,17 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($message)) {
         if ($avatarPath) {
-            $updateUser = $conn->prepare("UPDATE users SET username=?, email=? WHERE id=?");
-            $updateUser->bind_param('ssi', $username, $email, $userId);
+            $updateUser = $conn->prepare("UPDATE users SET username=?, email=?, phone=? WHERE id=?");
+            $updateUser->bind_param('sssi', $username, $email, $phone, $userId);
             
-            $updateProfile = $conn->prepare("INSERT INTO user_profiles (user_id, phone, age, weight, height, gender, avatar) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE phone=?, age=?, weight=?, height=?, gender=?, avatar=?");
-            $updateProfile->bind_param('isiddsssiddss', $userId, $phone, $age, $weight, $height, $gender, $avatarPath, $phone, $age, $weight, $height, $gender, $avatarPath);
+            $updateProfile = $conn->prepare("INSERT INTO user_profiles (user_id, age, weight, height, gender, avatar) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE age=?, weight=?, height=?, gender=?, avatar=?");
+            $updateProfile->bind_param('iiddssiddss', $userId, $age, $weight, $height, $gender, $avatarPath, $age, $weight, $height, $gender, $avatarPath);
         } else {
-            $updateUser = $conn->prepare("UPDATE users SET username=?, email=? WHERE id=?");
-            $updateUser->bind_param('ssi', $username, $email, $userId);
+            $updateUser = $conn->prepare("UPDATE users SET username=?, email=?, phone=? WHERE id=?");
+            $updateUser->bind_param('sssi', $username, $email, $phone, $userId);
             
-            $updateProfile = $conn->prepare("INSERT INTO user_profiles (user_id, phone, age, weight, height, gender) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE phone=?, age=?, weight=?, height=?, gender=?");
-            $updateProfile->bind_param('isiddssidds', $userId, $phone, $age, $weight, $height, $gender, $phone, $age, $weight, $height, $gender);
+            $updateProfile = $conn->prepare("INSERT INTO user_profiles (user_id, age, weight, height, gender) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE age=?, weight=?, height=?, gender=?");
+            $updateProfile->bind_param('iiddsidds', $userId, $age, $weight, $height, $gender, $age, $weight, $height, $gender);
         }
 
         if ($updateUser->execute() && $updateProfile->execute()) {
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // ── Load current user details ────────────────────────────────────────────────
-$stmt = $conn->prepare("SELECT u.id, u.username, u.email, p.avatar, p.age, p.weight, p.height, p.gender, p.phone 
+$stmt = $conn->prepare("SELECT u.id, u.username, u.email, u.phone, p.avatar, p.age, p.weight, p.height, p.gender 
                         FROM users u 
                         LEFT JOIN user_profiles p ON u.id = p.user_id 
                         WHERE u.id = ?");

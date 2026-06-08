@@ -307,6 +307,7 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `role` enum('customer','admin') NOT NULL DEFAULT 'customer',
   `twofa_method` enum('none','totp','email') NOT NULL DEFAULT 'none',
+  `phone` varchar(30) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `is_verified` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -315,12 +316,12 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `is_verified`) VALUES
-(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', 1),
-(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', 1),
-(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', 1),
-(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', '2026-04-25 08:24:30', 1),
-(10, 'nitig63660', 'nitig63660@bncinema.com', '$2y$10$vuc.iGlTW1QI7iLDcQSAKOGsAT6p4CHXK8kxznlI.a5.hMbVLL3SO', 'customer', 'none', '2026-06-03 17:45:50', 1);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `phone`, `created_at`, `is_verified`) VALUES
+(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '01066452322', '2026-02-27 18:05:06', 1),
+(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '01056988987', '2026-04-12 09:29:56', 1),
+(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '01066458610', '2026-04-23 13:44:46', 1),
+(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', NULL, '2026-04-25 08:24:30', 1),
+(10, 'nitig63660', 'nitig63660@bncinema.com', '$2y$10$vuc.iGlTW1QI7iLDcQSAKOGsAT6p4CHXK8kxznlI.a5.hMbVLL3SO', 'customer', 'none', NULL, '2026-06-03 17:45:50', 1);
 
 -- --------------------------------------------------------
 
@@ -356,18 +357,17 @@ CREATE TABLE `user_profiles` (
   `age` int(11) DEFAULT NULL,
   `weight` decimal(5,2) DEFAULT NULL,
   `height` decimal(5,2) DEFAULT NULL,
-  `gender` varchar(20) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL
+  `gender` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_profiles`
 --
 
-INSERT INTO `user_profiles` (`user_id`, `avatar`, `age`, `weight`, `height`, `gender`, `phone`) VALUES
-(2, 'assets/images/avatar_2_1776340436.jpg', 21, 90.00, 170.00, 'male', '01066452322'),
-(7, 'assets/images/default_avatar.png', 27, 60.00, 185.00, 'male', '01056988987'),
-(8, NULL, 21, 111.00, 170.00, 'male', '01066458610');
+INSERT INTO `user_profiles` (`user_id`, `avatar`, `age`, `weight`, `height`, `gender`) VALUES
+(2, 'assets/images/avatar_2_1776340436.jpg', 21, 90.00, 170.00, 'male'),
+(7, 'assets/images/default_avatar.png', 27, 60.00, 185.00, 'male'),
+(8, NULL, 21, 111.00, 170.00, 'male');
 
 -- --------------------------------------------------------
 

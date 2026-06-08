@@ -25,7 +25,7 @@ if (!in_array($currentTab, $allowedTabs)) {
 // ── Load user details ────────────────────────────────────────────────────────
 $stmt = $conn->prepare(
     "SELECT u.id, u.username, u.email, u.password, u.twofa_method, u.role, u.created_at, 
-            p.avatar, p.age, p.weight, p.height, p.gender, p.phone, 
+            p.avatar, p.age, p.weight, p.height, p.gender, u.phone, 
             t.totp_secret, t.confirmed_at as totp_confirmed_at
      FROM users u
      LEFT JOIN user_profiles p ON u.id = p.user_id
