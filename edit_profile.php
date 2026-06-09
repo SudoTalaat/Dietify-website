@@ -261,7 +261,7 @@ include __DIR__ . '/header.php';
                     <select name="gender" id="gender" class="form-control">
                         <option value="">Select Gender</option>
                         <option value="male" <?php echo ($user['gender'] === 'male') ? 'selected' : ''; ?>>Male</option>
-                        <option value="female" <?php echo ($user['gender'] === 'female') ? 'selected' : ''; ?>>Female
+                        <option value="female" <?php echo ($user['gender'] === 'female') ? 'selected' : ''; ?>>Female</option>
                     </select>
                 </div>
             </div>

@@ -12,10 +12,21 @@ $error = '';
 // 1. Handle Delete Action
 if (isset($_GET['delete'])) {
     $userId = intval($_GET['delete']);
+    
+    // Fetch user info for email before deleting
+    $stmtUser = $conn->prepare("SELECT email, username FROM users WHERE id = ?");
+    $stmtUser->bind_param("i", $userId);
+    $stmtUser->execute();
+    $resUser = $stmtUser->get_result()->fetch_assoc();
+
     // Protect against self-deletion if needed, but for now simple
     $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
     $stmt->bind_param("i", $userId);
     if ($stmt->execute()) {
+        if ($resUser) {
+            require_once __DIR__ . '/../includes/send_otp_email.php';
+            sendAccountDeletionEmail($resUser['email'], $resUser['username']);
+        }
         header("Location: useradmin.php?msg=deleted");
         exit();
     } else {

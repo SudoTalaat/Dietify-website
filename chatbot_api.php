@@ -181,25 +181,55 @@ switch ($tool) {
         break;
 }
 
-$systemPrompt = <<<PROMPT
-You are a friendly Healthy Food Assistant. Your job is to help users choose healthy, affordable, and practical meals.
-PROMPT;
+// ── Fetch User Profile Data ──────────────────────────────────────────────────
+$profileStr = "Not provided";
+try {
+    $profStmt = $conn->prepare("SELECT age, weight, height, gender FROM user_profiles WHERE user_id = ?");
+    $profStmt->bind_param("s", $userId);
+    $profStmt->execute();
+    $profRes = $profStmt->get_result()->fetch_assoc();
+    if ($profRes) {
+        $age = $profRes['age'] ?? 'unknown';
+        $weight = $profRes['weight'] ?? 'unknown';
+        $height = $profRes['height'] ?? 'unknown';
+        $gender = $profRes['gender'] ?? 'unknown';
+        $profileStr = "Age: $age, Weight: {$weight}kg, Height: {$height}cm, Gender: $gender";
+    }
+} catch (Exception $e) {}
+
+// ── Fetch Order History (Last 5 items) ───────────────────────────────────────
+$historyStr = "No previous orders found.";
+try {
+    $orderStmt = $conn->prepare("
+        SELECT oi.product_name 
+        FROM order_items oi
+        JOIN orders o ON oi.order_id = o.id
+        WHERE o.user_id = ? 
+        ORDER BY o.created_at DESC 
+        LIMIT 5
+    ");
+    $orderStmt->bind_param("s", $userId);
+    $orderStmt->execute();
+    $orderRes = $orderStmt->get_result();
+    $orderedItems = [];
+    while ($row = $orderRes->fetch_assoc()) {
+        $orderedItems[] = $row['product_name'];
+    }
+    if (!empty($orderedItems)) {
+        $historyStr = implode(", ", array_unique($orderedItems));
+    }
+} catch (Exception $e) {}
 
 $displayTool = $tool ?? "None";
-$systemPrompt .= <<<PROMPT
-
-USER STATUS:
-- DIET GOAL: {$goal} ({$goalContext})
-- ACTIVE TOOL: {$displayTool} ({$toolContext})
-
+$systemPrompt = <<<PROMPT
+You are a friendly Healthy Food Assistant.
+USER: Goal={$goal} ({$goalContext}), Tool={$displayTool} ({$toolContext}), Profile: {$profileStr}, Orders: {$historyStr}.
 RULES:
-1. Focus on common, affordable foods: rice, eggs, chicken, vegetables, beans, lentils, oats, fruits, bread, dairy.
-2. If an ACTIVE TOOL is selected, prioritize that specific output format (Recipe or Plan).
-3. Follow the brevity rule (concise answers) for general chat, but provide full length content for meal plans and recipes.
-4. Use emojis sparingly to be friendly (🥗🍳🥚🍗🥦).
-5. NEVER give medical advice. If asked, respond with the mandatory disclaimer: "Please consult a doctor for medical advice. I can only help with general food suggestions! 🩺"
-
-Be helpful, warm, and combine the USER STATUS to give personalized advice.
+1. Suggest common, affordable healthy foods.
+2. Match the ACTIVE TOOL format (Recipe or Plan).
+3. Be concise unless asked for plans/recipes.
+4. Use emojis sparingly.
+5. No medical advice. Disclaimer: "Consult a doctor for medical advice."
 PROMPT;
 
 // ── Build messages array for API ─────────────────────────────────────────────

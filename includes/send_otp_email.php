@@ -182,4 +182,32 @@ function sendVerificationEmail(string $toEmail, string $toName, string $token): 
 
   return $mail->send();
 }
-?>
+
+function sendAccountDeletionEmail(string $toEmail, string $toName): bool
+{
+  $subject = 'Account Deleted';
+  $mail = initMailer($toEmail, $toName, $subject);
+
+  $mail->Body = "
+<div style='font-family:Inter,sans-serif;max-width:420px;margin:auto;
+                     background:#ffffff;color:#333333;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.05);border:1px solid #eee;'>
+  <div style='background:linear-gradient(135deg,#e74c3c,#c0392b);padding:28px 32px;color:white;'>
+    <h2 style='margin:0;font-size:1.4rem'>🗑️ Account Deleted</h2>
+  </div>
+  <div style='padding:28px 32px'>
+    <p>Hi <strong>" . htmlspecialchars($toName) . "</strong>,</p>
+    <p>We are writing to let you know that your account on <strong>Healthy Food</strong> has been deleted by an admin.</p>
+    <p style='font-size:.85rem;color:#888'>
+      If you believe this was done in error, please contact support immediately.
+    </p>
+  </div>
+</div>";
+  $mail->AltBody = "Hi $toName, your account on Healthy Food has been deleted by an admin. If you believe this was done in error, please contact support immediately.";
+
+  try {
+      return $mail->send();
+  } catch (Exception $e) {
+      error_log("Account Deletion Email Error: " . $e->getMessage());
+      return false;
+  }
+}
