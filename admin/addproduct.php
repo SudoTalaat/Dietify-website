@@ -85,13 +85,23 @@ if (isset($_POST['add'])) {
         }
     }
 
-    $stmt = $conn->prepare("INSERT INTO `products` (`name`, `price`, `description`, `image_path`, `stock`, `type`) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sdssis", $name, $price, $description, $imagePath, $stock, $type);
+    // Check for duplicate product name
+    $checkStmt = $conn->prepare("SELECT id FROM `products` WHERE `name` = ?");
+    $checkStmt->bind_param("s", $name);
+    $checkStmt->execute();
+    $checkResult = $checkStmt->get_result();
 
-    if ($stmt->execute()) {
-        echo "<script>alert('Product added!'); window.location='viewproduct.php';</script>";
+    if ($checkResult->num_rows > 0) {
+        echo "<script>alert('Warning: A product with this name already exists!'); window.history.back();</script>";
     } else {
-        echo "Error: " . $conn->error;
+        $stmt = $conn->prepare("INSERT INTO `products` (`name`, `price`, `description`, `image_path`, `stock`, `type`) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sdssis", $name, $price, $description, $imagePath, $stock, $type);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Product added!'); window.location='viewproduct.php';</script>";
+        } else {
+            echo "Error: " . $conn->error;
+        }
     }
 }
 
