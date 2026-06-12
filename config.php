@@ -72,6 +72,15 @@ define('CURRENCY_SYMBOL', 'EGP ');
 // Base URL for Stripe and absolute redirects (from .env)
 define('APP_URL', $_ENV['APP_URL'] ?? 'http://localhost/app/');
 
+// ── Security & Rate Limiting ──────────────────────────────────────────────────
+// General rate limiting (e.g. max requests per IP)
+define('RATE_LIMIT_MAX_ATTEMPTS', 120); // Maximum number of requests allowed
+define('RATE_LIMIT_WINDOW', 60);        // Time window in seconds for the general rate limit
+
+// Login brute-force protection
+define('MAX_LOGIN_FAILURES', 25);       // Number of failed login attempts before sending an alert
+define('LOGIN_FAILURE_WINDOW', 3600);   // Time window in seconds (e.g., 3600 = 1 hour) to track failed logins
+
 // ── Helper functions ──────────────────────────────────────────────────────────
 
 /** Extracts direct image URL from Google imgres links, otherwise returns original. */
@@ -159,8 +168,8 @@ function isPasswordPwned($password): bool
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    // Use IPv4 and bypass SSL for stability in local dev if needed, 
-    // but better keep defaults for security unless issues arise.
+    // Use IPv4 and bypass SSL for stability in local dev 
+    
     $response = curl_exec($ch);
     curl_close($ch);
 

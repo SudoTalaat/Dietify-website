@@ -6,7 +6,7 @@ $error = '';
 $success = '';
 $identity = '';
 
-if (check_rate_limit($_SERVER['REMOTE_ADDR'])) {
+if (check_rate_limit($_SERVER['REMOTE_ADDR'], RATE_LIMIT_MAX_ATTEMPTS, RATE_LIMIT_WINDOW)) {
     //when i did the rate limit it did't return code 429 so that why i add it http_response_code
     http_response_code(429);
     exit("Too many login attempts. Please try again later.");
@@ -110,10 +110,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error = "Invalid password.";
 
                 // Track failure for this identity
-                $failCount = record_login_failure($identity);
-                if ($failCount >= 25) {
+                $failCount = record_login_failure($identity, LOGIN_FAILURE_WINDOW);
+                if ($failCount === MAX_LOGIN_FAILURES) {
                     require_once __DIR__ . '/includes/send_otp_email.php';
-                    sendSecurityAlertEmail((string) $row['email'], (string) $row['username']);
+                    sendSecurityAlertEmail((string) $row['email'], (string) $row['username'], MAX_LOGIN_FAILURES);
                 }
             }
         } else {
@@ -121,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Note: We don't have an email to send to if user doesn't exist,
             // but we could still record the failure if we want to track attempts against non-existent users but that feel stupid 
 
-            record_login_failure($identity);
+            record_login_failure($identity, LOGIN_FAILURE_WINDOW);
         }
         $stmt->close();
     }

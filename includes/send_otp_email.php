@@ -89,7 +89,7 @@ function sendOtpEmail(mysqli $conn, int $userId, string $toEmail, string $toName
   return $mail->send();
 }
 
-function sendSecurityAlertEmail(string $toEmail, string $toName): bool
+function sendSecurityAlertEmail(string $toEmail, string $toName, int $failedAttempts = MAX_LOGIN_FAILURES): bool
 {
   $mail = initMailer($toEmail, $toName, 'Security Alert: Multiple Failed Login Attempts');
 
@@ -101,7 +101,7 @@ function sendSecurityAlertEmail(string $toEmail, string $toName): bool
   </div>
   <div style='padding:28px 32px'>
     <p>Hi <strong>" . htmlspecialchars($toName) . "</strong>,</p>
-    <p>We noticed over <strong>25 failed login attempts</strong> for your account in the last hour.</p>
+    <p>We noticed over <strong>$failedAttempts failed login attempts</strong> for your account in the last hour.</p>
     <div style='background:#fef2f2;border-radius:8px;padding:15px;margin:20px 0;text-align:center;color:#b91c1c;border:1px solid #fecaca;'>
       If this wasn't you, your account might be under a brute-force attack.
     </div>
@@ -110,7 +110,7 @@ function sendSecurityAlertEmail(string $toEmail, string $toName): bool
     </p>
   </div>
 </div>";
-  $mail->AltBody = "Security Alert: We noticed over 25 failed login attempts for your account in the last hour.";
+  $mail->AltBody = "Security Alert: We noticed over $failedAttempts failed login attempts for your account in the last hour.";
 
   try {
     return $mail->send();
