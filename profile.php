@@ -129,6 +129,11 @@ if ($action === 'cancel_order') {
 
                 if ($cancelStmt->affected_rows > 0) {
                     $conn->commit();
+
+                    // Send Telegram Cancellation Notice
+                    require_once __DIR__ . '/includes/telegram.php';
+                    notifyTelegramCancellation($orderIdToCancel, $conn);
+
                     $message = "Order #$orderIdToCancel has been successfully cancelled" . ($orderToCancel['status'] === 'paid' ? " and refunded" : "") . ".";
                     $msgType = 'success';
                 } else {

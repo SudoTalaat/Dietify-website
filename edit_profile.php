@@ -38,10 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $fileName = basename($_FILES['avatar']['name']);
         $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
 
         if (in_array($fileExt, $allowedExts)) {
-            $newFileName = 'avatar_' . $userId . '_' . time() . '.' . $fileExt;
+            $newFileName = 'avatar_' . $userId . '_' . bin2hex(random_bytes(16)) . '.' . $fileExt;
             $destination = $uploadDir . $newFileName;
 
             if (move_uploaded_file($_FILES['avatar']['tmp_name'], $destination)) {
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $msgType = 'error';
             }
         } else {
-            $message = "Invalid image format. Allowed: JPG, PNG, GIF, WEBP.";
+            $message = "Invalid image format. Allowed: JPG, PNG, WEBP.";
             $msgType = 'error';
         }
     }

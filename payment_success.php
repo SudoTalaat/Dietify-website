@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/init.php';
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/includes/telegram.php';
 
 // Enable strict error reporting for debugging
 //mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -23,6 +24,17 @@ try {
 
     if (!$orderId || !$userId) {
         throw new Exception("Order or User information missing.");
+    }
+
+    // If the session was lost during the redirect (e.g. going from 127.0.0.1 to localhost), restore it
+    //luckly i did notice this
+    if (!isset($_SESSION['user_id'])) {
+        $_SESSION['user_id'] = $userId;
+        $roleStmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+        $roleStmt->bind_param("i", $userId);
+        $roleStmt->execute();
+        $roleResult = $roleStmt->get_result()->fetch_assoc();
+        $_SESSION['role'] = $roleResult['role'] ?? 'customer';
     }
 
     if ($session->payment_status === 'paid' && !$isExplicitCancel) {
@@ -50,6 +62,9 @@ try {
             while ($item = $itemsResult->fetch_assoc()) {
                 $conn->query("UPDATE products SET stock = stock - {$item['quantity']} WHERE id = {$item['product_id']}");
             }
+
+            // 5. Notify Telegram Dispatcher
+            notifyTelegramDispatcher($orderId, $conn);
         }
 
         $success = true;

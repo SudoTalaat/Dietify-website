@@ -53,6 +53,11 @@ include __DIR__ . '/header.php';
                 We use cookies to keep you logged in. They are delicious, but digital ones are not for eating.
                 Please do not try to bite your screen.
             </p>
+
+            <h3 style="color: #333; margin: 40px 0 15px;">4. Chatbot Data</h3>
+            <p style="margin-bottom: 25px;">
+                Your chatbot messages are stored in our database so you can access your chat history. You have the right to delete your chat messages at any time. However, please note that the Groq API (which powers the chatbot) may temporarily or permanently retain some of the data you provide (such as your goals, age, gender, weight, and height) according to their own data retention policies.
+            </p>
         </div>
 
         <div style="margin-top: 60px; text-align: center; border-top: 1px solid #eee; padding-top: 30px;">
