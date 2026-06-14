@@ -303,12 +303,22 @@ input[type="tel"]:focus {
     color: #666;
     position: relative;
     padding-left: 30px;
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none !important;
+}
+
+.checkbox-container * {
+    outline: none !important;
 }
 
 .checkbox-container input[type="checkbox"] {
     position: absolute;
     opacity: 0;
     cursor: pointer;
+    outline: none !important;
 }
 
 .checkmark {

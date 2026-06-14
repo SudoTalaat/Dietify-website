@@ -118,9 +118,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>"
-                            required>
+                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
                         <span class="error-message" id="emailError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="terms" required>
+                            <span class="checkmark"></span>
+                            <span>I agree to the <a href="tos.php" class="terms-link" target="_blank" onclick="event.stopPropagation()">Terms of Service</a> and
+                            <a href="privacy.php" class="terms-link" target="_blank" onclick="event.stopPropagation()">Privacy Policy</a></span>
+                        </label>
                     </div>
 
                     <div class="form-group">

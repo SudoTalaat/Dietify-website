@@ -176,6 +176,27 @@ if ($action === 'add_address') {
         }
         $stmt->close();
     }
+} elseif ($action === 'edit_address') {
+    $addrId = (int) ($_POST['address_id'] ?? 0);
+    $location = trim($_POST['location_description'] ?? '');
+    $is_default = isset($_POST['is_default']) ? 1 : 0;
+
+    if (!empty($location)) {
+        if ($is_default) {
+            $conn->query("UPDATE user_addresses SET is_default = 0 WHERE user_id = $userId");
+        }
+
+        $stmt = $conn->prepare("UPDATE user_addresses SET location_description = ?, is_default = ? WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("siii", $location, $is_default, $addrId, $userId);
+        if ($stmt->execute()) {
+            $message = "Address updated successfully!";
+            $msgType = 'success';
+        } else {
+            $message = "Error updating address.";
+            $msgType = 'error';
+        }
+        $stmt->close();
+    }
 } elseif ($action === 'delete_address') {
     $addrId = (int) ($_POST['address_id'] ?? 0);
     $stmt = $conn->prepare("DELETE FROM user_addresses WHERE id = ? AND user_id = ?");
@@ -925,7 +946,7 @@ include __DIR__ . '/header.php';
                                 <div>
                                     <h4 style="margin: 0; color: #333;">Order #<?php echo $order['id']; ?></h4>
                                     <small
-                                        style="color: #888;"><?php echo date('Y-m-d H:i', strtotime($order['created_at'])); ?></small>
+                                        style="color: #888; font-weight: 500;"><?php echo date('F j, Y \a\t g:i A', strtotime($order['created_at'])); ?></small>
                                 </div>
                                 <span class="order-status <?php echo $statusClass; ?>">
                                     <?php echo ucfirst($order['status']); ?>
@@ -1032,14 +1053,19 @@ include __DIR__ . '/header.php';
                                     style="position: absolute; top: 15px; right: 20px; background: #27ae60; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;">Default</span>
                             <?php endif; ?>
 
-                            <p style="margin: 0 0 10px; font-weight: 600; color: #333; line-height: 1.4;">
-                                <?php echo htmlspecialchars($addr['location_description']); ?>
-                            </p>
+                            <div id="addr-display-<?php echo $addr['id']; ?>">
+                                <p style="margin: 0 0 10px; font-weight: 600; color: #333; line-height: 1.4;">
+                                    <?php echo nl2br(htmlspecialchars($addr['location_description'])); ?>
+                                </p>
+                            </div>
                             <p style="margin: 0 0 15px; color: #666; font-size: 0.9rem;">
                                 <?php echo htmlspecialchars($user['phone'] ?? ''); ?>
                             </p>
 
-                            <div style="display: flex; gap: 10px;">
+                            <div style="display: flex; gap: 10px;" id="addr-actions-<?php echo $addr['id']; ?>">
+                                <button type="button" onclick="document.getElementById('edit-addr-<?php echo $addr['id']; ?>').style.display='block'; document.getElementById('addr-display-<?php echo $addr['id']; ?>').style.display='none'; document.getElementById('addr-actions-<?php echo $addr['id']; ?>').style.display='none';"
+                                    style="background: white; border: 1px solid #3b82f6; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #3b82f6;">Edit</button>
+
                                 <?php if (!$addr['is_default']): ?>
                                     <form method="POST" style="margin:0;">
                                         <input type="hidden" name="action" value="set_default_address">
@@ -1057,6 +1083,26 @@ include __DIR__ . '/header.php';
                                         style="background: white; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: #dc3545;">Delete</button>
                                 </form>
                             </div>
+
+                            <!-- Inline Edit Form -->
+                            <form method="POST" id="edit-addr-<?php echo $addr['id']; ?>" style="display:none; margin-top: 10px;">
+                                <input type="hidden" name="action" value="edit_address">
+                                <input type="hidden" name="address_id" value="<?php echo $addr['id']; ?>">
+                                
+                                <textarea name="location_description" class="form-control"
+                                    required style="min-height: 80px; margin-bottom: 10px;"><?php echo htmlspecialchars($addr['location_description']); ?></textarea>
+                                
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                    <input type="checkbox" name="is_default" id="edit_is_default_<?php echo $addr['id']; ?>" value="1" <?php echo $addr['is_default'] ? 'checked' : ''; ?>>
+                                    <label for="edit_is_default_<?php echo $addr['id']; ?>" style="font-size: 0.9rem; color: #444; cursor: pointer;">Set as default address</label>
+                                </div>
+                                
+                                <div style="display: flex; gap: 10px;">
+                                    <button type="submit" class="btn-submit" style="margin: 0; padding: 8px 15px; font-size: 0.9rem; width: auto;">Save Changes</button>
+                                    <button type="button" onclick="document.getElementById('edit-addr-<?php echo $addr['id']; ?>').style.display='none'; document.getElementById('addr-display-<?php echo $addr['id']; ?>').style.display='block'; document.getElementById('addr-actions-<?php echo $addr['id']; ?>').style.display='flex';"
+                                        style="background: #f8f9fa; border: 1px solid #ddd; padding: 8px 15px; border-radius: 10px; font-size: 0.9rem; cursor: pointer; color: #555;">Cancel</button>
+                                </div>
+                            </form>
                         </div>
                     <?php endwhile; else: ?>
                     <p style="text-align: center; color: #888; padding: 20px; background: #f8f9fa; border-radius: 10px;">No
