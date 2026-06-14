@@ -109,8 +109,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $error = "Invalid password.";
 
-                // Track failure for this identity
-                $failCount = record_login_failure($identity, LOGIN_FAILURE_WINDOW);
+                // Track failure consistently by user's email
+                $failCount = record_login_failure($row['email'], LOGIN_FAILURE_WINDOW);
                 if ($failCount === MAX_LOGIN_FAILURES) {
                     require_once __DIR__ . '/includes/send_otp_email.php';
                     sendSecurityAlertEmail((string) $row['email'], (string) $row['username'], MAX_LOGIN_FAILURES);

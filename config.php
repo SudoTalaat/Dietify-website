@@ -78,7 +78,7 @@ define('RATE_LIMIT_MAX_ATTEMPTS', 120); // Maximum number of requests allowed
 define('RATE_LIMIT_WINDOW', 60);        // Time window in seconds for the general rate limit
 
 // Login brute-force protection
-define('MAX_LOGIN_FAILURES', 25);       // Number of failed login attempts before sending an alert
+define('MAX_LOGIN_FAILURES', 20);       // Number of failed login attempts before sending an alert
 define('LOGIN_FAILURE_WINDOW', 3600);   // Time window in seconds (e.g., 3600 = 1 hour) to track failed logins
 
 // ── Helper functions ──────────────────────────────────────────────────────────
