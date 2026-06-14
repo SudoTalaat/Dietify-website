@@ -167,14 +167,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <span class="server-error"><?php echo $error; ?></span>
                     <?php endif; ?>
 
-                    <div class="form-group" style="display: flex; align-items: center;">
-                        <label class="checkbox-container" style="margin-bottom: 0;">
-                            <input type="checkbox" id="terms" name="terms" required>
-                            <span class="checkmark"></span>
-                        </label>
-                        <span style="font-size: 0.9rem; color: #666; margin-top: 1px;">I agree to the <a href="tos.php" class="terms-link" target="_blank">Terms of Service</a> and
-                        <a href="privacy.php" class="terms-link" target="_blank">Privacy Policy</a></span>
-                        <span class="error-message" id="termsError" style="width: 100%;"></span>
+                    <div class="form-group">
+                        <div style="display: flex; align-items: center;">
+                            <label class="checkbox-container" style="margin-bottom: 0; width: 30px;">
+                                <input type="checkbox" id="terms" name="terms" required>
+                                <span class="checkmark"></span>
+                            </label>
+                            <span style="font-size: 0.85rem; color: #666; margin-top: 2px;">I agree to the <a href="tos.php" class="terms-link" target="_blank">Terms of Service</a> and <a href="privacy.php" class="terms-link" target="_blank">Privacy Policy</a></span>
+                        </div>
+                        <span class="error-message" id="termsError"></span>
                     </div>
 
 

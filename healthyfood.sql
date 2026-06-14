@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 07, 2026 at 06:18 PM
+-- Generation Time: Jun 13, 2026 at 10:03 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -145,7 +145,20 @@ INSERT INTO `messages` (`id`, `user_id`, `message`, `created_at`) VALUES
 (165, 8, '3-day', '2026-04-23 13:53:24'),
 (166, 8, 'Here\'s a 3-day meal plan tailored to your **weight_loss** goal. This meal plan includes low-calorie, high-fiber, and protein-rich options to help you stay on track. 🥗\n\n**Day 1**\n\n### Breakfast\n\n* **Greek Yogurt and Berries with Granola**: 250 calories, 5g fiber, 20g protein\n	+ 1 cup Greek yogurt\n	+ 1/2 cup mixed berries\n	+ 2 tablespoons granola\n\n### Lunch\n\n* **Grilled Chicken and Veggie Wrap**: 400 calories, 10g fiber, 35g protein\n	+ 1 whole wheat tortilla\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed greens\n	+ 1/2 cup sliced cucumber\n	+ 1/4 cup sliced bell peppers\n\n### Snack\n\n* **Apple Slices with Almond Butter**: 150 calories, 4g fiber, 4g protein\n	+ 1 medium apple, sliced\n	+ 2 tablespoons almond butter\n\n### Dinner\n\n* **Baked Salmon with Quinoa and Steamed Broccoli**: 500 calories, 10g fiber, 35g protein\n	+ 6 oz salmon fillet\n	+ 1/2 cup cooked quinoa\n	+ 1 cup steamed broccoli\n\n### Nutrition Tip: 💡\nIncorporate physical activity into your daily routine, such as a 30-minute brisk walk in the morning or a home workout in the evening.\n\n---\n\n**Day 2**\n\n### Breakfast\n\n* **Oatmeal with Banana and Nuts**: 300 calories, 6g fiber, 10g protein\n	+ 1 cup cooked oatmeal\n	+ 1 medium banana\n	+ 1 tablespoon chopped walnuts\n\n### Lunch\n\n* **Turkey and Avocado Salad**: 450 calories, 10g fiber, 25g protein\n	+ 2 cups mixed greens\n	+ 2 oz sliced turkey breast\n	+ 1/2 avocado, diced\n	+ 1 cup cherry tomatoes, halved\n\n### Snack\n\n* **Cottage Cheese and Cucumber Slices**: 150 calories, 5g fiber, 15g protein\n	+ 1/2 cup cottage cheese\n	+ 1/2 cup sliced cucumber\n\n### Dinner\n\n* **Grilled Chicken and Vegetable Skewers**: 400 calories, 8g fiber, 30g protein\n	+ 2 oz grilled chicken breast\n	+ 1 cup mixed vegetables (bell peppers, onions, mushrooms)\n	+ 1 whole wheat pita\n\n### Nutrition Tip: ⏰\nStay hydrated by drinking at least 8 cups of water throughout the day.\n\n---\n\n**Day 3**\n\n### Breakfast\n\n* **Scrambled Eggs with Spinach and Whole Wheat Toast**: 250 calories, 5g fiber, 20g protein\n	+ 2 scrambled eggs\n	+ 1 cup fresh spinach\n	+ 2 slices whole wheat toast\n\n### Lunch\n\n* **Chicken and Quinoa Bowl**: 500 calories, 10g fiber, 30g protein\n	+ 2 oz cooked chicken breast\n	+ 1 cup cooked quinoa\n	+ 1 cup steamed green beans\n\n### Snack\n\n* **Carrot Sticks with Hummus**: 100 calories, 6g fiber, 5g protein\n	+ 4 carrot sticks\n	+ 2 tablespoons hummus\n\n### Dinner\n\n* **Baked Chicken Breast with Roasted Vegetables**: 400 calories, 10g fiber, 35g protein\n	+ 6 oz baked chicken breast\n	+ 1 cup roasted mixed vegetables (Brussels sprouts, sweet potatoes, carrots)\n\n### Nutrition Tip: 🌞\nGet enough sleep each night to help your body recover from the day\'s activities and support weight loss.\n\nThis meal plan provides approximately 1500-1700 calories per day, with a balance of protein, healthy fats, and complex carbohydrates to support weight loss. Feel free to adjust the portion sizes and ingredients based on your personal preferences and dietary needs.', '2026-04-23 13:53:26'),
 (167, 2, 'hi', '2026-04-25 08:43:09'),
-(168, 2, 'Hello! How can I help you with healthy food suggestions or a meal plan today? 🥗', '2026-04-25 08:43:09');
+(168, 2, 'Hello! How can I help you with healthy food suggestions or a meal plan today? 🥗', '2026-04-25 08:43:09'),
+(169, 2, 'what is the best softdrink for wight loss', '2026-06-09 08:36:13'),
+(170, 2, 'I can\'t recommend a specific soft drink for weight loss. However, I can suggest that you consider opting for water or low-calorie, unsweetened beverages instead. Would you like some tips on healthy hydration options?', '2026-06-09 08:36:13'),
+(171, 2, 'no give me one as lest harm full what about pipsi dite', '2026-06-09 08:36:33'),
+(172, 2, 'I think you meant \"Diet Pepsi\". While it\'s a lower-calorie option, it\'s still a sugary drink that\'s best consumed in moderation. If you\'re looking for a slightly healthier alternative, consider sparkling water with a squeeze of fresh fruit, like lemon or lime.', '2026-06-09 08:36:33'),
+(173, 2, 'what about v cola', '2026-06-09 08:36:56'),
+(174, 2, 'V Cola is a variant of Diet Coke, which is also a sugary drink. I\'d recommend sticking with water or unsweetened tea as the best hydration options. If you\'re looking for a fizzy drink, consider seltzer water with a splash of juice for natural flavor.', '2026-06-09 08:36:57'),
+(175, 2, 'what is my age ?', '2026-06-09 10:09:07'),
+(176, 2, 'You\'re 21 years old! 🥳', '2026-06-09 10:09:07'),
+(177, 2, 'my wight', '2026-06-09 10:09:10'),
+(178, 2, 'my wight', '2026-06-09 10:11:56'),
+(179, 2, 'You\'re 90kg, and 170cm tall! \n\nConsidering your weight and height, I would recommend a balanced diet with plenty of fruits, vegetables, whole grains, and lean protein sources. Here are some suggestions:\n\n- Aim for 5 servings of fruits and vegetables daily.\n- Include lean protein sources like chicken, fish, and beans in your meals.\n- Choose whole grains like brown rice, quinoa, and whole wheat bread.\n- Stay hydrated by drinking plenty of water throughout the day.\n\nHow about we focus on meal planning for you? Would you like a breakfast, lunch, or dinner plan?', '2026-06-09 10:11:56'),
+(180, 2, 'make meal plan for 1 day for me in 1700 kcal', '2026-06-09 15:12:27'),
+(181, 2, '**1-Day Meal Plan (1700 kcal) for a 21-year-old male, 90kg, 170cm**\n\n### Breakfast (400 kcal)\n- **Oatmeal with Banana and Nuts**: 250g cooked oatmeal, 1 banana, 1 tablespoon almond butter, and 1 tablespoon chopped walnuts.\n- **Water**: 1 glass\n\n### Snack (150 kcal)\n- **Carrot Sticks with Hummus**: 4-6 carrot sticks with 2 tablespoons hummus.\n\n### Lunch (450 kcal)\n- **Grilled Chicken Breast**: 120g grilled chicken breast.\n- **Brown Rice**: 100g cooked brown rice.\n- **Steamed Broccoli**: 100g steamed broccoli.\n- **Water**: 1 glass\n\n### Snack (150 kcal)\n- **Apple Slices with Peanut Butter**: 1 medium apple sliced with 2 tablespoons peanut butter.\n\n### Dinner (450 kcal)\n- **Baked Salmon**: 120g baked salmon.\n- **Quinoa**: 100g cooked quinoa.\n- **Roasted Vegetables**: 100g roasted mixed vegetables (bell peppers, zucchini, onions).\n- **Water**: 1 glass\n\n### Nutrition Tip\n🥗 Eat a variety of colors on your plate to ensure you\'re getting a range of essential vitamins and minerals.', '2026-06-09 15:12:27');
 
 -- --------------------------------------------------------
 
@@ -177,7 +190,10 @@ INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `location_descr
 (18, 2, 200.00, 'delivered', 'No Address Provided', '0000000000', '2026-03-07 20:18:14'),
 (20, 2, 200.00, 'cancelled', 'No Address Provided', '0000000000', '2026-03-10 11:25:12'),
 (21, 2, 340.00, 'cancelled', 'No Address Provided', '0000000000', '2026-04-16 18:51:20'),
-(22, 10, 85.00, 'delivered', 'test', '01066458690', '2026-06-03 17:51:06');
+(22, 10, 85.00, 'delivered', 'test', '01066458690', '2026-06-03 17:51:06'),
+(23, 2, 130.00, 'cancelled', 'madinity b100 street 10 buidling 111 apartment 20', '01066452322', '2026-06-13 19:37:36'),
+(24, 2, 130.00, 'delivered', 'madinity b100 street 10 buidling 111 apartment 20', '01066452322', '2026-06-13 19:38:04'),
+(25, 2, 30.00, 'cancelled', 'madinity b100 street 10 buidling 111 apartment 20', '01066452322', '2026-06-13 19:44:42');
 
 -- --------------------------------------------------------
 
@@ -208,7 +224,12 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `pric
 (18, 18, 3, 'Crazy Chicken Sandwich', 200.00, 1),
 (20, 20, 3, 'Crazy Chicken Sandwich', 200.00, 1),
 (21, 21, 5, 'Tikka Masala Chicken', 340.00, 1),
-(22, 22, 9, 'Banana with Milk', 85.00, 1);
+(22, 22, 9, 'Banana with Milk', 85.00, 1),
+(23, 23, 8, 'Banana walnut power shake', 100.00, 1),
+(24, 23, 35, 'Iced Hibiscus Tea', 30.00, 1),
+(25, 24, 8, 'Banana walnut power shake', 100.00, 1),
+(26, 24, 35, 'Iced Hibiscus Tea', 30.00, 1),
+(27, 25, 35, 'Iced Hibiscus Tea', 30.00, 1);
 
 -- --------------------------------------------------------
 
@@ -238,7 +259,9 @@ INSERT INTO `payments` (`id`, `order_id`, `method`, `status`, `transaction_id`, 
 (5, 16, 'stripe', 'completed', 'cs_test_a19ZrtPKIQujE6BAfo8bt8wlscLA0s0olNdk0ItHGT0XPDW1kpEaoiTEJE', '2026-03-06 09:04:22', '2026-03-06 09:04:22'),
 (6, 17, 'stripe', 'completed', 'cs_test_a12OEn8IbHlTM8J7NxLiTbZQ2L2nIM4WmsEFnguStIAj2GEhlXrtAm74EN', '2026-03-06 09:07:26', '2026-03-06 09:07:26'),
 (7, 18, 'stripe', 'completed', 'cs_test_a1gJLlly2xP247NCU1ALSd4WR46Z8sM9aXMIB6mcVvNsvn85mHMFQkmjJm', '2026-03-07 20:18:49', '2026-03-07 20:18:49'),
-(8, 22, 'stripe', 'completed', 'cs_test_a1hnKzLmIsswr8AO3v4FB1TawWGk7fi3X9MY3qaeW1Ns4X3GIPlibJdTgg', '2026-06-03 17:51:51', '2026-06-03 17:51:51');
+(8, 22, 'stripe', 'completed', 'cs_test_a1hnKzLmIsswr8AO3v4FB1TawWGk7fi3X9MY3qaeW1Ns4X3GIPlibJdTgg', '2026-06-03 17:51:51', '2026-06-03 17:51:51'),
+(9, 24, 'stripe', 'completed', 'cs_test_b1LoFWnVIMe3T1YS4jBmCqTqtMVaYxWi0WAQrfKWx9jnwbl6Am8gLnKJKT', '2026-06-13 19:38:57', '2026-06-13 19:38:57'),
+(10, 25, 'stripe', 'refunded', 'cs_test_a10H2SQDolNdagqMR3qOSF8HKikUXXwk71lmN1tzQEKxqu6tReIKVZvOGC', '2026-06-13 19:45:09', '2026-06-13 19:45:09');
 
 -- --------------------------------------------------------
 
@@ -268,8 +291,36 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image_pa
 (5, 'Tikka Masala Chicken', 'Grilled chicken breasts with Healthy tikka masala sauce. Served With White Rice & Veggies Kcals : 575 protein 62 carb 60. Fat 10', 340.00, 10, 'assets/images/1776364889_2f0e6c94a2c46e82.webp', 'food', 'active', '2026-04-16 18:41:29'),
 (6, 'Chicken Curry sauce', 'Chicken with Curry Sauce Calories 167, Fat 4, Protein 25, Carb 7 -100 g', 225.00, 55, 'assets/images/1776365214_75275a266146e67c.webp', 'food', 'active', '2026-04-16 18:46:54'),
 (7, 'Chicken with Buffalo sauce Burger', 'Breaded Chicken, Buffalo Sauce, Pickled and Cheese Calories 429, Protein 49.5, Fat 19.9 and Carb 13.7', 150.00, 69, 'assets/images/1776368179_787ab29e9e7497da.webp', 'food', 'active', '2026-04-16 19:36:19'),
-(8, 'Banana walnut power shake', 'Calories: 625 kcal\r\nProtein: 29 g\r\nCarbohydrates: 63 g\r\nSugars: 37 g\r\n Fibers: 7g \r\nFat: 31 g', 100.00, 33, 'assets/images/1776714402_5102915060da6432.webp', 'drink', 'active', '2026-04-20 19:46:42'),
-(9, 'Banana with Milk', '327 cal, with non dairy almond milk.', 85.00, 221, 'assets/images/1776717664_5a44a2d1361b5609.webp', 'drink', 'active', '2026-04-20 20:41:04');
+(8, 'Banana walnut power shake', 'Calories: 625 kcal\r\nProtein: 29 g\r\nCarbohydrates: 63 g\r\nSugars: 37 g\r\n Fibers: 7g \r\nFat: 31 g', 100.00, 32, 'assets/images/1776714402_5102915060da6432.webp', 'drink', 'active', '2026-04-20 19:46:42'),
+(9, 'Banana with Milk', '327 cal, with non dairy almond milk.', 85.00, 221, 'assets/images/1776717664_5a44a2d1361b5609.webp', 'drink', 'active', '2026-04-20 20:41:04'),
+(10, 'Organic Blueberries', '', 85.00, 100, 'assets/images/6a2d89f67f0dc_pexels-photo-708777.jpeg', 'food', 'active', '2026-06-13 19:48:56'),
+(11, 'Organic Strawberries', '', 65.00, 100, 'assets/images/6a2d89f845d9f_strawberries-frisch-ripe-sweet-89778.jpeg', 'food', 'active', '2026-06-13 19:48:57'),
+(12, 'Organic banabna', '', 45.00, 100, 'assets/images/6a2d89f9ce9d5_pexels-photo-5945844.jpeg', 'food', 'active', '2026-06-13 19:49:09'),
+(13, 'Quinoa Power Bowl', '', 180.00, 100, 'assets/images/6a2d8a05b68df_pexels-photo-1640774.jpeg', 'food', 'active', '2026-06-13 19:49:11'),
+(14, 'Mediterranean Salad', '', 150.00, 100, 'assets/images/6a2d8a072a4a5_pexels-photo-1213710.jpeg', 'food', 'active', '2026-06-13 19:49:12'),
+(15, 'Grilled Veggie Bowl', '', 170.00, 100, 'assets/images/6a2d8a08991b6_pexels-photo-1640777.jpeg', 'food', 'active', '2026-06-13 19:49:13'),
+(16, 'Grilled Chicken Bowl', '', 240.00, 100, 'assets/images/6a2d8a09b4704_pexels-photo-3763847.jpeg', 'food', 'active', '2026-06-13 19:49:15'),
+(17, 'Turkey & Veggies Plate', '', 260.00, 100, 'assets/images/6a2d8a0b5ef99_pexels-photo-70497.jpeg', 'food', 'active', '2026-06-13 19:49:15'),
+(18, 'Lean Beef Bowl', '', 280.00, 100, 'assets/images/6a2d8a0be910d_pexels-photo-769289.jpeg', 'food', 'active', '2026-06-13 19:49:16'),
+(19, 'Salmon & Avocado Bowl', '', 320.00, 100, 'assets/images/6a2d8a0c8e8a5_pexels-photo-262959.jpeg', 'food', 'active', '2026-06-13 19:49:17'),
+(20, 'Tuna Protein Salad', '', 260.00, 100, 'assets/images/6a2d8a0debf2b_food-salad-healthy-lunch.jpg', 'food', 'active', '2026-06-13 19:49:19'),
+(21, 'Protein Energy Bar', '', 55.00, 100, 'assets/images/6a2d8a0f86598_pexels-photo-6208145.jpeg', 'food', 'active', '2026-06-13 19:49:21'),
+(22, 'Mixed Nuts Pack', '', 65.00, 100, 'assets/images/6a2d8a111169a_pexels-photo-1295572.jpeg', 'food', 'active', '2026-06-13 19:49:22'),
+(23, 'Evian Natural Mineral Water', '', 25.00, 100, 'assets/images/6a2d8a1265065_pexels-photo-327090.jpeg', 'drink', 'active', '2026-06-13 19:49:24'),
+(24, 'VOSS Artesian Water', '', 35.00, 100, 'assets/images/6a2d8a14b0bdc_pexels-photo-416528.jpeg', 'drink', 'active', '2026-06-13 19:49:26'),
+(25, 'Detox Lemon Mint', '', 40.00, 100, 'assets/images/6a2d8a164cc09_pexels-photo-327098.jpeg', 'drink', 'active', '2026-06-13 19:49:27'),
+(26, 'Cold Brew Coffee', '', 45.00, 100, 'assets/images/6a2d8a1741fef_pexels-photo-374885.jpeg', 'drink', 'active', '2026-06-13 19:49:28'),
+(27, 'Matcha Green Tea', '', 35.00, 100, 'assets/images/6a2d8a1892db4_pexels-photo-1417945.jpeg', 'drink', 'active', '2026-06-13 19:49:29'),
+(28, 'Coconut Water', '', 50.00, 100, 'assets/images/6a2d8a196d745_pexels-photo-11538977.jpeg', 'drink', 'active', '2026-06-13 19:49:31'),
+(29, 'Protein Smoothie', '', 75.00, 100, 'assets/images/6a2d8a1b74c18_pexels-photo-775032.jpeg', 'drink', 'active', '2026-06-13 19:49:31'),
+(30, 'Fresh Berry Smoothie', '', 70.00, 100, 'assets/images/6a2d8a1bdf564_pexels-photo-616833.jpeg', 'drink', 'active', '2026-06-13 19:49:33'),
+(31, 'Cucumber Detox Water', '', 35.00, 100, 'assets/images/6a2d8a1d85a67_pexels-photo-6544373.jpeg', 'drink', 'active', '2026-06-13 19:49:34'),
+(32, 'Pineapple Ginger Juice', '', 45.00, 100, 'assets/images/6a2d8a1eac57f_pexels-photo-5946631.jpeg', 'drink', 'active', '2026-06-13 19:49:35'),
+(33, ' Watermelon Juice ', '', 50.00, 100, 'assets/images/6a2d8a1fcc24f_pexels-photo-1337825.jpeg', 'drink', 'active', '2026-06-13 19:49:36'),
+(34, 'Kombucha Original', '', 65.00, 100, 'assets/images/6a2d8a2079174_pexels-photo-5946973.jpeg', 'drink', 'active', '2026-06-13 19:49:37'),
+(35, 'Iced Hibiscus Tea', 'hibucaue', 30.00, 99, 'assets/images/1781370700_13b0c425feec2629.jpg', 'drink', 'active', '2026-06-13 19:49:40'),
+(36, 'Chia Lemon Drink', '', 55.00, 100, 'assets/images/6a2d8a2414a4c_pexels-photo-4553031.jpeg', 'drink', 'active', '2026-06-13 19:49:41'),
+(37, 'Green Detox Smoothie', '', 75.00, 100, 'assets/images/6a2d8a2509d49_pexels-photo-616833.jpeg', 'drink', 'active', '2026-06-13 19:49:42');
 
 -- --------------------------------------------------------
 
@@ -307,21 +358,21 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `role` enum('customer','admin') NOT NULL DEFAULT 'customer',
   `twofa_method` enum('none','totp','email') NOT NULL DEFAULT 'none',
-  `phone` varchar(30) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `is_verified` tinyint(1) DEFAULT 0
+  `is_verified` tinyint(1) DEFAULT 0,
+  `phone` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `phone`, `created_at`, `is_verified`) VALUES
-(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '01066452322', '2026-02-27 18:05:06', 1),
-(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '01056988987', '2026-04-12 09:29:56', 1),
-(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '01066458610', '2026-04-23 13:44:46', 1),
-(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', NULL, '2026-04-25 08:24:30', 1),
-(10, 'nitig63660', 'nitig63660@bncinema.com', '$2y$10$vuc.iGlTW1QI7iLDcQSAKOGsAT6p4CHXK8kxznlI.a5.hMbVLL3SO', 'customer', 'none', NULL, '2026-06-03 17:45:50', 1);
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `twofa_method`, `created_at`, `is_verified`, `phone`) VALUES
+(2, 'talaat', '224021@eru.edu.eg', '$2y$10$fthxAMPPg4kb9dJ3K6cgnueHdKc2wzET2x62kVSmQOK4iylfEDMvK', 'admin', 'none', '2026-02-27 18:05:06', 1, '01066452322'),
+(7, 'abdo', 'abodymody65@gmail.com', '$2y$10$zGd2z8imPaKbuYV0mPKJ1eXcFnbc4xGOycs69RVhPJajJONJEnV9C', 'customer', 'none', '2026-04-12 09:29:56', 1, '01056988987'),
+(8, 'bacavog352@poisonword.com', 'bacavog352@poisonword.com', '$2y$10$lgkUWtiTMnejqB7Y02EUFuDfjbfpLtmFiLYEc0mLiA0Z31tGswMta', 'customer', 'none', '2026-04-23 13:44:46', 1, '01066458610'),
+(9, 'timekey910@poisonword.com', 'timekey910@poisonword.com', '$2y$10$0UfVCrslzJCxAUaBHaeR8eLIJIprTRIe14sIYXgwwhqSu4ox8dy3a', 'customer', 'none', '2026-04-25 08:24:30', 1, NULL),
+(10, 'nitig63660', 'nitig63660@bncinema.com', '$2y$10$vuc.iGlTW1QI7iLDcQSAKOGsAT6p4CHXK8kxznlI.a5.hMbVLL3SO', 'customer', 'none', '2026-06-03 17:45:50', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -342,7 +393,7 @@ CREATE TABLE `user_addresses` (
 --
 
 INSERT INTO `user_addresses` (`id`, `user_id`, `location_description`, `is_default`, `created_at`) VALUES
-(1, 2, 'madinity b100 street 10 buidling 111 apartment 20', 1, '2026-04-22 20:45:20'),
+(1, 2, 'talaat love priacy and won\'t share where he lives', 1, '2026-04-22 20:45:20'),
 (3, 10, 'test', 1, '2026-06-03 17:50:51');
 
 -- --------------------------------------------------------
@@ -498,37 +549,37 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=182;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -540,7 +591,7 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `user_addresses`

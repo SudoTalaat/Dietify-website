@@ -123,12 +123,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="form-group">
-                        <label class="checkbox-container">
-                            <input type="checkbox" name="terms" required>
-                            <span class="checkmark"></span>
-                            <span>I agree to the <a href="tos.php" class="terms-link" target="_blank" onclick="event.stopPropagation()">Terms of Service</a> and
-                            <a href="privacy.php" class="terms-link" target="_blank" onclick="event.stopPropagation()">Privacy Policy</a></span>
-                        </label>
+                        <div style="display: flex; align-items: center;">
+                            <label class="checkbox-container" style="margin-bottom: 0; width: 30px;">
+                                <input type="checkbox" name="terms" required>
+                                <span class="checkmark"></span>
+                            </label>
+                            <span style="font-size: 0.85rem; color: #666; margin-top: 2px;">I agree to the <a href="tos.php" class="terms-link" target="_blank">Terms of Service</a> and <a href="privacy.php" class="terms-link" target="_blank">Privacy Policy</a></span>
+                        </div>
                     </div>
 
                     <div class="form-group">
