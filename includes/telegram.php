@@ -50,9 +50,9 @@ function notifyTelegramDispatcher(int $orderId, mysqli $conn): bool
     // Format the message
     $message = "🚨 *NEW ORDER RECEIVED* 🚨\n\n";
     $message .= "*Order ID:* #" . $order['id'] . "\n";
-    $message .= "*Customer:* " . htmlspecialchars($order['username']) . "\n";
-    $message .= "*Phone:* " . htmlspecialchars($order['phone']) . "\n";
-    $message .= "*Delivery Address:* " . htmlspecialchars($order['location_description']) . "\n\n";
+    $message .= "*Customer:* " . str_replace(['*', '_', '`'], '', $order['username']) . "\n";
+    $message .= "*Phone:* " . str_replace(['*', '_', '`'], '', $order['phone']) . "\n";
+    $message .= "*Delivery Address:* " . str_replace(['*', '_', '`'], '', $order['location_description']) . "\n\n";
     
     $message .= "*Items:*\n" . $itemsList . "\n";
     

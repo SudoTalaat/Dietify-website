@@ -29,12 +29,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
                 if ($payment && $payment['method'] === 'stripe' && !empty($payment['transaction_id'])) {
                     \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
-                    \Stripe\Refund::create([
-                        'payment_intent' => $payment['transaction_id'],
-                    ]);
+                    $session = \Stripe\Checkout\Session::retrieve($payment['transaction_id']);
+                    
+                    if ($session->payment_intent) {
+                        \Stripe\Refund::create([
+                            'payment_intent' => $session->payment_intent,
+                        ]);
 
-                    // Update payment status in our DB
-                    $conn->query("UPDATE payments SET status = 'refunded' WHERE order_id = $orderId");
+                        // Update payment status in our DB
+                        $conn->query("UPDATE payments SET status = 'refunded' WHERE order_id = $orderId");
+                    } else {
+                        throw new Exception("Stripe Session does not have a Payment Intent to refund.");
+                    }
                 }
             }
 
