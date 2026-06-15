@@ -31,6 +31,11 @@ if (is_array($userMessageRaw)) {
     $userMessage = (string) $userMessageRaw;
 }
 
+// Truncate user message to 500 chars to avoid blowing up token limits
+if (mb_strlen($userMessage) > 500) {
+    $userMessage = mb_substr($userMessage, 0, 500);
+}
+
 if (trim($userMessage) === '' && $action === 'message') {
     http_response_code(400);
     echo json_encode(['error' => 'Message cannot be empty.']);
@@ -138,8 +143,8 @@ if ($action === 'message') {
     }
 }
 
-// ── Build Context from Database (Last 5 messages) ──────────────────────────
-$stmt = $conn->prepare("SELECT message AS content FROM messages WHERE user_id = ? ORDER BY created_at DESC LIMIT 5");
+// ── Build Context from Database (Last 3 messages to stay within token limits) ─
+$stmt = $conn->prepare("SELECT message AS content FROM messages WHERE user_id = ? ORDER BY created_at DESC LIMIT 3");
 $stmt->bind_param("s", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -148,10 +153,14 @@ while ($row = $result->fetch_assoc()) {
     $rawHistory[] = $row;
 }
 $rawHistory = array_reverse($rawHistory); // oldest first
-// Assign alternating roles by position
+// Assign alternating roles by position, truncate each to 300 chars
 $history = [];
 foreach ($rawHistory as $idx => $row) {
-    $history[] = ['role' => ($idx % 2 === 0 ? 'user' : 'assistant'), 'content' => $row['content']];
+    $content = $row['content'];
+    if (mb_strlen($content) > 300) {
+        $content = mb_substr($content, 0, 300) . '...';
+    }
+    $history[] = ['role' => ($idx % 2 === 0 ? 'user' : 'assistant'), 'content' => $content];
 }
 
 // ── System prompt ────────────────────────────────────────────────────────────
@@ -243,35 +252,56 @@ foreach ($history as $msg) {
     $messages[] = ['role' => $msg['role'], 'content' => $msg['content']];
 }
 
-// ── Call Groq API via cURL ───────────────────────────────────────────────────
-$ch = curl_init('https://api.groq.com/openai/v1/chat/completions');
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_HTTPHEADER => [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey,
-    ],
-    CURLOPT_POSTFIELDS => json_encode([
-        'model' => 'llama-3.1-8b-instant',
-        'messages' => $messages,
-        'max_tokens' => 3000,
-        'temperature' => 0.7,
-    ]),
-    CURLOPT_TIMEOUT => 222,
-    //CURLOPT_TIMEOUT => 60: This is the limit for the entire process. It says: "From the moment I start until I get the full answer back, don't take more than 60 seconds total."
-    CURLOPT_CONNECTTIMEOUT => 333,
-    //CURLOPT_CONNECTTIMEOUT => 30: This tells the server to wait up to 30 seconds just to "knock on the door" of the AI service. If the AI doesn't answer the door in 30 seconds, it stops trying
-
-    CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4, // Use IPv4 for stability in XAMPP
-    CURLOPT_SSL_VERIFYPEER => false,        // Temporary bypass becuse problem with https
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1, // Force HTTP/1.1 for better stability in local environments
+// ── Call Groq API via cURL (with retry on rate limit) ────────────────────────
+$postPayload = json_encode([
+    'model' => 'meta-llama/llama-4-scout-17b-16e-instruct',
+    'messages' => $messages,
+    'max_tokens' => 1000,
+    'temperature' => 0.7,
 ]);
 
-$response = curl_exec($ch);
-$curlError = curl_error($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+$maxRetries = 2;
+$response = false;
+$httpCode = 0;
+$curlError = '';
+
+for ($attempt = 0; $attempt <= $maxRetries; $attempt++) {   
+    $ch = curl_init('https://api.groq.com/openai/v1/chat/completions');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiKey,
+        ],
+        CURLOPT_POSTFIELDS => $postPayload,
+        CURLOPT_TIMEOUT => 60,
+        CURLOPT_CONNECTTIMEOUT => 15,
+        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    ]);
+
+    $response = curl_exec($ch);
+    $curlError = curl_error($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    // If rate limited (429), wait and retry
+    if ($httpCode === 429 && $attempt < $maxRetries) {
+        $retryData = json_decode($response, true);
+        $retryMsg = $retryData['error']['message'] ?? '';
+        // Extract wait time from message (e.g. "try again in 489.999999ms")
+        if (preg_match('/in ([\d.]+)ms/', $retryMsg, $m)) {
+            $waitMs = (int) ceil((float) $m[1]);
+        } else {
+            $waitMs = 1000; // default 1 second
+        }
+        usleep($waitMs * 1000); // convert ms to microseconds
+        continue;
+    }
+    break; // Success or non-retryable error
+}
 
 if ($response === false) {
     http_response_code(502);
@@ -283,6 +313,10 @@ if ($httpCode !== 200) {
     http_response_code(502);
     $apiErr = json_decode($response, true);
     $errMsg = $apiErr['error']['message'] ?? 'AI service returned error ' . $httpCode;
+    // Friendly message for rate limits
+    if ($httpCode === 429) {
+        $errMsg = 'The AI assistant is busy right now. Please wait a few seconds and try again.';
+    }
     echo json_encode(['error' => $errMsg]);
     exit;
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 13, 2026 at 10:03 PM
+-- Generation Time: Jun 15, 2026 at 04:15 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -192,8 +192,11 @@ INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `location_descr
 (21, 2, 340.00, 'cancelled', 'No Address Provided', '0000000000', '2026-04-16 18:51:20'),
 (22, 10, 85.00, 'delivered', 'test', '01066458690', '2026-06-03 17:51:06'),
 (23, 2, 130.00, 'cancelled', 'madinity b100 street 10 buidling 111 apartment 20', '01066452322', '2026-06-13 19:37:36'),
-(24, 2, 130.00, 'delivered', 'madinity b100 street 10 buidling 111 apartment 20', '01066452322', '2026-06-13 19:38:04'),
-(25, 2, 30.00, 'cancelled', 'madinity b100 street 10 buidling 111 apartment 20', '01066452322', '2026-06-13 19:44:42');
+(24, 2, 130.00, 'refunded', 'madinity b100 street 10 buidling 111 apartment 20', '01066452322', '2026-06-13 19:38:04'),
+(25, 2, 30.00, 'cancelled', 'madinity b100 street 10 buidling 111 apartment 20', '01066452322', '2026-06-13 19:44:42'),
+(26, 2, 30.00, 'refunded', 'talaat love priacy and won\'t share where he lives', '01066452322', '2026-06-15 13:13:07'),
+(27, 2, 30.00, 'cancelled', 'talaat love priacy and won\'t share where he lives', '01066452322', '2026-06-15 13:24:41'),
+(28, 2, 55.00, 'delivered', 'talaat love priacy and won\'t share where he lives', '01066452322', '2026-06-15 13:44:59');
 
 -- --------------------------------------------------------
 
@@ -229,7 +232,10 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `product_name`, `pric
 (24, 23, 35, 'Iced Hibiscus Tea', 30.00, 1),
 (25, 24, 8, 'Banana walnut power shake', 100.00, 1),
 (26, 24, 35, 'Iced Hibiscus Tea', 30.00, 1),
-(27, 25, 35, 'Iced Hibiscus Tea', 30.00, 1);
+(27, 25, 35, 'Iced Hibiscus Tea', 30.00, 1),
+(28, 26, 35, 'Iced Hibiscus Tea', 30.00, 1),
+(29, 27, 35, 'Iced Hibiscus Tea', 30.00, 1),
+(30, 28, 36, 'Chia Lemon Drink', 55.00, 1);
 
 -- --------------------------------------------------------
 
@@ -260,8 +266,11 @@ INSERT INTO `payments` (`id`, `order_id`, `method`, `status`, `transaction_id`, 
 (6, 17, 'stripe', 'completed', 'cs_test_a12OEn8IbHlTM8J7NxLiTbZQ2L2nIM4WmsEFnguStIAj2GEhlXrtAm74EN', '2026-03-06 09:07:26', '2026-03-06 09:07:26'),
 (7, 18, 'stripe', 'completed', 'cs_test_a1gJLlly2xP247NCU1ALSd4WR46Z8sM9aXMIB6mcVvNsvn85mHMFQkmjJm', '2026-03-07 20:18:49', '2026-03-07 20:18:49'),
 (8, 22, 'stripe', 'completed', 'cs_test_a1hnKzLmIsswr8AO3v4FB1TawWGk7fi3X9MY3qaeW1Ns4X3GIPlibJdTgg', '2026-06-03 17:51:51', '2026-06-03 17:51:51'),
-(9, 24, 'stripe', 'completed', 'cs_test_b1LoFWnVIMe3T1YS4jBmCqTqtMVaYxWi0WAQrfKWx9jnwbl6Am8gLnKJKT', '2026-06-13 19:38:57', '2026-06-13 19:38:57'),
-(10, 25, 'stripe', 'refunded', 'cs_test_a10H2SQDolNdagqMR3qOSF8HKikUXXwk71lmN1tzQEKxqu6tReIKVZvOGC', '2026-06-13 19:45:09', '2026-06-13 19:45:09');
+(9, 24, 'stripe', 'refunded', 'cs_test_b1LoFWnVIMe3T1YS4jBmCqTqtMVaYxWi0WAQrfKWx9jnwbl6Am8gLnKJKT', '2026-06-13 19:38:57', '2026-06-13 19:38:57'),
+(10, 25, 'stripe', 'refunded', 'cs_test_a10H2SQDolNdagqMR3qOSF8HKikUXXwk71lmN1tzQEKxqu6tReIKVZvOGC', '2026-06-13 19:45:09', '2026-06-13 19:45:09'),
+(11, 26, 'stripe', 'refunded', 'cs_test_a1rnYpijlzya42CZU3a0qnej4BnuIIgax4T0CybKwOhkwJxZL8RLDlf5K1', '2026-06-15 13:13:48', '2026-06-15 13:13:48'),
+(12, 27, 'stripe', 'refunded', 'cs_test_a15hFhNWKFaTjkoP6Qd3pRObFFRbMwR3CiVS9N0VNOPsDjXItAt24gboES', '2026-06-15 13:25:06', '2026-06-15 13:25:06'),
+(13, 28, 'stripe', 'completed', 'cs_test_a1xAeNNFTRZyiylGlJoO5BqI8Het0mYuM8HfYS8Sy1mBopZxjLwiWyuQZs', '2026-06-15 13:45:37', '2026-06-15 13:45:37');
 
 -- --------------------------------------------------------
 
@@ -318,8 +327,8 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image_pa
 (32, 'Pineapple Ginger Juice', '', 45.00, 100, 'assets/images/6a2d8a1eac57f_pexels-photo-5946631.jpeg', 'drink', 'active', '2026-06-13 19:49:35'),
 (33, ' Watermelon Juice ', '', 50.00, 100, 'assets/images/6a2d8a1fcc24f_pexels-photo-1337825.jpeg', 'drink', 'active', '2026-06-13 19:49:36'),
 (34, 'Kombucha Original', '', 65.00, 100, 'assets/images/6a2d8a2079174_pexels-photo-5946973.jpeg', 'drink', 'active', '2026-06-13 19:49:37'),
-(35, 'Iced Hibiscus Tea', 'hibucaue', 30.00, 99, 'assets/images/1781370700_13b0c425feec2629.jpg', 'drink', 'active', '2026-06-13 19:49:40'),
-(36, 'Chia Lemon Drink', '', 55.00, 100, 'assets/images/6a2d8a2414a4c_pexels-photo-4553031.jpeg', 'drink', 'active', '2026-06-13 19:49:41'),
+(35, 'Iced Hibiscus Tea', 'hibucaue', 30.00, 98, 'assets/images/1781370700_13b0c425feec2629.jpg', 'drink', 'active', '2026-06-13 19:49:40'),
+(36, 'Chia Lemon Drink', '', 55.00, 99, 'assets/images/6a2d8a2414a4c_pexels-photo-4553031.jpeg', 'drink', 'active', '2026-06-13 19:49:41'),
 (37, 'Green Detox Smoothie', '', 75.00, 100, 'assets/images/6a2d8a2509d49_pexels-photo-616833.jpeg', 'drink', 'active', '2026-06-13 19:49:42');
 
 -- --------------------------------------------------------
@@ -549,7 +558,7 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -561,19 +570,19 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `products`
