@@ -49,7 +49,7 @@ This project relies on [Composer](https://getcomposer.org/), the dependency mana
    - `pragmarx/google2fa`: For handling Time-Based One-Time Passwords (TOTP).
 
 ## Firewall / WAF Scripts
-NOTE: you can use this becuse you will need to install modsec sparately also the bat files might need changing the service name for some resone
+NOTE: you can't use this becuse you will need to install modsec sparately also the bat files might need changing the service name for some resone
 The repository includes batch scripts that act as a basic Web Application Firewall:
 - `waf_level_1.bat`
 - `waf_level_2.bat`
